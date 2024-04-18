@@ -4,7 +4,7 @@ import Login from "@/components/Login/index";
 import NavigationMenu from "@/components/NavigationMenu";
 import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { useSelector } from "react-redux";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
@@ -14,7 +14,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
     <Box>
       {auth ? <NavigationMenu /> : ""}
       <Item
-        radius="28px"
+        radius="18px"
         sx={{
           position: "relative",
           width: "calc(100% - 146px)",

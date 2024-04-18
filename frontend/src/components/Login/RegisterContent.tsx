@@ -2,8 +2,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  Checkbox,
-  FormControlLabel,
   TextField,
   Typography,
 } from "@mui/material";

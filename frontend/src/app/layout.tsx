@@ -27,7 +27,7 @@ export default function RootLayout({
         className={roboto.className}
         sx={{
           height: "100vh",
-          background: "#6495ED",
+          background: "#325187",
           overflow: "hidden",
         }}
         component="body"

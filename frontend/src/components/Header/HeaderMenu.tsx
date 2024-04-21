@@ -5,8 +5,10 @@ import chatIcon from "../../../public/icons/chat.svg";
 import notificationIcon from "../../../public/icons/notification.svg";
 import appIcon from "../../../public/icons/app.svg";
 import HeaderMenuItem from "./HeaderMenuItem";
+import Link from "next/link";
 
 export default function HeaderMenu() {
+  let id: number = 10561654311;
   return (
     <Box
       sx={{
@@ -34,7 +36,9 @@ export default function HeaderMenu() {
           justifyContent: "center",
         }}
       >
-        <Image src={noPhoto} alt="profilePic" />
+        <Link href={`/profile/${id}`}>
+          <Image src={noPhoto} alt="profilePic" />
+        </Link>
       </Box>
     </Box>
   );

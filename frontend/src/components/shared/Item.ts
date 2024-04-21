@@ -6,7 +6,7 @@ interface ItemProps {
   radius: string;
 }
 
-export const Item = styled(Paper)<ItemProps>(({ theme, radius }) => ({
+export const Item = styled(Paper)<ItemProps>(({ radius }) => ({
   boxShadow: "0 2px 2px #0000003f",
   textAlign: "center",
   borderRadius: radius,

@@ -32,7 +32,6 @@ export default function RootLayout({
         }}
         component="body"
       >
-        <Logo />
         <ReduxProvider>
           <MainScreen>{children}</MainScreen>
         </ReduxProvider>

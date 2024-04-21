@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 
-export default function Friends() {
+export default function Followers() {
   return (
     <>
       <Header />

@@ -1,7 +1,9 @@
 import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
-
 import CreatePost from "./CreatePost";
+import ContactInfo from "./ContactInfo";
+import Education from "./Education";
+import PostsSection from "./PostsSection";
 
 export default function PostsContent() {
   return (
@@ -13,23 +15,19 @@ export default function PostsContent() {
     >
       <Box
         sx={{
-          width: "35%",
+          width: "50%",
         }}
       >
         <CreatePost />
-        <Item
-          sx={{
-            mt: "23px",
-            height: "1400px",
-          }}
-          radius="8px"
-        >
-          POST
-        </Item>
+        <PostsSection />
       </Box>
-      <Box>
-        <Item radius="8px">contact info</Item>
-        <Item radius="8px">education</Item>
+      <Box
+        sx={{
+          width: "50%",
+        }}
+      >
+        <ContactInfo />
+        <Education />
       </Box>
     </Box>
   );

@@ -1,6 +1,5 @@
 "use client";
 
-import Header from "@/components/Header";
 import BioContent from "@/components/Profile/BioContent";
 import ContactsContent from "@/components/Profile/ContactsContent";
 import PhotosContent from "@/components/Profile/PhotosContent";
@@ -12,7 +11,6 @@ import { useState } from "react";
 
 export default function ProfilePage() {
   const [selectedTab, setSelectedTab] = useState<String>("Posts");
-  console.log(selectedTab);
 
   const renderContent = () => {
     switch (selectedTab) {

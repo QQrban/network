@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import "./global.css";
 import { Roboto } from "next/font/google";
 import { ReduxProvider } from "@/redux/provider";
-import { Logo } from "@/components/Logo";
 import MainScreen from "./MainScreen";
 
 export const metadata: Metadata = {
@@ -26,9 +25,19 @@ export default function RootLayout({
       <Box
         className={roboto.className}
         sx={{
-          height: "100vh",
-          background: "#325187",
-          overflow: "hidden",
+          minHeight: "100vh",
+          background: "#F5F9FC",
+          overflowY: "scroll",
+          "&::-webkit-scrollbar": {
+            width: "5px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#ccc",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "transparent",
+          },
         }}
         component="body"
       >

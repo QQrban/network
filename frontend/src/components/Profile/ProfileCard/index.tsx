@@ -29,6 +29,7 @@ export default function ProfileCard({ setSelectedTab }: Props) {
     <Box
       sx={{
         position: "relative",
+        textAlign: "center",
       }}
     >
       <ProfileBackground />

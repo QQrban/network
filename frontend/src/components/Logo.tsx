@@ -7,25 +7,10 @@ export function Logo() {
     <Box
       sx={{
         cursor: "pointer",
-        position: "absolute",
-        left: "23px",
-        top: "23px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
       }}
       component="div"
     >
       <Image src={logo} alt="logo" />
-      <Box
-        sx={{
-          color: "white",
-          fontSize: "15px",
-        }}
-        component="span"
-      >
-        netWork
-      </Box>
     </Box>
   );
 }

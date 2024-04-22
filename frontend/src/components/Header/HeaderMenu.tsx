@@ -1,11 +1,12 @@
-import { Box } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../public/icons/noPhoto.svg";
+import noPhoto from "../../../public/Nophoto.jpg";
 import chatIcon from "../../../public/icons/chat.svg";
 import notificationIcon from "../../../public/icons/notification.svg";
 import appIcon from "../../../public/icons/app.svg";
 import HeaderMenuItem from "./HeaderMenuItem";
 import Link from "next/link";
+import TooltipStyled from "../shared/TooltipStyled";
 
 export default function HeaderMenu() {
   let id: number = 10561654311;
@@ -17,11 +18,11 @@ export default function HeaderMenu() {
         gap: "10px",
       }}
     >
-      <HeaderMenuItem logo={appIcon} descr="app bar" showNotification={false} />
-      <HeaderMenuItem logo={chatIcon} descr="chat" showNotification={true} />
+      <HeaderMenuItem logo={appIcon} descr="Menu" showNotification={false} />
+      <HeaderMenuItem logo={chatIcon} descr="Chat" showNotification={true} />
       <HeaderMenuItem
         logo={notificationIcon}
-        descr="notification"
+        descr="Notifications"
         showNotification={true}
       />
       <Box
@@ -29,15 +30,15 @@ export default function HeaderMenu() {
           minWidth: "48px",
           height: "48px",
           width: "48px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           overflow: "hidden",
+          borderRadius: "50%",
         }}
       >
-        <Link href={`/profile/${id}`}>
-          <Image src={noPhoto} alt="profilePic" />
-        </Link>
+        <TooltipStyled title="Profile">
+          <Link href={`/profile/${id}`}>
+            <Image src={noPhoto} alt="profilePic" />
+          </Link>
+        </TooltipStyled>
       </Box>
     </Box>
   );

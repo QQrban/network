@@ -7,7 +7,6 @@ import { Box } from "@mui/material";
 export default function Home() {
   return (
     <Box component="main">
-      <Header />
       <Box
         sx={{
           display: "flex",

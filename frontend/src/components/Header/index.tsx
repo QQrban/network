@@ -5,8 +5,11 @@ import SearchHeader from "./SearchHeader";
 export default function Header() {
   return (
     <Item
-      radius="28px 28px 0 0"
+      radius="0"
       sx={{
+        position: "sticky",
+        top: "0",
+        zIndex: "9999",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",

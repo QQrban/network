@@ -3,7 +3,7 @@
 import { Box, Divider, Typography } from "@mui/material";
 import ProfileBackground from "./ProfileBackground";
 import ProfileAvatar from "./ProfileAvatar";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const tabStyle = (isActive: boolean) => ({
   pb: "11px",
@@ -11,11 +11,16 @@ const tabStyle = (isActive: boolean) => ({
   cursor: "pointer",
 });
 
-export default function ProfileCard() {
+interface Props {
+  setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
+}
+
+export default function ProfileCard({ setSelectedTab }: Props) {
   const [activeTab, setActiveTab] = useState<String>("Posts");
 
   const handleTabClick = (tabName: String) => {
     setActiveTab(tabName);
+    setSelectedTab(tabName);
   };
 
   const tabs = ["Posts", "Bio", "Contacts", "Photos"];

@@ -24,16 +24,15 @@ export default function HeaderMenu() {
         descr="notification"
         showNotification={true}
       />
-
       <Box
         sx={{
           minWidth: "48px",
-          width: "48px",
           height: "48px",
-          minHeight: "48px",
+          width: "48px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          overflow: "hidden",
         }}
       >
         <Link href={`/profile/${id}`}>

@@ -1,5 +1,6 @@
 "use client";
 
+import Header from "@/components/Header";
 import Login from "@/components/Login/index";
 import { Logo } from "@/components/Logo";
 import NavigationMenu from "@/components/NavigationMenu";
@@ -25,9 +26,34 @@ export default function MainScreen({ children }: { children: ReactNode }) {
           width: "calc(100% - 146px)",
           height: "calc(100vh - 46px)",
           m: "23px 23px 0 123px",
+          background: "#F5F9FC",
+          overflowY: "scroll",
+          overflowX: "hidden",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
         }}
       >
-        {auth ? children : <Login />}
+        {auth ? <Header /> : ""}
+        <Box
+          sx={{
+            height: "100%",
+            overflowY: "scroll",
+            "&::-webkit-scrollbar": {
+              width: "4px",
+              backgroundColor: "transparent",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#888",
+              borderRadius: "10px",
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "transparent",
+            },
+          }}
+        >
+          {auth ? children : <Login />}
+        </Box>
       </Item>
     </Box>
   );

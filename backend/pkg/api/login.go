@@ -97,7 +97,7 @@ func LogoutAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	// POST /api/register
+	// PUT /register
 
 	// Create custom struct because the user struct doesn't include json tag for password
 	incoming := models.UserIncoming{}

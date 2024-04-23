@@ -27,16 +27,27 @@ func New() Router {
 
 // Part 1: Defining routes
 
+// In following, the pattern is processed as regex
+// and any capture groups are accessible with GetSlug in the handler.
+
 // Get makes a route for a GET request.
-// The pattern is processed as regex and any capture groups are accessible with GetSlug in the handler.
 func (router *Router) Get(pattern string, handler http.HandlerFunc) {
 	router.addRoute("GET", pattern, handler)
 }
 
 // Post makes a route for a POST request.
-// The pattern is processed as regex and any capture groups are accessible with GetSlug in the handler.
 func (router *Router) Post(pattern string, handler http.HandlerFunc) {
 	router.addRoute("POST", pattern, handler)
+}
+
+// Put makes route for a PUT request.
+func (router *Router) Put(pattern string, handler http.HandlerFunc) {
+	router.addRoute("PUT", pattern, handler)
+}
+
+// Delete makes route for a DELETE request.
+func (router *Router) Delete(pattern string, handler http.HandlerFunc) {
+	router.addRoute("DELETE", pattern, handler)
 }
 
 func (router *Router) addRoute(method string, pattern string, handler http.Handler) {
@@ -61,7 +72,7 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if match == nil {
 			continue
 		}
-
+		fmt.Println(match, rt.method, r.Method)
 		if rt.method != r.Method {
 			// Wrong method
 			allowed = append(allowed, rt.method)

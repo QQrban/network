@@ -33,7 +33,7 @@ func main() {
 	rtr.Post("/user/([0-9]+)/accept", api.EnsureAuth(api.UserAcceptFollow))
 	rtr.Post("/user/([0-9]+)/unfollow", api.EnsureAuth(api.UserUnfollow))
 
-	rtr.Post("/register", api.Register)
+	rtr.Put("/register", api.Register)
 	rtr.Post("/login", api.Login)
 	rtr.Get("/logout", api.EnsureAuth(api.Logout))
 	rtr.Get("/logout/all", api.EnsureAuth(api.LogoutAll))

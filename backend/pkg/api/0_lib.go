@@ -51,7 +51,7 @@ func writeStatusError(w http.ResponseWriter, code int) {
 // newSessionCookie makes a new cookie for a given session token
 func newSessionCookie(token string, expires time.Time) *http.Cookie {
 	return &http.Cookie{
-		Name:     "session",
+		Name:     "sonesess",
 		Value:    token,
 		Path:     "/",
 		Expires:  expires,
@@ -60,7 +60,7 @@ func newSessionCookie(token string, expires time.Time) *http.Cookie {
 }
 
 func getSession(r *http.Request) *models.Session {
-	session, ok := r.Context().Value("session").(*models.Session)
+	session, ok := r.Context().Value("sonesess").(*models.Session)
 	if !ok {
 		panic("Can't get session from a handler that hasn't been authenticated. Use api.IsAuth and api.EnsureAuth.")
 	}
@@ -71,7 +71,7 @@ func getSession(r *http.Request) *models.Session {
 // Returns the session's userID. If session is invalid, returns -1
 func getPossibleUserID(r *http.Request) int64 {
 	var userID int64 = -1
-	session, ok := r.Context().Value("session").(*models.Session)
+	session, ok := r.Context().Value("sonesess").(*models.Session)
 	if ok {
 		userID = session.UserID
 	}

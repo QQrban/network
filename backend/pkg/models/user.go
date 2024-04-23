@@ -34,13 +34,13 @@ type UserIncoming struct {
 
 	FirstName *string `json:"firstName"`
 	LastName  *string `json:"lastName"`
-	Nickname  *string `json:"nickname"`
+	/*Nickname  *string `json:"nickname"`
 
 	Image    *string    `json:"image"`
 	About    *string    `json:"about"`
 	Birthday *time.Time `json:"birthday"`
 
-	Private bool `json:"private"`
+	Private bool `json:"private"`*/
 }
 
 type UserLimited struct {
@@ -91,11 +91,11 @@ func (x *UserIncoming) pointerSlice() []interface{} {
 		x.Password,
 		x.FirstName,
 		x.LastName,
-		x.Nickname,
+		/*x.Nickname,
 		x.Image,
 		x.About,
 		x.Birthday,
-		x.Private,
+		x.Private,*/
 	}
 }
 
@@ -273,10 +273,10 @@ func (model *UserModel) ListFollowers(userID int64) ([]*UserLimited, error) {
 	stmt := model.queries.Prepare("listFollowers")
 
 	rows, err := stmt.Query(userID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("User/ListFollowers: %w", err)
 	}
+	defer rows.Close()
 
 	users := make([]*UserLimited, 0)
 
@@ -298,10 +298,10 @@ func (model *UserModel) ListFollowing(userID int64) ([]*UserLimited, error) {
 	stmt := model.queries.Prepare("listFollowing")
 
 	rows, err := stmt.Query(userID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("User/ListFollowing: %w", err)
 	}
+	defer rows.Close()
 
 	users := make([]*UserLimited, 0)
 
@@ -323,10 +323,10 @@ func (model *UserModel) Known(myID int64) ([]*UserLimited, error) {
 	stmt := model.queries.Prepare("known")
 
 	rows, err := stmt.Query(myID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("User/ListFollowing: %w", err)
 	}
+	defer rows.Close()
 
 	users := make([]*UserLimited, 0)
 

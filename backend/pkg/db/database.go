@@ -2,6 +2,7 @@ package database
 
 import (
 	"social-network/pkg/models"
+	"social-network/pkg/db/sqlite"
 )
 
 type Database struct {
@@ -16,7 +17,7 @@ type Database struct {
 }
 
 func NewDatabase(path string) *Database {
-	db := openDB(path)
+	db := sqlite.OpenDB(path)
 
 	database := &Database{
 		User:    models.MakeUserModel(db),

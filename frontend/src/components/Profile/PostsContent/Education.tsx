@@ -1,6 +1,6 @@
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { Item } from "@/components/shared/Item";
-import { Box, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, Typography } from "@mui/material";
 import Image from "next/image";
 
 interface EducationProps {
@@ -44,7 +44,9 @@ export default function Education() {
         }}
       >
         <Typography fontSize={20}>Education</Typography>
-        <BorderColorIcon sx={{ fontSize: "25px", color: "#2a2a2a" }} />
+        <Button>
+          <BorderColorIcon sx={{ color: "#2a2a2a" }} />
+        </Button>
       </Box>
       <Divider />
       <Box

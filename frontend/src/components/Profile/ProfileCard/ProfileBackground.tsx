@@ -1,6 +1,28 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography, styled } from "@mui/material";
 import mockBG from "../../../../public/mockBG.png";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
+
+const StyledBtn = styled(Button)({
+  backgroundColor: "white",
+  color: "black",
+  textTransform: "capitalize",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "10px",
+  width: "70px",
+  p: "6px 10px",
+  position: "absolute",
+  right: "10px",
+  bottom: "10px",
+  borderRadius: "8px",
+  "&:hover": {
+    backgroundColor: "white",
+  },
+  "&:active": {
+    backgroundColor: "white",
+  },
+});
 
 export default function ProfileBackground() {
   return (
@@ -14,21 +36,7 @@ export default function ProfileBackground() {
         position: "relative",
       }}
     >
-      <Box
-        sx={{
-          bgcolor: "white",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "10px",
-          width: "70px",
-          p: "6px 10px",
-          position: "absolute",
-          right: "10px",
-          bottom: "10px",
-          borderRadius: "8px",
-        }}
-      >
+      <StyledBtn>
         <BorderColorIcon sx={{ fontSize: "20px" }} />
         <Typography
           component="span"
@@ -40,7 +48,7 @@ export default function ProfileBackground() {
         >
           Edit
         </Typography>
-      </Box>
+      </StyledBtn>
     </Box>
   );
 }

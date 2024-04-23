@@ -31,6 +31,8 @@ export default function ProfilePage() {
     <>
       <Box
         sx={{
+          position: "relative",
+          minHeight: "100vh",
           p: "19px 28px",
         }}
       >

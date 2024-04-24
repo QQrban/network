@@ -80,10 +80,10 @@ func (model PostModel) GetByUser(myID, targetID, beforeID int64) ([]*Post, error
 	stmt := model.queries.Prepare("getByUser")
 
 	rows, err := stmt.Query(myID, targetID, beforeID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Post/GetByUser: %w", err)
 	}
+	defer rows.Close()
 
 	posts := make([]*Post, 0)
 
@@ -107,10 +107,10 @@ func (model PostModel) GetAll(myID, beforeID int64) ([]*Post, error) {
 	stmt := model.queries.Prepare("getAll")
 
 	rows, err := stmt.Query(myID, beforeID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Post/GetAll: %w", err)
 	}
+	defer rows.Close()
 
 	posts := make([]*Post, 0)
 
@@ -134,10 +134,10 @@ func (model PostModel) GetByFollowing(myID, beforeID int64) ([]*Post, error) {
 	stmt := model.queries.Prepare("getByFollowing")
 
 	rows, err := stmt.Query(myID, beforeID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Post/GetByFollowing: %w", err)
 	}
+	defer rows.Close()
 
 	posts := make([]*Post, 0)
 
@@ -161,10 +161,10 @@ func (model PostModel) GetByGroup(groupID, beforeID int64) ([]*Post, error) {
 	stmt := model.queries.Prepare("getByGroup")
 
 	rows, err := stmt.Query(groupID, beforeID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Post/GetByGroup: %w", err)
 	}
+	defer rows.Close()
 
 	posts := make([]*Post, 0)
 
@@ -188,10 +188,10 @@ func (model PostModel) GetByMyGroups(myID, beforeID int64) ([]*Post, error) {
 	stmt := model.queries.Prepare("getByMyGroups")
 
 	rows, err := stmt.Query(myID, beforeID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Post/GetByMyGroups: %w", err)
 	}
+	defer rows.Close()
 
 	posts := make([]*Post, 0)
 

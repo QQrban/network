@@ -8,12 +8,12 @@ import (
 )
 
 type Comment struct {
-	CommentID int64 `json:"commentID"`
-	PostID    int64 `json:"postID"`
+	ID        int64 `json:"ID"`
+	AboutID    int64 `json:"aboutID"`
 	AuthorID  int64 `json:"authorID"`
 
 	Content string `json:"content"`
-	Images  string `json:"images"`
+	//Images  string `json:"images"`
 
 	Created time.Time `json:"created"`
 
@@ -22,11 +22,11 @@ type Comment struct {
 
 func (x *Comment) pointerSlice() []interface{} {
 	return []interface{}{
-		&x.CommentID,
-		&x.PostID,
+		&x.ID,
+		&x.AboutID,
 		&x.AuthorID,
 		&x.Content,
-		&x.Images,
+		//&x.Images,
 		&x.Created,
 	}
 }
@@ -62,10 +62,10 @@ func (model CommentModel) GetByPost(postID int64) ([]*Comment, error) {
 	stmt := model.queries.Prepare("getByPost")
 
 	rows, err := stmt.Query(postID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Comment/GetByID: %w", err)
 	}
+	defer rows.Close()
 
 	comments := make([]*Comment, 0)
 
@@ -90,10 +90,10 @@ func (model CommentModel) Insert(comment Comment) (int64, error) {
 	stmt := model.queries.Prepare("insert")
 
 	res, err := stmt.Exec(
-		comment.PostID,
+		comment.AboutID,
 		comment.AuthorID,
 		comment.Content,
-		comment.Images,
+		//comment.Images,
 	)
 
 	if err != nil {

@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"social-network/pkg/router"
-	"strconv"
 	"time"
 )
 
@@ -74,7 +72,7 @@ func EnsureAuth(next http.HandlerFunc) http.HandlerFunc {
 	)
 }
 
-func GroupAccessCheck(next http.HandlerFunc) http.HandlerFunc {
+/*func GroupAccessCheck(next http.HandlerFunc) http.HandlerFunc {
 	return OptionalAuth(func(w http.ResponseWriter, r *http.Request) {
 		groupID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
 		userID := getPossibleUserID(r)
@@ -112,4 +110,4 @@ func EventAccessCheck(next http.HandlerFunc) http.HandlerFunc {
 
 		next.ServeHTTP(w, r)
 	})
-}
+}*/

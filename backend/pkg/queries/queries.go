@@ -50,7 +50,7 @@ func (qp QueryProvider) Prepare(key string) *sql.Stmt {
 	if err != nil {
 		panic(fmt.Errorf(`error preparing queries/sql/%v/%v.sql: %w`, qp.root, key, err))
 	}
-
+	
 	return stmt
 }
 

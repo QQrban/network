@@ -1,3 +1,3 @@
-SELECT s.*
-FROM session s
+SELECT *
+FROM session
 WHERE token = ?

@@ -1,2 +1,2 @@
-INSERT OR REPLACE INTO groupInvite (groupID, senderID, receiverID)
-VALUES (?, ?, ?);
+INSERT OR REPLACE INTO groupMember (type, groupID, memberID, userID)
+VALUES ('invite', ?, ?, ?);

@@ -1,2 +1,2 @@
-INSERT INTO messageUser (sender, receiver, content)
+INSERT INTO userMessage (senderID, receiverID, content)
 VALUES (?2, ?3, ?4);

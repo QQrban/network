@@ -1,7 +1,7 @@
-SELECT mg.*, u.userID, u.firstname, u.lastname, u.nickname, u.image
-FROM messageGroup mg
-    JOIN user u on u.userID = mg.sender
-WHERE (?3 = 0 OR messageID < ?3)
+SELECT gm.*, u.userID, u.firstname, u.lastname, u.nickname, u.imageID
+FROM groupMessage gm
+    JOIN user u on u.ID = gm.senderID
+WHERE (?3 = 0 OR gm.ID < ?3)
   AND groupID = ?2
-ORDER BY messageID DESC
+ORDER BY gm.ID DESC
 LIMIT 10;

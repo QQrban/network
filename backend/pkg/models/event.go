@@ -9,17 +9,14 @@ import (
 )
 
 type Event struct {
-	EventID  int64 `json:"eventID"`
-	GroupID  int64 `json:"groupID"`
-	AuthorID int64 `json:"authorID"`
-
-	Title string    `json:"title"`
-	About string    `json:"about"`
-	Time  time.Time `json:"time"`
-
-	Created time.Time `json:"created"`
-
-	MyStatus *string `json:"myStatus,omitempty"`
+	ID          int64     `json:"ID"`
+	GroupID     int64     `json:"groupID"`
+	AuthorID    int64     `json:"authorID"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Time        time.Time `json:"time"`
+	Created     time.Time `json:"created"`
+	MyStatus    *string   `json:"myStatus,omitempty"`
 }
 
 type EventMembers struct {
@@ -29,11 +26,11 @@ type EventMembers struct {
 
 func (x *Event) pointerSlice() []interface{} {
 	return []interface{}{
-		&x.EventID,
+		&x.ID,
 		&x.GroupID,
 		&x.AuthorID,
 		&x.Title,
-		&x.About,
+		&x.Description,
 		&x.Time,
 		&x.Created,
 	}
@@ -71,10 +68,10 @@ func (model EventModel) GetByGroup(groupID, myID int64) ([]*Event, error) {
 	stmt := model.queries.Prepare("getByGroup")
 
 	rows, err := stmt.Query(groupID, myID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Event/GetByGroup: %w", err)
 	}
+	defer rows.Close()
 
 	events := make([]*Event, 0)
 
@@ -96,10 +93,10 @@ func (model EventModel) GetByUser(userID int64) ([]*Event, error) {
 	stmt := model.queries.Prepare("getByUser")
 
 	rows, err := stmt.Query(userID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Event/GetByUser: %w", err)
 	}
+	defer rows.Close()
 
 	events := make([]*Event, 0)
 
@@ -121,10 +118,10 @@ func (model EventModel) GetMembers(groupID int64) (*EventMembers, error) {
 	stmt := model.queries.Prepare("getMembers")
 
 	rows, err := stmt.Query(groupID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Event/GetMembers: %w", err)
 	}
+	defer rows.Close()
 
 	members := &EventMembers{
 		Going:    make([]*UserLimited, 0),

@@ -17,13 +17,13 @@ CREATE TABLE `user_new`
 
     `image`     TEXT,
     `about`     TEXT NOT NULL DEFAULT '',
-    `birthday`  DATE NOT NULL,
+    `birthday`  DATE NOT NULL DEFAULT '',
 
     FOREIGN KEY (image) REFERENCES file (token)
 );
 
 INSERT INTO user_new (userID, email, password, firstname, nickname, lastname, created, image, about, birthday)
-SELECT userID, email, password, firstname, '', lastname, created, null, '', CURRENT_TIMESTAMP
+SELECT userID, email, password, firstname, '', lastname, created, null, '', '0000-00-00T00:00:00Z'
 FROM user;
 
 DROP TABLE user;

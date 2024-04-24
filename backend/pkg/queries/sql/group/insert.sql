@@ -1,2 +1,2 @@
-INSERT INTO "group" (ownerID, name, about, image, type)
-VALUES (?2, ?3, ?4, ?5, ?6);
+INSERT INTO "group" (ownerID, title, description, type)
+VALUES (?2, ?3, ?4, ?5);

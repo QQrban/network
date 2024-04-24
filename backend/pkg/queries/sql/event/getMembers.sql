@@ -1,5 +1,5 @@
-SELECT u.*, eM.status
+SELECT u.*, eM.option
 FROM event e
-         JOIN eventMember eM ON e.eventID = eM.eventID
-         JOIN user u ON eM.userID = u.userID
-WHERE e.eventID = ?1;
+         JOIN eventMember eM ON e.ID = eM.eventID
+         JOIN user u ON eM.userID = u.ID
+WHERE e.ID = ?1;

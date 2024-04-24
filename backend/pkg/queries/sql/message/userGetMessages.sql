@@ -1,7 +1,7 @@
 SELECT *
-FROM messageUser
-WHERE (?3 = 0 OR messageID < ?3)
-  AND ((sender = ?1 AND receiver = ?2)
-    OR (sender = ?2 AND receiver = ?1))
-ORDER BY messageID DESC
+FROM userMessage
+WHERE (?3 = 0 OR ID < ?3)
+  AND ((senderID = ?1 AND receiverID = ?2)
+    OR (senderID = ?2 AND receiverID = ?1))
+ORDER BY ID DESC
 LIMIT 10;

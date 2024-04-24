@@ -68,10 +68,10 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 	}
 
 	rows, err := stmt.Query(messageOld.Sender, messageOld.Receiver, messageOld.MessageID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Message/GetMessages: %w", err)
 	}
+	defer rows.Close()
 
 	messages := make([]*Message, 0)
 

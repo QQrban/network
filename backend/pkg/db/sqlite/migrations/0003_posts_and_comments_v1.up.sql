@@ -1,29 +1,24 @@
 CREATE TABLE `post`
 (
-    `postID`   INTEGER PRIMARY KEY AUTOINCREMENT,
+    `ID`       INTEGER PRIMARY KEY AUTOINCREMENT,
     `authorID` INTEGER NOT NULL,
-
+    `groupID`  INTEGER,
+    `aboutID`  INTEGER,
     `content`  TEXT    NOT NULL,
-    `images`   TEXT    NOT NULL DEFAULT '',
-
+    `status`   TEXT    NOT NULL DEFAULT 'public' CHECK (status IN ('public', 'private', 'manual')),
     `created`  DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `edited`   DATE    NOT NULL DEFAULT '',
 
-    FOREIGN KEY (authorID) REFERENCES user (userID)
+    FOREIGN KEY (authorID) REFERENCES user (ID)
+    FOREIGN KEY (groupID) REFERENCES `group` (ID)
+    FOREIGN KEY (aboutID) REFERENCES post (ID)
 );
 
-CREATE TABLE `comment`
-(
-    `commentID` INTEGER PRIMARY KEY AUTOINCREMENT,
-    `postID`    INTEGER NOT NULL,
-    `authorID`  INTEGER NOT NULL,
+CREATE INDEX IF NOT EXISTS post_author_index
+    ON post (authorID);
 
-    `content`   TEXT    NOT NULL,
-
-    `created`   DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (postID) REFERENCES post (postID),
-    FOREIGN KEY (authorID) REFERENCES user (userID)
-);
+CREATE INDEX IF NOT EXISTS post_group_index
+    ON post (groupID);
 
 CREATE INDEX IF NOT EXISTS comment_index
-    ON comment (postID);
+    ON post (aboutID);

@@ -1,3 +1,3 @@
-SELECT u.* FROM follow f
-JOIN user u ON f.followingID = u.userID
+SELECT user.* FROM follow f
+JOIN user ON f.followeeID = user.ID
 WHERE f.followerID = ?;

@@ -1,3 +1,3 @@
 SELECT s.*
-FROM file s
+FROM image s
 WHERE token = ?

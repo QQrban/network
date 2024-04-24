@@ -1,2 +1,2 @@
-INSERT INTO eventMember (eventID, userID, status)
+INSERT INTO eventMember (eventID, userID, option)
 VALUES (?1, ?2, NULL);

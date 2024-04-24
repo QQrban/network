@@ -1,3 +1,3 @@
 SELECT *
 FROM user
-WHERE userID = ?1
+WHERE ID = ?1

@@ -1,2 +1,2 @@
-INSERT INTO session (token, userID, expires)
-VALUES (?, ?, ?)
+INSERT INTO session (token, userID)
+VALUES (?, ?)

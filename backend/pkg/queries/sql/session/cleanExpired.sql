@@ -1,2 +1,0 @@
-DELETE FROM session
-WHERE expires < CURRENT_TIMESTAMP

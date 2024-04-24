@@ -1,6 +1,6 @@
-CREATE TABLE `file`
+CREATE TABLE `image`
 (
-    `token`      TEXT PRIMARY KEY,
+    `token`     TEXT PRIMARY KEY,
     `name`      TEXT NOT NULL,
     `extension` TEXT NOT NULL,
     `created`   DATE NOT NULL DEFAULT CURRENT_TIMESTAMP

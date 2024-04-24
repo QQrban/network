@@ -70,11 +70,11 @@ func (model GroupModel) GetAll(myID int64) ([]*GroupPlus, error) {
 	stmt := model.queries.Prepare("getAll")
 
 	rows, err := stmt.Query(myID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Group/GetAll: %w", err)
 	}
-
+	defer rows.Close()
+	
 	groups := make([]*GroupPlus, 0)
 
 	for rows.Next() {
@@ -96,10 +96,10 @@ func (model GroupModel) GetMyGroups(myID int64) ([]*Group, error) {
 	stmt := model.queries.Prepare("getMyGroups")
 
 	rows, err := stmt.Query(myID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Group/GetMyGroups: %w", err)
 	}
+	defer rows.Close()
 
 	groups := make([]*Group, 0)
 
@@ -201,10 +201,10 @@ func (model GroupModel) GetMembers(groupID int64) ([]*User, error) {
 	stmt := model.queries.Prepare("getMembers")
 
 	rows, err := stmt.Query(groupID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Group/GetMembers: %w", err)
 	}
+	defer rows.Close()
 
 	users := make([]*User, 0)
 
@@ -280,10 +280,10 @@ func (model GroupModel) GetPendingInvites(groupID int64) ([]int64, error) {
 	stmt := model.queries.Prepare("getPendingInvites")
 
 	rows, err := stmt.Query(groupID)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("Group/GetPendingInvites: %w", err)
 	}
+	defer rows.Close()
 
 	users := make([]int64, 0)
 

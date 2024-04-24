@@ -1,3 +1,3 @@
 SELECT *
-FROM comment
-WHERE commentID = ?;
+FROM post
+WHERE aboutID = ?;

@@ -4,7 +4,7 @@ CREATE TABLE `session`
     `userID`  INTEGER NOT NULL,
 
     `created` DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `expires` DATE    NOT NULL,
+    --`expires` DATE    NOT NULL,
 
-    FOREIGN KEY (userID) REFERENCES user (userID)
+    FOREIGN KEY (userID) REFERENCES user (ID)
 );

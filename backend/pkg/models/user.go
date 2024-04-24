@@ -8,39 +8,31 @@ import (
 )
 
 type User struct {
-	UserID int64 `json:"userID"`
-
-	Email    string `json:"email"`
-	Password string `json:"-"`
-
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Nickname  string `json:"nickname"`
-
-	Created time.Time `json:"created"`
-
-	Image    *string   `json:"image"`
+	UserID    int64     `json:"userID"`
+	Email     string    `json:"email"`
+	Password  string    `json:"-"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Nickname  string    `json:"nickname"`
+	Created   time.Time `json:"created"`
+	//Image    *string   `json:"image"`
 	About    string    `json:"about"`
 	Birthday time.Time `json:"birthday"`
-
-	Private bool `json:"private"`
+	Private  bool      `json:"private"`
 
 	FollowInfo *FollowInfo `json:"followInfo"`
 }
 
 type UserIncoming struct {
-	Email    *string `json:"email"`
-	Password *string `json:"password"`
-
+	Email     *string `json:"email"`
+	Password  *string `json:"password"`
 	FirstName *string `json:"firstName"`
 	LastName  *string `json:"lastName"`
-	/*Nickname  *string `json:"nickname"`
-
-	Image    *string    `json:"image"`
+	Nickname  *string `json:"nickname"`
+	//Image    *string    `json:"image"`
 	About    *string    `json:"about"`
 	Birthday *time.Time `json:"birthday"`
-
-	Private bool `json:"private"`*/
+	Private  bool       `json:"private"`
 }
 
 type UserLimited struct {
@@ -67,7 +59,7 @@ func (x *User) pointerSlice() []interface{} {
 		&x.LastName,
 		&x.Nickname,
 		&x.Created,
-		&x.Image,
+		//&x.Image,
 		&x.About,
 		&x.Birthday,
 		&x.Private,
@@ -76,11 +68,11 @@ func (x *User) pointerSlice() []interface{} {
 
 func (x *User) Limited() *UserLimited {
 	return &UserLimited{
-		UserID:     x.UserID,
-		FirstName:  x.FirstName,
-		LastName:   x.LastName,
-		Nickname:   x.Nickname,
-		Image:      x.Image,
+		UserID:    x.UserID,
+		FirstName: x.FirstName,
+		LastName:  x.LastName,
+		Nickname:  x.Nickname,
+		//Image:      x.Image,
 		FollowInfo: x.FollowInfo,
 	}
 }
@@ -91,11 +83,11 @@ func (x *UserIncoming) pointerSlice() []interface{} {
 		x.Password,
 		x.FirstName,
 		x.LastName,
-		/*x.Nickname,
-		x.Image,
+		x.Nickname,
+		//x.Image,
 		x.About,
 		x.Birthday,
-		x.Private,*/
+		x.Private,
 	}
 }
 
@@ -274,7 +266,7 @@ func (model *UserModel) ListFollowers(userID int64) ([]*UserLimited, error) {
 
 	rows, err := stmt.Query(userID)
 	if err != nil {
-		return nil, fmt.Errorf("User/ListFollowers: %w", err)
+		return nil, fmt.Errorf("User/ListFollowers1: %w", err)
 	}
 	defer rows.Close()
 
@@ -285,7 +277,7 @@ func (model *UserModel) ListFollowers(userID int64) ([]*UserLimited, error) {
 
 		err = rows.Scan(user.pointerSlice()...)
 		if err != nil {
-			return nil, fmt.Errorf("User/ListFollowers: %w", err)
+			return nil, fmt.Errorf("User/ListFollowers2: %w", err)
 		}
 
 		users = append(users, user.Limited())
@@ -299,7 +291,7 @@ func (model *UserModel) ListFollowing(userID int64) ([]*UserLimited, error) {
 
 	rows, err := stmt.Query(userID)
 	if err != nil {
-		return nil, fmt.Errorf("User/ListFollowing: %w", err)
+		return nil, fmt.Errorf("User/ListFollowing1: %w", err)
 	}
 	defer rows.Close()
 
@@ -310,7 +302,7 @@ func (model *UserModel) ListFollowing(userID int64) ([]*UserLimited, error) {
 
 		err = rows.Scan(user.pointerSlice()...)
 		if err != nil {
-			return nil, fmt.Errorf("User/ListFollowing: %w", err)
+			return nil, fmt.Errorf("User/ListFollowing2: %w", err)
 		}
 
 		users = append(users, user.Limited())
@@ -324,7 +316,7 @@ func (model *UserModel) Known(myID int64) ([]*UserLimited, error) {
 
 	rows, err := stmt.Query(myID)
 	if err != nil {
-		return nil, fmt.Errorf("User/ListFollowing: %w", err)
+		return nil, fmt.Errorf("User/Known1: %w", err)
 	}
 	defer rows.Close()
 
@@ -335,7 +327,7 @@ func (model *UserModel) Known(myID int64) ([]*UserLimited, error) {
 
 		err = rows.Scan(user.pointerSlice()...)
 		if err != nil {
-			return nil, fmt.Errorf("User/ListFollowing: %w", err)
+			return nil, fmt.Errorf("User/Known2: %w", err)
 		}
 
 		users = append(users, user.Limited())

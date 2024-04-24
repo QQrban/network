@@ -1,2 +1,2 @@
-INSERT OR REPLACE INTO groupRequest (groupID, senderID)
-VALUES (?, ?);
+INSERT OR REPLACE INTO groupMember (type, groupID, userID)
+VALUES ('request', ?, ?);

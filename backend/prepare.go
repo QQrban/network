@@ -10,21 +10,21 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/user", api.EnsureAuth(api.GetUserBySession))
 	rtr.Post("/user", api.EnsureAuth(api.UpdateUser))
 	rtr.Get("/user/([0-9]+)", api.OptionalAuth(api.GetUserByID))
-	rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
 	rtr.Get("/user/([^/]+)", api.GetUserByEmail)
+	/*rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
 
 	rtr.Get("/user/([0-9]+)/followers", api.UserFollowers)
 	rtr.Get("/user/([0-9]+)/following", api.UserFollowing)
 	rtr.Post("/user/([0-9]+)/follow", api.EnsureAuth(api.UserFollow))
 	rtr.Post("/user/([0-9]+)/accept", api.EnsureAuth(api.UserAcceptFollow))
-	rtr.Post("/user/([0-9]+)/unfollow", api.EnsureAuth(api.UserUnfollow))
+	rtr.Post("/user/([0-9]+)/unfollow", api.EnsureAuth(api.UserUnfollow))*/
 
 	rtr.Put("/register", api.Register)
 	rtr.Post("/login", api.Login)
 	rtr.Get("/logout", api.EnsureAuth(api.Logout))
 	rtr.Get("/logout/all", api.EnsureAuth(api.LogoutAll))
 
-	rtr.Post("/post/create", api.EnsureAuth(api.CreatePost))
+	/*rtr.Post("/post/create", api.EnsureAuth(api.CreatePost))
 	rtr.Get("/post/([0-9]+)", api.OptionalAuth(api.GetPostByID))
 	rtr.Get("/post/all", api.OptionalAuth(api.GetAllPosts))
 	rtr.Get("/post/all/groups", api.EnsureAuth(api.GetMyGroupPosts))
@@ -56,7 +56,7 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/event/([0-9]+)", api.EventAccessCheck(api.GetEvent))
 	rtr.Get("/group/([0-9]+)/events", api.GroupAccessCheck(api.GetGroupEvents))
 	rtr.Get("/event/([0-9]+)/members", api.EventAccessCheck(api.GetEventMembers))
-	rtr.Get("/event/all", api.EnsureAuth(api.GetMyEvents))
+	rtr.Get("/event/all", api.EnsureAuth(api.GetMyEvents))*/
 
 	rtr.Post("/message/send", api.EnsureAuth(api.SendMessage))
 	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages))

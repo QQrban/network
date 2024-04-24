@@ -1,4 +1,4 @@
 DELETE
 FROM follow
 WHERE followerID = ?1
-  AND followingID = ?2;
+  AND followeeID = ?2;

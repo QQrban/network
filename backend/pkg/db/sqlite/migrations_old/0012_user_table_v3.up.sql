@@ -1,3 +1,5 @@
+-- Added private toggle
+
 PRAGMA foreign_keys= off;
 
 CREATE TABLE `user_new`
@@ -15,13 +17,15 @@ CREATE TABLE `user_new`
 
     `image`     TEXT,
     `about`     TEXT NOT NULL DEFAULT '',
-    `birthday`  DATE NOT NULL,
+    `birthday`  DATE NOT NULL DEFAULT '',
+
+    `private`   BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (image) REFERENCES file (token)
 );
 
-INSERT INTO user_new (userID, email, password, firstname, nickname, lastname, created, image, about, birthday)
-SELECT userID, email, password, firstname, '', lastname, created, null, '', CURRENT_TIMESTAMP
+INSERT INTO user_new (userID, email, password, firstname, nickname, lastname, created, image, about, birthday, private)
+SELECT userID, email, password, firstname, '', lastname, created, null, '', '', FALSE
 FROM user;
 
 DROP TABLE user;

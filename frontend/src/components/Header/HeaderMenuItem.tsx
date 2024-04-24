@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import Image from "next/image";
+import TooltipStyled from "../shared/TooltipStyled";
 
 interface HeaderMenuItemProps {
   logo: string;
@@ -13,24 +14,26 @@ export default function HeaderMenuItem({
   showNotification,
 }: HeaderMenuItemProps) {
   return (
-    <Box sx={{ position: "relative" }}>
-      <Image src={logo} alt={descr} />
-      {showNotification ? (
-        <Box
-          sx={{
-            position: "absolute",
-            width: 9,
-            height: 9,
-            bgcolor: "#ED5959",
-            top: 0,
-            right: "0px",
-            borderRadius: "60px",
-          }}
-          component="span"
-        ></Box>
-      ) : (
-        ""
-      )}
-    </Box>
+    <TooltipStyled title={descr}>
+      <Box sx={{ position: "relative", cursor: "pointer" }}>
+        <Image src={logo} alt={descr} />
+        {showNotification ? (
+          <Box
+            sx={{
+              position: "absolute",
+              width: 9,
+              height: 9,
+              bgcolor: "#ED5959",
+              top: 0,
+              right: "0px",
+              borderRadius: "60px",
+            }}
+            component="span"
+          ></Box>
+        ) : (
+          ""
+        )}
+      </Box>
+    </TooltipStyled>
   );
 }

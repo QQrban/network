@@ -29,6 +29,8 @@ export default function LeftColumnMainPage() {
     <Item
       sx={{
         border: "1.5px solid #00000011",
+        maxHeight: "430px",
+        pb: "10px",
       }}
       radius="8px"
     >
@@ -108,8 +110,30 @@ export default function LeftColumnMainPage() {
         >
           Your shortcuts
         </Typography>
-        <Box>
-          <Typography>Ctrl + Alt + Delete Club</Typography>
+        <Box
+          sx={{
+            p: "0 50px 0 50px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "14px",
+              color: "#6495ED",
+            }}
+          >
+            Ctrl + Alt + Delete Club
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "14px",
+              color: "#6495ED",
+            }}
+          >
+            JS Gladiators
+          </Typography>
         </Box>
       </Box>
     </Item>

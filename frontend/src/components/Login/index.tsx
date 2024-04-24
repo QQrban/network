@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, Typography } from "@mui/material";
 import BigLogo from "./BigLogo";
 import { Item } from "../shared/Item";
 import googleLogo from "../../../public/icons/google.svg";
@@ -22,7 +14,7 @@ export default function Login() {
     <Box
       sx={{
         width: "100%",
-        height: "100%",
+        height: "100vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

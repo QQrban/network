@@ -6,14 +6,16 @@ CREATE TABLE `post`
     `aboutID`  INTEGER,
     `content`  TEXT    NOT NULL,
     `images`   TEXT    NOT NULL DEFAULT '[]',
-    `status`   TEXT    NOT NULL DEFAULT 'public' CHECK (status IN ('public', 'private', 'manual')),
+    `status`   TEXT    NOT NULL DEFAULT 'public',
     `created`  DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     --`edited`   DATE    NOT NULL DEFAULT '',
 
+    CHECK (status IN ('public', 'private', 'manual'))
     FOREIGN KEY (authorID) REFERENCES user (ID)
     FOREIGN KEY (groupID) REFERENCES `group` (ID)
     FOREIGN KEY (aboutID) REFERENCES post (ID)
 );
+
 
 CREATE INDEX IF NOT EXISTS post_author_index
     ON post (authorID);

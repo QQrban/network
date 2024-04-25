@@ -29,10 +29,10 @@ func (x *Post) pointerSlice() []interface{} {
 		&x.PostID,
 		&x.AuthorID,
 		&x.GroupID,
-		&x.AboutID,
 		&x.Content,
-		&x.Images,
 		&x.Status,
+		&x.Images,
+		&x.AboutID,
 		&x.Created,
 	}
 }
@@ -52,7 +52,7 @@ func MakePostModel(db *sql.DB) PostModel {
 func (model PostModel) Insert(post Post) (int64, error) {
 	stmt := model.queries.Prepare("insert")
 
-	res, err := stmt.Exec(post.pointerSlice()[:6]...)
+	res, err := stmt.Exec(post.pointerSlice()[:5]...) // 6 with images
 
 	if err != nil {
 		return 0, fmt.Errorf("Post/Insert: %w", err)

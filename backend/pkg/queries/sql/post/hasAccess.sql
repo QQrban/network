@@ -9,8 +9,8 @@ WHERE p.ID = ?2
         (p.groupID IS NOT NULL) -- AND EXISTS(SELECT * FROM groupMember WHERE groupID = p.groupID AND userID = ?1))
         OR (p.groupID IS NULL AND (
                 ?1 = p.authorID OR
-                (p.privacy = 'public') OR -- AND ((SELECT private FROM user WHERE userID = p.authorID) = FALSE OR p.authorID IN following)) OR
-                (p.privacy = 'private' AND p.authorID IN following) OR
-                (p.privacy = 'manual' AND EXISTS(SELECT * FROM postAllowedUser WHERE postID = p.ID AND userID = ?1))
+                (p.status = 'public') OR -- AND ((SELECT private FROM user WHERE userID = p.authorID) = FALSE OR p.authorID IN following)) OR
+                (p.status = 'private' AND p.authorID IN following) OR
+                (p.status = 'manual' AND EXISTS(SELECT * FROM postAllowedUser WHERE postID = p.ID AND userID = ?1))
         ))
     );

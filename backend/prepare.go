@@ -25,7 +25,8 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/logout", api.EnsureAuth(api.Logout))
 	rtr.Get("/logout/all", api.EnsureAuth(api.LogoutAll))
 
-	rtr.Post("/post/create", api.EnsureAuth(api.CreatePost))
+	rtr.Put("/post", api.EnsureAuth(api.CreatePost))
+	//rtr.Post("/post/([0-9]+)", api.EnsureAuth(api.EditPost))
 	rtr.Get("/post/([0-9]+)", api.OptionalAuth(api.GetPostByID))
 	rtr.Get("/post/all", api.OptionalAuth(api.GetAllPosts))
 	rtr.Get("/post/all/groups", api.EnsureAuth(api.GetMyGroupPosts))

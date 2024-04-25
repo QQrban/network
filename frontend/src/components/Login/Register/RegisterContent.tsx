@@ -25,9 +25,10 @@ interface FormValues {
   country: string;
   email: string;
   password: string;
+  nickname: string;
   confirmPassword: string;
   about: string;
-  dateOfBirth: null;
+  birthday: null;
   [key: string]: any;
 }
 
@@ -35,11 +36,12 @@ const initialValues: FormValues = {
   firstName: "",
   lastName: "",
   country: "",
+  nickname: "",
   email: "",
   password: "",
   confirmPassword: "",
   about: "",
-  dateOfBirth: null,
+  birthday: null,
 };
 
 export default function RegisterContent() {
@@ -62,6 +64,8 @@ export default function RegisterContent() {
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
+        console.log(values);
+
         const formData = new FormData();
 
         if (avatar) {
@@ -72,12 +76,9 @@ export default function RegisterContent() {
           formData.append(key, value.toString());
         });
 
-        const response = await fetch("/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: formData,
+        const response = await fetch("http://localhost:8888/register", {
+          method: "PUT",
+          body: JSON.stringify(values),
         });
 
         if (response.ok) {
@@ -140,6 +141,19 @@ export default function RegisterContent() {
             helperText={formik.touched.lastName && formik.errors.lastName}
           />
         </Box>
+        <TextField
+          size="small"
+          name="nickname"
+          id="nickname"
+          label="Nickname"
+          type="text"
+          variant="outlined"
+          value={formik.values.nickname}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.nickname && Boolean(formik.errors.nickname)}
+          helperText={formik.touched.nickname && formik.errors.nickname}
+        />
         <Autocomplete
           size="small"
           options={countries}
@@ -173,22 +187,22 @@ export default function RegisterContent() {
             minDate={dayjs("1915-01-01")}
             maxDate={dayjs("2016-12-31")}
             format="MM/DD/YYYY"
-            value={formik.values.dateOfBirth}
+            value={dayjs(formik.values.birthday)}
             onChange={(newValue) => {
               if (newValue && dayjs(newValue).isValid()) {
-                formik.setFieldValue("dateOfBirth", newValue);
+                const formattedDate = dayjs(newValue).format(
+                  "YYYY-MM-DDTHH:mm:ssZ"
+                );
+                formik.setFieldValue("birthday", formattedDate);
               }
             }}
-            name="dateOfBirth"
+            name="birthday"
             slotProps={{
               textField: {
                 size: "small",
                 onKeyDown: (event) => event.preventDefault(),
-                error:
-                  formik.touched.dateOfBirth &&
-                  Boolean(formik.errors.dateOfBirth),
-                helperText:
-                  formik.touched.dateOfBirth && formik.errors.dateOfBirth,
+                error: Boolean(formik.errors.birthday),
+                helperText: formik.touched.birthday && formik.errors.birthday,
               },
             }}
             label="Date Of Birth"

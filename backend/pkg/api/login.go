@@ -102,7 +102,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	// Create custom struct because the user struct doesn't include json tag for password
 	incoming := models.UserIncoming{}
 	err := json.NewDecoder(r.Body).Decode(&incoming)
-
 	if err != nil {
 		log.Println("api/Register1:", err)
 		writeStatusError(w, http.StatusBadRequest)

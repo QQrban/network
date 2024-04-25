@@ -12,10 +12,10 @@ export const validationSchema = Yup.object().shape({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
     .required("Confirm Password is required"),
-  dateOfBirth: Yup.date()
+  birthday: Yup.date()
     .nullable()
     .required("Please enter a complete and correct date")
-    .test("dateOfBirth", "Please enter a valid date", (value) => {
+    .test("birthday", "Please enter a valid date", (value) => {
       if (!value) {
         return false;
       }

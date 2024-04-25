@@ -11,6 +11,19 @@ import (
 	"time"
 )
 
+func CORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	_ = os.Mkdir("./persist", os.ModePerm)
 	db := database.NewDatabase("./persist/database.db")
@@ -23,13 +36,13 @@ func main() {
 	prepare(&rtr)
 
 	log.Println("Backend listening on http://localhost:8888")
-	log.Panic(http.ListenAndServe(":8888", router.ApplyMiddleware(
+	log.Panic(http.ListenAndServe(":8888", CORS(router.ApplyMiddleware(
 		rtr,
 		api.ExtendSession,
 		router.RedirectTrailingSlash,
 		router.LogRequests,
 		router.Recover500,
-	)),
+	))),
 	)
 }
 

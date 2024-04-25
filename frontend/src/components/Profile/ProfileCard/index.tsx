@@ -16,14 +16,14 @@ interface Props {
 }
 
 export default function ProfileCard({ setSelectedTab }: Props) {
-  const [activeTab, setActiveTab] = useState<String>("Posts");
+  const [activeTab, setActiveTab] = useState<String>("Main Board");
 
   const handleTabClick = (tabName: String) => {
     setActiveTab(tabName);
     setSelectedTab(tabName);
   };
 
-  const tabs = ["Posts", "Bio", "Contacts", "Photos"];
+  const tabs = ["Main Board", "Biography", "Contacts", "Photos"];
 
   return (
     <Box

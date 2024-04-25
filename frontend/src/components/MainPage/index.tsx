@@ -29,6 +29,7 @@ export default function LeftColumnMainPage() {
     <Item
       sx={{
         border: "1.5px solid #00000011",
+        width: "290px",
         maxHeight: "430px",
         pb: "10px",
       }}

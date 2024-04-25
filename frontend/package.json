@@ -13,12 +13,16 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
+    "@mui/x-date-pickers": "^7.2.0",
     "@reduxjs/toolkit": "^2.2.3",
+    "dayjs": "^1.11.10",
+    "formik": "^2.4.6",
     "luxon": "^3.4.4",
     "next": "14.2.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-redux": "^9.1.1"
+    "react-redux": "^9.1.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",

@@ -30,7 +30,7 @@ func (f FollowAccepted) Links() []Link {
 	return []Link{
 		{
 			name:   "See their profile",
-			url:    fmt.Sprintf("/user/%v", f.accepter.UserID),
+			url:    fmt.Sprintf("/user/%v", f.accepter.ID),
 			method: "GET",
 		},
 	}

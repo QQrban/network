@@ -1,4 +1,3 @@
-INSERT INTO user(email, password, firstname, lastname)
-VALUES (?, ?, ?, ?)
---, nickname, image, about, birthday, private
---, ?, ?, ?, ?, ?
+INSERT INTO user(email, password, firstname, lastname, nickname, image, about, birthday, private)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+

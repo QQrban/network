@@ -34,12 +34,12 @@ func (n Request) Links() []Link {
 	return []Link{
 		{
 			name:   "Show profile",
-			url:    fmt.Sprintf("/user/%v", n.requester.UserID),
+			url:    fmt.Sprintf("/user/%v", n.requester.ID),
 			method: "GET",
 		},
 		{
 			name:   "Accept request",
-			url:    fmt.Sprintf("/submit/group/%v/invite/%v", n.group.GroupID, n.requester.UserID),
+			url:    fmt.Sprintf("/submit/group/%v/invite/%v", n.group.GroupID, n.requester.ID),
 			method: "POST",
 		},
 	}

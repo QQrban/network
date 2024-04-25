@@ -45,7 +45,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func doLogin(w http.ResponseWriter, user *models.User) {
-	token, err := Database.Session.Insert(user.UserID, sessionDuration)
+	token, err := Database.Session.Insert(user.ID, sessionDuration)
 	if err != nil {
 		panic(err)
 	}
@@ -85,7 +85,7 @@ func LogoutAll(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	err = Database.Session.ClearUser(user.UserID)
+	err = Database.Session.ClearUser(user.ID)
 	if err != nil {
 		panic(err)
 	}
@@ -101,17 +101,17 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Create custom struct because the user struct doesn't include json tag for password
 	incoming := models.UserIncoming{}
-
 	err := json.NewDecoder(r.Body).Decode(&incoming)
+
 	if err != nil {
-		log.Println(err)
+		log.Println("api/Register1:", err)
 		writeStatusError(w, http.StatusBadRequest)
 		return
 	}
 
 	id, err := Database.User.Insert(incoming)
 	if err != nil {
-		log.Println(err)
+		log.Println("api/Register2:", err)
 		writeStatusError(w, http.StatusBadRequest)
 		return
 	}

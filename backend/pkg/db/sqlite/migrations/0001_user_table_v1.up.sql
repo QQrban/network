@@ -7,11 +7,11 @@ CREATE TABLE `user`
     `lastname`  TEXT NOT NULL,
     `nickname`  TEXT NOT NULL DEFAULT '',
     `about`     TEXT NOT NULL DEFAULT '',
-    `imageID`   INTEGER,
+    `image`     TEXT,
     `birthday`  DATE NOT NULL DEFAULT '',
-    `private`   BOOLEAN NOT NULL DEFAULT FALSE -- profile visibility
+    `private`   BOOLEAN NOT NULL DEFAULT FALSE, -- profile visibility
     `created`   DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated`   DATE NOT NULL DEFAULT '',
+    --`updated`   DATE NOT NULL DEFAULT '',
 
-    FOREIGN KEY (imageID) REFERENCES `image` (ID)
+    FOREIGN KEY (`image`) REFERENCES "image" (token)
 );

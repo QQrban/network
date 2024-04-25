@@ -81,7 +81,7 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 		if messageOld.IsGroup {
 			user := &UserLimited{}
 			message.SenderData = user
-			pointers = append(pointers, &user.UserID, &user.FirstName, &user.LastName, &user.Nickname, &user.Image)
+			pointers = append(pointers, &user.ID, &user.FirstName, &user.LastName, &user.Nickname, &user.Image)
 		}
 		err = rows.Scan(pointers...)
 

@@ -8,7 +8,6 @@ import (
 	database "social-network/pkg/db"
 	"social-network/pkg/notify"
 	"social-network/pkg/router"
-	"time"
 )
 
 func main() {
@@ -17,7 +16,7 @@ func main() {
 	api.Database = db
 	api.Notify = notify.NewNotifier(db)
 
-	go CleanupDB(db)
+	//go CleanupDB(db)
 
 	rtr := router.New()
 	prepare(&rtr)
@@ -33,7 +32,7 @@ func main() {
 	)
 }
 
-func CleanupDB(db *database.Database) {
+/*func CleanupDB(db *database.Database) {
 	for {
 		n, err := db.Session.CleanExpired()
 		if err != nil {
@@ -42,4 +41,4 @@ func CleanupDB(db *database.Database) {
 		log.Printf("Cleaned up %v old sessions\n", n)
 		time.Sleep(time.Hour * 24)
 	}
-}
+}*/

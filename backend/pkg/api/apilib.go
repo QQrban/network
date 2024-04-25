@@ -15,7 +15,7 @@ import (
 var Database *database.Database
 var Notify *notify.Notifier
 
-const sessionDuration = 24 * time.Hour
+const sessionDuration = 30 * 24 * time.Hour
 
 // writeJSON sends a response in JSON format. Panics if an error occurs.
 func writeJSON(w http.ResponseWriter, payload interface{}) {

@@ -30,7 +30,7 @@ func (f FollowRequest) Links() []Link {
 	return []Link{
 		{
 			name:   "See their profile",
-			url:    fmt.Sprintf("/user/%v", f.requester.UserID),
+			url:    fmt.Sprintf("/user/%v", f.requester.ID),
 			method: "GET",
 		},
 	}

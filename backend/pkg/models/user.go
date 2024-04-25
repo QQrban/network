@@ -8,35 +8,35 @@ import (
 )
 
 type User struct {
-	UserID    int64     `json:"userID"`
+	ID        int64     `json:"ID"`
 	Email     string    `json:"email"`
 	Password  string    `json:"-"`
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
 	Nickname  string    `json:"nickname"`
 	Created   time.Time `json:"created"`
-	//Image    *string   `json:"image"`
-	About    string    `json:"about"`
-	Birthday time.Time `json:"birthday"`
-	Private  bool      `json:"private"`
+	Image     *string   `json:"image"`
+	About     string    `json:"about"`
+	Birthday  time.Time `json:"birthday"`
+	Private   bool      `json:"private"`
 
 	FollowInfo *FollowInfo `json:"followInfo"`
 }
 
 type UserIncoming struct {
-	Email     *string `json:"email"`
-	Password  *string `json:"password"`
-	FirstName *string `json:"firstName"`
-	LastName  *string `json:"lastName"`
-	Nickname  *string `json:"nickname"`
-	//Image    *string    `json:"image"`
-	About    *string    `json:"about"`
-	Birthday *time.Time `json:"birthday"`
-	Private  bool       `json:"private"`
+	Email     *string    `json:"email"`
+	Password  *string    `json:"password"`
+	FirstName *string    `json:"firstName"`
+	LastName  *string    `json:"lastName"`
+	Nickname  *string    `json:"nickname"`
+	Image     *string    `json:"image"`
+	About     *string    `json:"about"`
+	Birthday  *time.Time `json:"birthday"`
+	Private   bool       `json:"private"`
 }
 
 type UserLimited struct {
-	UserID     int64       `json:"userID"`
+	ID         int64       `json:"ID"`
 	FirstName  string      `json:"firstName"`
 	LastName   string      `json:"lastName"`
 	Nickname   string      `json:"nickname"`
@@ -52,27 +52,27 @@ type FollowInfo struct {
 
 func (x *User) pointerSlice() []interface{} {
 	return []interface{}{
-		&x.UserID,
+		&x.ID,
 		&x.Email,
 		&x.Password,
 		&x.FirstName,
 		&x.LastName,
 		&x.Nickname,
-		&x.Created,
-		//&x.Image,
 		&x.About,
+		&x.Image,
 		&x.Birthday,
 		&x.Private,
+		&x.Created,
 	}
 }
 
 func (x *User) Limited() *UserLimited {
 	return &UserLimited{
-		UserID:    x.UserID,
-		FirstName: x.FirstName,
-		LastName:  x.LastName,
-		Nickname:  x.Nickname,
-		//Image:      x.Image,
+		ID:         x.ID,
+		FirstName:  x.FirstName,
+		LastName:   x.LastName,
+		Nickname:   x.Nickname,
+		Image:      x.Image,
 		FollowInfo: x.FollowInfo,
 	}
 }
@@ -84,7 +84,7 @@ func (x *UserIncoming) pointerSlice() []interface{} {
 		x.FirstName,
 		x.LastName,
 		x.Nickname,
-		//x.Image,
+		x.Image,
 		x.About,
 		x.Birthday,
 		x.Private,
@@ -97,12 +97,12 @@ func (x *User) Censor(doIt bool) interface{} {
 	}
 
 	return &struct {
-		UserID    int64  `json:"userID"`
+		ID        int64  `json:"ID"`
 		FirstName string `json:"firstName"`
 		LastName  string `json:"lastName"`
 		Nickname  string `json:"nickname"`
 	}{
-		UserID:    x.UserID,
+		ID:        x.ID,
 		FirstName: x.FirstName,
 		LastName:  x.LastName,
 		Nickname:  x.Nickname,
@@ -123,7 +123,6 @@ func MakeUserModel(db *sql.DB) UserModel {
 
 func (model *UserModel) GetByID(id int64) (*User, error) {
 	stmt := model.queries.Prepare("getByID")
-
 	row := stmt.QueryRow(id)
 
 	user := &User{}

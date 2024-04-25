@@ -24,7 +24,7 @@ BEGIN
     UPDATE follow
     SET response = 'accepted',
         responded = CURRENT_TIMESTAMP
-    WHERE followeeID IN (
+    WHERE NEW.followeeID IN (
         SELECT ID
         FROM user
         WHERE private = FALSE
@@ -35,18 +35,15 @@ END;
 -- If followee's profile is private, response must be 'accepted' or 'rejected'
 CREATE TRIGGER follow_response_update_check
 AFTER UPDATE OF response ON follow
+WHEN NEW.response = 'accepted' OR NEW.response = 'rejected'
 BEGIN
-    IF NEW.response = 'accepted' OR NEW.response = 'rejected' THEN
-        UPDATE follow
-        SET responded = CURRENT_TIMESTAMP
-        WHERE followeeID IN (
-            SELECT ID
-            FROM user
-            WHERE private = TRUE
-        );
-    ELSE
-        SELECT RAISE(FAIL, 'Invalid response type');
-    END IF;
+    UPDATE follow
+    SET responded = CURRENT_TIMESTAMP
+    WHERE followeeID IN (
+        SELECT ID
+        FROM user
+        WHERE private = TRUE
+    );
 END;
 
 

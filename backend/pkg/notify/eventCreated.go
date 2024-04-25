@@ -30,8 +30,8 @@ func (n Notifier) EventCreated(
 func (n EventCreated) Targets() []int64 {
 	ids := make([]int64, 0, len(n.members)-1)
 	for _, member := range n.members {
-		if member.UserID != n.creator.UserID {
-			ids = append(ids, member.UserID)
+		if member.ID != n.creator.ID {
+			ids = append(ids, member.ID)
 		}
 	}
 	return ids
@@ -50,7 +50,7 @@ func (n EventCreated) Links() []Link {
 	return []Link{
 		{
 			name:   "Show event",
-			url:    fmt.Sprintf("/event/%v", n.event.EventID),
+			url:    fmt.Sprintf("/event/%v", n.event.ID),
 			method: "GET",
 		},
 	}

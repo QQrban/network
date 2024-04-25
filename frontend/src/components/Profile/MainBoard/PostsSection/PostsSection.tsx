@@ -25,6 +25,7 @@ export default function PostsSection() {
     <Item
       sx={{
         mt: "13px",
+        width: "600px",
       }}
       radius="8px"
     >

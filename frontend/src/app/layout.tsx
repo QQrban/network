@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+
 import type { Metadata } from "next";
 import "./global.css";
 import { Roboto } from "next/font/google";

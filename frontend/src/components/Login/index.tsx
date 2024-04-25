@@ -5,7 +5,7 @@ import googleLogo from "../../../public/icons/google.svg";
 import Image from "next/image";
 import { useState } from "react";
 import LoginContent from "./LoginContent";
-import RegisterContent from "./RegisterContent";
+import RegisterContent from "./Register/RegisterContent";
 
 export default function Login() {
   const [isLoginPage, setIsLoginPage] = useState<boolean>(true);

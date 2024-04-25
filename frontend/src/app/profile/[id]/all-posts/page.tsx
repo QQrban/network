@@ -1,7 +1,8 @@
 "use client";
 
 import LeftColumnMainPage from "@/components/MainPage";
-import PostsSection from "@/components/Profile/PostsContent/PostsSection/PostsSection";
+import PostsSection from "@/components/Profile/MainBoard/PostsSection/PostsSection";
+import ContactsSection from "@/components/shared/ContactsSection";
 import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
 
@@ -12,11 +13,10 @@ export default function showAllPosts() {
     <>
       <Box
         sx={{
-          width: "1100px",
           display: "flex",
+          justifyContent: "center",
           gap: "30px",
           pb: "30px",
-          m: "0 auto",
         }}
       >
         <Box
@@ -49,6 +49,16 @@ export default function showAllPosts() {
               ? posts.map((post, index) => <PostsSection key={index} />)
               : ""}
           </Box>
+        </Box>
+        <Box
+          sx={{
+            mt: "23px",
+            position: "sticky",
+            top: "80px",
+            height: "430px",
+          }}
+        >
+          <ContactsSection />
         </Box>
       </Box>
     </>

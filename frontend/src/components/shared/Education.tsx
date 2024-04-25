@@ -1,7 +1,6 @@
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { Item } from "@/components/shared/Item";
 import { Box, Button, Divider, Typography } from "@mui/material";
-import Image from "next/image";
 
 interface EducationProps {
   name: string;

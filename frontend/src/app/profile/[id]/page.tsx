@@ -3,7 +3,7 @@
 import BioContent from "@/components/Profile/BioContent";
 import ContactsContent from "@/components/Profile/ContactsContent";
 import PhotosContent from "@/components/Profile/PhotosContent";
-import PostsContent from "@/components/Profile/PostsContent";
+import MainBoard from "@/components/Profile/MainBoard";
 import ProfileCard from "@/components/Profile/ProfileCard";
 import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
@@ -14,16 +14,16 @@ export default function ProfilePage() {
 
   const renderContent = () => {
     switch (selectedTab) {
-      case "Posts":
-        return <PostsContent />;
-      case "Bio":
+      case "Main Board":
+        return <MainBoard />;
+      case "Biography":
         return <BioContent />;
       case "Contacts":
         return <ContactsContent />;
       case "Photos":
         return <PhotosContent />;
       default:
-        return <PostsContent />;
+        return <MainBoard />;
     }
   };
 

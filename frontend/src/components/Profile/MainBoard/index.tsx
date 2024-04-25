@@ -3,11 +3,12 @@
 import { Box, Button, Typography } from "@mui/material";
 import CreatePost from "./CreatePost";
 import ContactInfo from "./ContactInfo";
-import Education from "./Education";
+import Education from "../../shared/Education";
 import PostsSection from "./PostsSection/PostsSection";
 import { useRouter } from "next/navigation";
+import Experience from "../../shared/Experience";
 
-export default function PostsContent() {
+export default function MainBoard() {
   const posts = ["post", "post"];
   const router = useRouter();
   let id: number = 10561654311;
@@ -68,6 +69,7 @@ export default function PostsContent() {
       >
         <ContactInfo />
         <Education />
+        <Experience />
       </Box>
     </Box>
   );

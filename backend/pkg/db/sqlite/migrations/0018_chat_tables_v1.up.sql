@@ -1,4 +1,4 @@
-CREATE TABLE messageUser
+CREATE TABLE userMessage
 (
     `ID`         INTEGER PRIMARY KEY AUTOINCREMENT,
     `senderID`   INTEGER NOT NULL,
@@ -10,13 +10,13 @@ CREATE TABLE messageUser
     FOREIGN KEY (receiverID) REFERENCES `user` (ID)
 );
 
-CREATE INDEX messageUser_SR
-    ON messageUser (senderID, receiverID);
+CREATE INDEX userMessage_SR
+    ON userMessage (senderID, receiverID);
 
-CREATE INDEX messageUser_RS
-    ON messageUser (receiverID, senderID);
+CREATE INDEX userMessage_RS
+    ON userMessage (receiverID, senderID);
 
-CREATE TABLE messageGroup
+CREATE TABLE groupMessage
 (
     `ID`        INTEGER PRIMARY KEY AUTOINCREMENT,
     `senderID`  INTEGER NOT NULL,
@@ -28,8 +28,8 @@ CREATE TABLE messageGroup
     FOREIGN KEY (groupID) REFERENCES `group` (ID)
 );
 
-CREATE INDEX messageGroup_SR
-    ON messageGroup (senderID, groupID);
+CREATE INDEX groupMessage_SR
+    ON groupMessage (senderID, groupID);
 
-CREATE INDEX messageGroup_RS
-    ON messageGroup (groupID, senderID);
+CREATE INDEX groupMessage_RS
+    ON groupMessage (groupID, senderID);

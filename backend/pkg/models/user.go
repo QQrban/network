@@ -19,6 +19,7 @@ type User struct {
 	About     string    `json:"about"`
 	Birthday  time.Time `json:"birthday"`
 	Private   bool      `json:"private"`
+	Country   string    `json:"country"`
 
 	FollowInfo *FollowInfo `json:"followInfo"`
 }
@@ -33,6 +34,7 @@ type UserIncoming struct {
 	About     *string    `json:"about"`
 	Birthday  *time.Time `json:"birthday"`
 	Private   bool       `json:"private"`
+	Country   *string    `json:"country"`
 }
 
 type UserLimited struct {
@@ -62,6 +64,7 @@ func (x *User) pointerSlice() []interface{} {
 		&x.Image,
 		&x.Birthday,
 		&x.Private,
+		&x.Country,
 		&x.Created,
 	}
 }
@@ -88,6 +91,7 @@ func (x *UserIncoming) pointerSlice() []interface{} {
 		x.About,
 		x.Birthday,
 		x.Private,
+		x.Country,
 	}
 }
 
@@ -235,7 +239,7 @@ func (model *UserModel) Unfollow(myID, targetID int64) error {
 	return nil
 }
 
-func (model *UserModel) RequestFollow(myID, targetID int64) error {
+/*func (model *UserModel) RequestFollow(myID, targetID int64) error {
 	stmt := model.queries.Prepare("requestFollow")
 
 	_, err := stmt.Exec(myID, targetID)
@@ -245,7 +249,7 @@ func (model *UserModel) RequestFollow(myID, targetID int64) error {
 	}
 
 	return nil
-}
+}*/
 
 // TODO: Check if this should return an error if there was no request to accept
 func (model *UserModel) FollowAccept(myID, targetID int64) error {

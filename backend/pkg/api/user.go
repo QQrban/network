@@ -111,7 +111,7 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if target.Private {
+	/*if target.Private {
 		// Sending follow request to private user
 		err = Database.User.RequestFollow(session.UserID, target.ID)
 		if err != nil {
@@ -127,20 +127,24 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			Notify.FollowRequest(me, targetID)
 		}()
 	} else {
-		// Following a public user
-		err = Database.User.Follow(session.UserID, target.ID)
-		if err != nil {
-			panic(err)
-		}
-
-		go func() {
-			me, err := Database.User.GetByID(session.UserID)
-			if err != nil {
-				log.Println(err)
-			}
-			Notify.Follow(me, targetID)
-		}()
+		// Following a public user*/
+	err = Database.User.Follow(session.UserID, target.ID)
+	if err != nil {
+		panic(err)
 	}
+
+	go func() {
+		me, err := Database.User.GetByID(session.UserID)
+		if err != nil {
+			log.Println(err)
+		}
+		if target.Private {
+			Notify.FollowRequest(me, targetID)
+		} else {
+			Notify.Follow(me, targetID)
+		}
+	}()
+	//}
 }
 
 func UserAcceptFollow(w http.ResponseWriter, r *http.Request) {

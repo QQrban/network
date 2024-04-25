@@ -11,13 +11,13 @@ func prepare(rtr *router.Router) {
 	rtr.Post("/user", api.EnsureAuth(api.UpdateUser))
 	rtr.Get("/user/([0-9]+)", api.OptionalAuth(api.GetUserByID))
 	rtr.Get("/user/([^/]+)", api.GetUserByEmail)
-	/*rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
+	rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
 
 	rtr.Get("/user/([0-9]+)/followers", api.UserFollowers)
 	rtr.Get("/user/([0-9]+)/following", api.UserFollowing)
 	rtr.Post("/user/([0-9]+)/follow", api.EnsureAuth(api.UserFollow))
 	rtr.Post("/user/([0-9]+)/accept", api.EnsureAuth(api.UserAcceptFollow))
-	rtr.Post("/user/([0-9]+)/unfollow", api.EnsureAuth(api.UserUnfollow))*/
+	rtr.Post("/user/([0-9]+)/unfollow", api.EnsureAuth(api.UserUnfollow))
 
 	rtr.Put("/register", api.Register)
 	rtr.Post("/login", api.Login)

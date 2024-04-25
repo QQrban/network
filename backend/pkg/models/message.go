@@ -8,11 +8,11 @@ import (
 )
 
 type Message struct {
-	MessageID int64     `json:"messageID"`
-	Sender    int64     `json:"sender"`
-	Receiver  int64     `json:"receiver"`
-	Content   string    `json:"content"`
-	Created   time.Time `json:"created"`
+	ID         int64     `json:"ID"`
+	SenderID   int64     `json:"senderID"`
+	ReceiverID int64     `json:"receiverID"`
+	Content    string    `json:"content"`
+	Created    time.Time `json:"created"`
 
 	IsGroup    bool         `json:"isGroup"`
 	SenderData *UserLimited `json:"senderData"`
@@ -20,9 +20,9 @@ type Message struct {
 
 func (x *Message) pointerSlice() []interface{} {
 	return []interface{}{
-		&x.MessageID,
-		&x.Sender,
-		&x.Receiver,
+		&x.ID,
+		&x.SenderID,
+		&x.ReceiverID,
 		&x.Content,
 		&x.Created,
 	}
@@ -67,7 +67,7 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 		stmt = model.queries.Prepare("userGetMessages")
 	}
 
-	rows, err := stmt.Query(messageOld.Sender, messageOld.Receiver, messageOld.MessageID)
+	rows, err := stmt.Query(messageOld.SenderID, messageOld.ReceiverID, messageOld.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Message/GetMessages: %w", err)
 	}

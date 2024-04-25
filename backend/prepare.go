@@ -17,6 +17,7 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/user/([0-9]+)/following", api.UserFollowing)
 	rtr.Post("/user/([0-9]+)/follow", api.EnsureAuth(api.UserFollow))
 	rtr.Post("/user/([0-9]+)/accept", api.EnsureAuth(api.UserAcceptFollow))
+	rtr.Post("/user/([0-9]+)/reject", api.EnsureAuth(api.UserRejectFollow))
 	rtr.Post("/user/([0-9]+)/unfollow", api.EnsureAuth(api.UserUnfollow))
 
 	rtr.Put("/register", api.Register)
@@ -24,15 +25,15 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/logout", api.EnsureAuth(api.Logout))
 	rtr.Get("/logout/all", api.EnsureAuth(api.LogoutAll))
 
-	/*rtr.Post("/post/create", api.EnsureAuth(api.CreatePost))
+	rtr.Post("/post/create", api.EnsureAuth(api.CreatePost))
 	rtr.Get("/post/([0-9]+)", api.OptionalAuth(api.GetPostByID))
 	rtr.Get("/post/all", api.OptionalAuth(api.GetAllPosts))
 	rtr.Get("/post/all/groups", api.EnsureAuth(api.GetMyGroupPosts))
 	rtr.Get("/post/all/following", api.EnsureAuth(api.GetMyFollowingPosts))
-	rtr.Get("/group/([0-9]+)/posts", api.GroupAccessCheck(api.GetGroupPosts))
+	//rtr.Get("/group/([0-9]+)/posts", api.GroupAccessCheck(api.GetGroupPosts))
 	rtr.Get("/user/([0-9]+)/posts", api.OptionalAuth(api.GetUserPosts))
 
-	rtr.Post("/post/([0-9]+)/comment/create", api.EnsureAuth(api.CreateComment))
+	/*rtr.Post("/post/([0-9]+)/comment/create", api.EnsureAuth(api.CreateComment))
 	rtr.Get("/post/([0-9]+)/comment/all", api.OptionalAuth(api.GetCommentsByPost))
 
 	rtr.Get("/file/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", api.FileDownload)
@@ -59,5 +60,5 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/event/all", api.EnsureAuth(api.GetMyEvents))*/
 
 	rtr.Post("/message/send", api.EnsureAuth(api.SendMessage))
-	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages))
+	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages)) // NB! What's this about?
 }

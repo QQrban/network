@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"html"
 	"log"
 	"net/http"
 	"os"
-	"social-network/pkg/db"
+	database "social-network/pkg/db"
 	"social-network/pkg/models"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 var frontend_host = getFrontendHost()
@@ -67,15 +68,15 @@ func (n Notifier) notify(msg Notification) {
 	content += "\n</form>"
 
 	message := &models.Message{
-		Sender:   0,
-		Receiver: 0,
-		Content:  content,
-		Created:  time.Now(),
+		SenderID:   0,
+		ReceiverID: 0,
+		Content:    content,
+		Created:    time.Now(),
 	}
 
 	targets := msg.Targets()
 	for _, t := range targets {
-		message.Receiver = t
+		message.ReceiverID = t
 		_, err := n.database.Message.SendMessage(*message)
 		if err != nil {
 			log.Printf("could insert notification message for %v: %v\n", t, err)

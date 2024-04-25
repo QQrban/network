@@ -5,9 +5,10 @@ CREATE TABLE `post`
     `groupID`  INTEGER,
     `aboutID`  INTEGER,
     `content`  TEXT    NOT NULL,
+    `images`   TEXT    NOT NULL DEFAULT '[]',
     `status`   TEXT    NOT NULL DEFAULT 'public' CHECK (status IN ('public', 'private', 'manual')),
     `created`  DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `edited`   DATE    NOT NULL DEFAULT '',
+    --`edited`   DATE    NOT NULL DEFAULT '',
 
     FOREIGN KEY (authorID) REFERENCES user (ID)
     FOREIGN KEY (groupID) REFERENCES `group` (ID)

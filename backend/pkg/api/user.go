@@ -168,6 +168,27 @@ func UserAcceptFollow(w http.ResponseWriter, r *http.Request) {
 	}()
 }
 
+func UserRejectFollow(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	slug := router.GetSlug(r, 0)
+	targetID, _ := strconv.ParseInt(slug, 10, 64)
+
+	err := Database.User.FollowReject(session.UserID, targetID)
+	if err != nil {
+		panic(err)
+	}
+
+	go func() {
+		me, err := Database.User.GetByID(session.UserID)
+		if err != nil {
+			log.Println(err)
+		}
+
+		Notify.FollowRejected(me, targetID)
+	}()
+}
+
 func UserUnfollow(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 

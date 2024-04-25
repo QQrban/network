@@ -20,16 +20,16 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	message.Sender = session.UserID
+	message.SenderID = session.UserID
 
 	id, err := Database.Message.SendMessage(message)
 	panicIfErr(err)
 
-	message.MessageID = id
+	message.ID = id
 	message.Created = time.Now()
 
 	if message.IsGroup {
-		u, err := Database.User.GetByID(message.Sender)
+		u, err := Database.User.GetByID(message.SenderID)
 		panicIfErr(err)
 		message.SenderData = u.Limited()
 	}
@@ -49,7 +49,7 @@ func GetMessages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	message.Sender = session.UserID
+	message.SenderID = session.UserID
 
 	messages, err := Database.Message.GetMessages(message)
 	panicIfErr(err)

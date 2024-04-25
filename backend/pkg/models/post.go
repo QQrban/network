@@ -11,10 +11,11 @@ type Post struct {
 	PostID   int64  `json:"postID"`
 	AuthorID int64  `json:"authorID"`
 	GroupID  *int64 `json:"groupID"`
+	AboutID  *int64 `json:"aboutID"`
 
 	Content string `json:"content"`
 	Images  string `json:"images"`
-	Privacy string `json:"privacy"`
+	Status  string `json:"status"`
 
 	Created time.Time `json:"created"`
 
@@ -28,9 +29,10 @@ func (x *Post) pointerSlice() []interface{} {
 		&x.PostID,
 		&x.AuthorID,
 		&x.GroupID,
+		&x.AboutID,
 		&x.Content,
 		&x.Images,
-		&x.Privacy,
+		&x.Status,
 		&x.Created,
 	}
 }

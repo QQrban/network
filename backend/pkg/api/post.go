@@ -8,7 +8,6 @@ import (
 	"social-network/pkg/models"
 	"social-network/pkg/router"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -28,8 +27,8 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If it's a group post, check that I have access
-	if post.GroupID != nil {
-		post.Privacy = "public"
+	/*if post.GroupID != nil {
+		post.Status = "public"
 
 		access, err := Database.Group.IncludesUser(*post.GroupID, session.UserID)
 		panicIfErr(err)
@@ -37,9 +36,9 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			writeStatusError(w, http.StatusForbidden)
 			return
 		}
-	}
+	}*/
 
-	if post.Privacy == "manual" {
+	if post.Status == "manual" {
 		if post.AllowedUsers == nil {
 			log.Println("Tried to insert a post with privacy \"MANUAL\", but with no allowedUsers array defined")
 			writeStatusError(w, http.StatusBadRequest)
@@ -59,7 +58,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	for _, img := range strings.Split(post.Images, ",") {
+	/*for _, img := range strings.Split(post.Images, ",") {
 		if img == "" {
 			continue
 		}
@@ -70,7 +69,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			writeStatusError(w, http.StatusBadRequest)
 			return
 		}
-	}
+	}*/
 
 	post.AuthorID = session.UserID
 	id, err := Database.Post.Insert(post.Post)
@@ -78,7 +77,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if post.Privacy == "manual" {
+	if post.Status == "manual" {
 		for _, userID := range post.AllowedUsers {
 			err = Database.Post.InsertAllowedUser(id, userID)
 			panicIfErr(err)

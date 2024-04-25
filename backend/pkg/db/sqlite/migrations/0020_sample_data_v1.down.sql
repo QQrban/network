@@ -1,0 +1,9 @@
+DELETE FROM `follow`
+DELETE FROM `message`
+DELETE FROM `postAllowedUser`
+DELETE FROM `post`
+DELETE FROM `eventMamber`
+DELETE FROM `event`
+DELETE FROM `groupMember`
+DELETE FROM `group`
+DELETE FROM `user`

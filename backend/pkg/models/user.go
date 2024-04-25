@@ -253,12 +253,24 @@ func (model *UserModel) Unfollow(myID, targetID int64) error {
 
 // TODO: Check if this should return an error if there was no request to accept
 func (model *UserModel) FollowAccept(myID, targetID int64) error {
-	stmt := model.queries.Prepare("followAccept")
+	stmt := model.queries.Prepare("followRespond")
 
-	_, err := stmt.Exec(myID, targetID)
+	_, err := stmt.Exec("accepted", targetID, myID)
 
 	if err != nil {
 		return fmt.Errorf("User/FollowAccept: %w", err)
+	}
+
+	return nil
+}
+
+func (model *UserModel) FollowReject(myID, targetID int64) error {
+	stmt := model.queries.Prepare("followRespond")
+
+	_, err := stmt.Exec("rejected", targetID, myID)
+
+	if err != nil {
+		return fmt.Errorf("User/FollowReject: %w", err)
 	}
 
 	return nil

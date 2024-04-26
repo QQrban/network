@@ -12,7 +12,7 @@ type AuthState = {
 
 const initialState = {
   value: {
-    isAuth: false,
+    isAuth: true,
     username: "",
     uid: "",
   } as AuthState,

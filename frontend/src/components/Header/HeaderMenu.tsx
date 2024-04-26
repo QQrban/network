@@ -1,10 +1,8 @@
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Badge, Box } from "@mui/material";
 import Image from "next/image";
 import noPhoto from "../../../public/Nophoto.jpg";
-import chatIcon from "../../../public/icons/chat.svg";
-import notificationIcon from "../../../public/icons/notification.svg";
-import appIcon from "../../../public/icons/app.svg";
-import HeaderMenuItem from "./HeaderMenuItem";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import MailIcon from "@mui/icons-material/Mail";
 import Link from "next/link";
 import TooltipStyled from "../shared/TooltipStyled";
 
@@ -15,16 +13,15 @@ export default function HeaderMenu() {
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: "10px",
+        gap: "22px",
       }}
     >
-      <HeaderMenuItem logo={appIcon} descr="Menu" showNotification={false} />
-      <HeaderMenuItem logo={chatIcon} descr="Chat" showNotification={true} />
-      <HeaderMenuItem
-        logo={notificationIcon}
-        descr="Notifications"
-        showNotification={true}
-      />
+      <Badge badgeContent={4} color="error">
+        <MailIcon sx={{ fontSize: "29px" }} color="primary" />
+      </Badge>
+      <Badge badgeContent={999} color="error">
+        <NotificationsIcon sx={{ fontSize: "29px" }} color="primary" />
+      </Badge>
       <Box
         sx={{
           minWidth: "48px",

@@ -1,6 +1,5 @@
 "use client";
 
-import BioContent from "@/components/Profile/BioContent";
 import ContactsContent from "@/components/Profile/ContactsContent";
 import PhotosContent from "@/components/Profile/PhotosContent";
 import MainBoard from "@/components/Profile/MainBoard";
@@ -16,8 +15,6 @@ export default function ProfilePage() {
     switch (selectedTab) {
       case "Main Board":
         return <MainBoard />;
-      case "Biography":
-        return <BioContent />;
       case "Contacts":
         return <ContactsContent />;
       case "Photos":

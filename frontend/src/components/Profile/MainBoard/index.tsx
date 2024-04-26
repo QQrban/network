@@ -1,12 +1,14 @@
 "use client";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
 import CreatePost from "./CreatePost";
 import ContactInfo from "./ContactInfo";
-import Education from "../../shared/Education";
+import EducationSection from "../../shared/EducationSection";
 import PostsSection from "./PostsSection/PostsSection";
 import { useRouter } from "next/navigation";
-import Experience from "../../shared/Experience";
+import ExperienceSection from "../../shared/ExperienceSection";
+import { Item } from "@/components/shared/Item";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 
 export default function MainBoard() {
   const posts = ["post", "post"];
@@ -68,8 +70,68 @@ export default function MainBoard() {
         }}
       >
         <ContactInfo />
-        <Education />
-        <Experience />
+        <Item
+          sx={{
+            mt: "23px",
+          }}
+          radius="8px"
+        >
+          <Box
+            sx={{
+              p: "10px 17px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography fontSize={20}>Education</Typography>
+            <IconButton>
+              <BorderColorIcon sx={{ color: "#2a2a2a" }} />
+            </IconButton>
+          </Box>
+          <Divider />
+          <Box
+            sx={{
+              p: "10px 17px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
+            }}
+          >
+            <EducationSection size="medium" />
+          </Box>
+        </Item>
+        <Item
+          sx={{
+            mt: "23px",
+          }}
+          radius="8px"
+        >
+          <Box
+            sx={{
+              p: "10px 17px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography fontSize={20}>Experience</Typography>
+            <IconButton>
+              <BorderColorIcon sx={{ color: "#2a2a2a" }} />
+            </IconButton>
+          </Box>
+          <Divider />
+          <Box
+            sx={{
+              p: "10px 17px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
+            }}
+          >
+            <ExperienceSection size="medium" />
+          </Box>
+        </Item>
       </Box>
     </Box>
   );

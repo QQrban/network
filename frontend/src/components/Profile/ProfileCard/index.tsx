@@ -23,7 +23,7 @@ export default function ProfileCard({ setSelectedTab }: Props) {
     setSelectedTab(tabName);
   };
 
-  const tabs = ["Main Board", "Biography", "Contacts", "Photos"];
+  const tabs = ["Main Board", "Contacts", "Photos"];
 
   return (
     <Box

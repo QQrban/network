@@ -4,7 +4,14 @@ import LanguageIcon from "@mui/icons-material/Language";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Item } from "@/components/shared/Item";
-import { Box, Button, Divider, SvgIconProps, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  SvgIconProps,
+  Typography,
+} from "@mui/material";
 
 interface ContactInfoProps {
   icon: React.ElementType<SvgIconProps>;
@@ -30,9 +37,9 @@ export default function ContactInfo() {
         }}
       >
         <Typography fontSize={20}>Contact Info</Typography>
-        <Button>
+        <IconButton>
           <BorderColorIcon sx={{ color: "#2a2a2a" }} />
-        </Button>
+        </IconButton>
       </Box>
       <Divider />
       <Box
@@ -55,7 +62,7 @@ export default function ContactInfo() {
             <item.icon
               sx={{
                 color: "#8F8F8F",
-                fontSize: "34px",
+                fontSize: "34epx",
               }}
             />
             <Typography

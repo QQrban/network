@@ -24,3 +24,14 @@ VALUES
 (3, 1, 'Hello Tom!', datetime(CURRENT_TIMESTAMP, "-6 hours")),
 (2, 3, 'Hello Nipi!', datetime(CURRENT_TIMESTAMP, "-4 hours")),
 (3, 2, 'Hello Kurb!', datetime(CURRENT_TIMESTAMP, "-30 minutes"));
+
+INSERT INTO post
+(authorID, groupID, content, status, images, aboutID, created)
+VALUES 
+(1, NULL, 'Hello World!', 'public', '', NULL, datetime(CURRENT_TIMESTAMP, "-1 days")),
+(2, NULL, 'Hello World!', 'private', '', NULL, datetime(CURRENT_TIMESTAMP, "-10 hours")),
+(3, NULL, 'Hi there too!', 'public', '', 1, datetime(CURRENT_TIMESTAMP, "-8 hours"));
+-- (1, NULL, 'Hello World!', 'public', '', NULL, datetime(CURRENT_TIMESTAMP, "-6 hours")),
+-- (1, NULL, 'Hello World!', 'public', '', NULL, datetime(CURRENT_TIMESTAMP, "-6 hours")),
+-- (2, NULL, 'Hello World!', 'public', '', NULL, datetime(CURRENT_TIMESTAMP, "-4 hours")),
+-- (3, NULL, 'Hello World!', 'public', '', NULL, datetime(CURRENT_TIMESTAMP, "-30 minutes"));

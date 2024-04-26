@@ -5,13 +5,14 @@ WITH following AS (SELECT followeeID
 SELECT p.*, u.*
 FROM post p
          JOIN user u ON u.ID = p.authorID
-WHERE (?2 < 1 OR p.postID < ?2)
+WHERE (?2 < 1 OR p.ID < ?2)
   AND groupID IS NULL
+  AND aboutID IS NULL
   AND p.authorID IN following
   AND ( -- Filter out posts based on permission
-            p.privacy = 'public' OR
-            p.privacy = 'private' OR
-            (p.privacy = 'manual' AND EXISTS(SELECT * FROM postAllowedUser WHERE postID = p.ID AND userID = ?1))
+            p.status = 'public' OR
+            p.status = 'private' OR
+            (p.status = 'manual' AND EXISTS(SELECT * FROM postAllowedUser WHERE postID = p.ID AND userID = ?1))
     )
-ORDER BY p.postID DESC
+ORDER BY p.ID DESC
 LIMIT 20;

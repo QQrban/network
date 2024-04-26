@@ -32,13 +32,13 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comment.PostID = postID
+	comment.AboutID = postID
 	comment.AuthorID = session.UserID
 
 	id, err := Database.Comment.Insert(comment)
 	panicIfErr(err)
 
-	comment.CommentID = id
+	comment.ID = id
 	comment.Created = time.Now()
 
 	writeJSON(w, comment)

@@ -53,7 +53,7 @@ export default function LeftColumn() {
           >
             <Image src={noProfilePic} alt="profile pic" />
           </Box>
-          <Box>
+          <Box sx={{ textAlign: "center" }}>
             <Typography
               sx={{
                 fontSize: "20px",

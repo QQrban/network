@@ -1,7 +1,11 @@
-import { Box, Typography } from "@mui/material";
 import { Item } from "./Item";
-import Image from "next/image";
-import noPhoto from "../../../public/Nophoto.jpg";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import { StyledBadge } from "./StyledBadge";
 
 export default function ContactsSection() {
   const friends: Array<string> = [
@@ -35,27 +39,30 @@ export default function ContactsSection() {
       }}
       radius="8px"
     >
-      {friends?.map((friend, index) => (
-        <Box
-          key={index}
-          sx={{
-            p: "10px",
-            display: "flex",
-            alignItems: "center",
-            gap: "11px",
-          }}
-        >
-          <Box
-            sx={{
-              width: "36px",
-              height: "36px",
-            }}
-          >
-            <Image src={noPhoto} alt="profile pic" />
-          </Box>
-          <Typography sx={{}}>{friend}</Typography>
-        </Box>
-      ))}
+      <List
+        dense
+        sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+      >
+        {friends.map((friend, index) => {
+          const labelId = `checkbox-list-secondary-label-${index}`;
+          return (
+            <ListItem key={index} disablePadding>
+              <ListItemButton>
+                <ListItemAvatar>
+                  <StyledBadge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    variant="dot"
+                  >
+                    <Avatar alt={friend} src="/static/images/avatar/1.jpg" />
+                  </StyledBadge>
+                </ListItemAvatar>
+                <ListItemText id={labelId} primary={friend} />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+      </List>
     </Item>
   );
 }

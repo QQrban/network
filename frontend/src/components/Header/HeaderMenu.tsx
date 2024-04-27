@@ -1,4 +1,4 @@
-import { Badge, Box } from "@mui/material";
+import { Badge, Box, IconButton, Tooltip } from "@mui/material";
 import Image from "next/image";
 import noPhoto from "../../../public/Nophoto.jpg";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -16,12 +16,20 @@ export default function HeaderMenu() {
         gap: "22px",
       }}
     >
-      <Badge badgeContent={4} color="error">
-        <MailIcon sx={{ fontSize: "29px" }} color="primary" />
-      </Badge>
-      <Badge badgeContent={999} color="error">
-        <NotificationsIcon sx={{ fontSize: "29px" }} color="primary" />
-      </Badge>
+      <TooltipStyled title="Chat">
+        <IconButton>
+          <Badge badgeContent={4} color="error">
+            <MailIcon sx={{ fontSize: "29px" }} color="primary" />
+          </Badge>
+        </IconButton>
+      </TooltipStyled>
+      <TooltipStyled title="notifications">
+        <IconButton>
+          <Badge badgeContent={999} color="error">
+            <NotificationsIcon sx={{ fontSize: "29px" }} color="primary" />
+          </Badge>
+        </IconButton>
+      </TooltipStyled>
       <Box
         sx={{
           minWidth: "48px",

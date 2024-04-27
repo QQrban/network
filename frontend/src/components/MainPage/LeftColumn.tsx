@@ -22,13 +22,14 @@ const StatisticsItemNumber = styled(Typography)`
   color: #325187;
 `;
 
-export default function LeftColumnMainPage() {
+export default function LeftColumn() {
   let id: number = 10561654311;
 
   return (
     <Item
       sx={{
-        border: "1.5px solid #00000011",
+        position: "sticky",
+        top: "90px",
         width: "290px",
         maxHeight: "430px",
         pb: "10px",

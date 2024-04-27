@@ -1,7 +1,7 @@
 "use client";
 
-import LeftColumnMainPage from "@/components/MainPage";
-import PostsSection from "@/components/Profile/MainBoard/PostsSection/PostsSection";
+import LeftColumnMainPage from "@/components/MainPage/LeftColumn";
+import PostsSection from "@/components/shared/PostsSection";
 import ContactsSection from "@/components/shared/ContactsSection";
 import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";

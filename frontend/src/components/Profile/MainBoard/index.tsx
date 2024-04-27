@@ -1,10 +1,10 @@
 "use client";
 
 import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
-import CreatePost from "./CreatePost";
+import CreatePost from "../../shared/CreatePost";
 import ContactInfo from "./ContactInfo";
 import EducationSection from "../../shared/EducationSection";
-import PostsSection from "./PostsSection/PostsSection";
+import PostsSection from "../../shared/PostsSection";
 import { useRouter } from "next/navigation";
 import ExperienceSection from "../../shared/ExperienceSection";
 import { Item } from "@/components/shared/Item";

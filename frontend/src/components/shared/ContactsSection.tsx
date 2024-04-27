@@ -16,9 +16,22 @@ export default function ContactsSection() {
   return (
     <Item
       sx={{
+        border: "1px solid #00000017",
         display: "flex",
         flexDirection: "column",
         width: "290px",
+        height: "340px",
+        overflowY: "scroll",
+        "&::-webkit-scrollbar": {
+          width: "5px",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#ccc",
+          borderRadius: "10px",
+        },
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "transparent",
+        },
       }}
       radius="8px"
     >

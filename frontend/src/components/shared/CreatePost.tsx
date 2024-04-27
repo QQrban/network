@@ -1,9 +1,9 @@
 import { Box, Divider, Typography } from "@mui/material";
-import noPhoto from "../../../../public/Nophoto.jpg";
-import mediaIcon from "../../../../public/icons/media.svg";
-import feelingsIcon from "../../../../public/icons/feelings.svg";
-import locationIcon from "../../../../public/icons/location.svg";
-import tagFriendIcon from "../../../../public/icons/tagFriend.svg";
+import noPhoto from "../../../public/Nophoto.jpg";
+import mediaIcon from "../../../public/icons/media.svg";
+import feelingsIcon from "../../../public/icons/feelings.svg";
+import locationIcon from "../../../public/icons/location.svg";
+import tagFriendIcon from "../../../public/icons/tagFriend.svg";
 import Image, { StaticImageData } from "next/image";
 import { Item } from "@/components/shared/Item";
 

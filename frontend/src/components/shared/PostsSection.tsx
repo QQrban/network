@@ -1,15 +1,15 @@
 import { Item } from "@/components/shared/Item";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../../../public/Nophoto.jpg";
+import noPhoto from "../../../public/Nophoto.jpg";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import ShareIcon from "@mui/icons-material/Share";
-import ReactionToPost from "./ReactionToPost";
+import ReactionToPost from "../Profile/MainBoard/PostsSection/ReactionToPost";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import CommentsPost from "./CommentsPost";
-import mockBg from "../../../../../public/mockBG.png";
-import AddComment from "./AddComment";
+import CommentsPost from "../Profile/MainBoard/PostsSection/CommentsPost";
+import mockBg from "../../../public/mockBG.png";
+import AddComment from "../Profile/MainBoard/PostsSection/AddComment";
 
 export default function PostsSection() {
   const reactions: Array<string> = [

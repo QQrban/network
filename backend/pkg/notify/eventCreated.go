@@ -41,7 +41,7 @@ func (n EventCreated) Message() string {
 	return fmt.Sprintf(
 		"Event <strong>%v</strong> has been created in %v by %v",
 		html.EscapeString(n.event.Title),
-		html.EscapeString(n.group.Name),
+		html.EscapeString(n.group.Title),
 		html.EscapeString(userGetName(n.creator)),
 	)
 }

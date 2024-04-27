@@ -1,3 +1,3 @@
-SELECT *
+SELECT ID, aboutID, authorID, content, images, created
 FROM post
-WHERE aboutID = ?;
+WHERE ID = ?; --aboutID?

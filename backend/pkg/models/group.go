@@ -8,16 +8,15 @@ import (
 )
 
 type Group struct {
-	GroupID int64 `json:"groupID"`
-	OwnerID int64 `json:"ownerID"`
-
-	Name  string  `json:"name"`
-	About string  `json:"about"`
-	Image *string `json:"image"`
-	Type  string  `json:"type"`
-
-	Created time.Time `json:"created"`
+	ID          int64     `json:"ID"`
+	OwnerID     int64     `json:"ownerID"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Created     time.Time `json:"created"`
 }
+
+//Image       *string `json:"image"`
+//Type  string  `json:"type"`
 
 type GroupPlus struct {
 	*Group
@@ -27,15 +26,16 @@ type GroupPlus struct {
 
 func (x *Group) pointerSlice() []interface{} {
 	return []interface{}{
-		&x.GroupID,
+		&x.ID,
 		&x.OwnerID,
-		&x.Name,
-		&x.About,
-		&x.Image,
-		&x.Type,
+		&x.Title,
+		&x.Description,
 		&x.Created,
 	}
 }
+
+//&x.Image,
+//&x.Type,
 
 type GroupModel struct {
 	queries queries.QueryProvider
@@ -71,10 +71,10 @@ func (model GroupModel) GetAll(myID int64) ([]*GroupPlus, error) {
 
 	rows, err := stmt.Query(myID)
 	if err != nil {
-		return nil, fmt.Errorf("Group/GetAll: %w", err)
+		return nil, fmt.Errorf("Group/GetAll1: %w", err)
 	}
 	defer rows.Close()
-	
+
 	groups := make([]*GroupPlus, 0)
 
 	for rows.Next() {
@@ -82,8 +82,9 @@ func (model GroupModel) GetAll(myID int64) ([]*GroupPlus, error) {
 		groupPlus := &GroupPlus{Group: group}
 
 		err = rows.Scan(append(group.pointerSlice(), &groupPlus.IncludesMe, &groupPlus.PendingRequest)...)
+		//err = rows.Scan(group.pointerSlice()...)
 		if err != nil {
-			return nil, fmt.Errorf("Group/GetAll: %w", err)
+			return nil, fmt.Errorf("Group/GetAll2: %w", err)
 		}
 
 		groups = append(groups, groupPlus)
@@ -97,7 +98,7 @@ func (model GroupModel) GetMyGroups(myID int64) ([]*Group, error) {
 
 	rows, err := stmt.Query(myID)
 	if err != nil {
-		return nil, fmt.Errorf("Group/GetMyGroups: %w", err)
+		return nil, fmt.Errorf("Group/GetMyGroups1: %w", err)
 	}
 	defer rows.Close()
 
@@ -108,7 +109,7 @@ func (model GroupModel) GetMyGroups(myID int64) ([]*Group, error) {
 
 		err = rows.Scan(group.pointerSlice()...)
 		if err != nil {
-			return nil, fmt.Errorf("Group/GetMyGroups: %w", err)
+			return nil, fmt.Errorf("Group/GetMyGroups2: %w", err)
 		}
 
 		groups = append(groups, group)
@@ -121,7 +122,7 @@ func (model GroupModel) Insert(group Group) (int64, error) {
 	stmt := model.queries.Prepare("insert")
 
 	res, err := stmt.Exec(
-		group.pointerSlice()[:6]...,
+		group.pointerSlice()[:4]...,
 	)
 
 	if err != nil {

@@ -1,2 +1,2 @@
-INSERT INTO post (aboutID, authorID, content) --), images)
-VALUES (?, ?, ?); --, ?);
+INSERT INTO post (aboutID, authorID, content, images)
+VALUES (?, ?, ?, ?);

@@ -7,11 +7,11 @@ import (
 
 // Prepare sets up the router with checks and routes.
 func prepare(rtr *router.Router) {
-	rtr.Get("/user", api.EnsureAuth(api.GetUserBySession))
-	rtr.Post("/user", api.EnsureAuth(api.UpdateUser))
+	rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
 	rtr.Get("/user/([0-9]+)", api.OptionalAuth(api.GetUserByID))
 	rtr.Get("/user/([^/]+)", api.GetUserByEmail)
-	rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
+	rtr.Post("/user", api.EnsureAuth(api.UpdateUser))
+	rtr.Get("/user", api.EnsureAuth(api.GetUserBySession))
 
 	rtr.Get("/user/([0-9]+)/followers", api.UserFollowers)
 	rtr.Get("/user/([0-9]+)/following", api.UserFollowing)
@@ -22,36 +22,39 @@ func prepare(rtr *router.Router) {
 
 	rtr.Put("/register", api.Register)
 	rtr.Post("/login", api.Login)
-	rtr.Get("/logout", api.EnsureAuth(api.Logout))
 	rtr.Get("/logout/all", api.EnsureAuth(api.LogoutAll))
+	rtr.Get("/logout", api.EnsureAuth(api.Logout))
 
-	rtr.Put("/post", api.EnsureAuth(api.CreatePost))
-	//rtr.Post("/post/([0-9]+)", api.EnsureAuth(api.EditPost))
-	rtr.Get("/post/([0-9]+)", api.OptionalAuth(api.GetPostByID))
-	rtr.Get("/post/all", api.OptionalAuth(api.GetAllPosts))
-	rtr.Get("/post/all/groups", api.EnsureAuth(api.GetMyGroupPosts))
-	rtr.Get("/post/all/following", api.EnsureAuth(api.GetMyFollowingPosts))
-	//rtr.Get("/group/([0-9]+)/posts", api.GroupAccessCheck(api.GetGroupPosts))
+	rtr.Get("/post/([0-9]+)/comments", api.OptionalAuth(api.GetCommentsByPost))
+	rtr.Put("/post/([0-9]+)/comment", api.EnsureAuth(api.CreateComment))
+	//rtr.Post("/post/([0-9]+)/comment", api.EnsureAuth(api.EditComment))
+
 	rtr.Get("/user/([0-9]+)/posts", api.OptionalAuth(api.GetUserPosts))
+	//rtr.Get("/group/([0-9]+)/posts", api.GroupAccessCheck(api.GetGroupPosts))
+	rtr.Get("/post/([0-9]+)", api.OptionalAuth(api.GetPostByID))
+	//rtr.Post("/post/([0-9]+)", api.EnsureAuth(api.EditPost))
+	rtr.Get("/posts/following", api.EnsureAuth(api.GetMyFollowingPosts))
+	//rtr.Get("/post/all/groups", api.EnsureAuth(api.GetMyGroupPosts))
+	rtr.Get("/posts", api.OptionalAuth(api.GetAllPosts))
+	rtr.Put("/post", api.EnsureAuth(api.CreatePost))
 
-	/*rtr.Post("/post/([0-9]+)/comment/create", api.EnsureAuth(api.CreateComment))
-	rtr.Get("/post/([0-9]+)/comment/all", api.OptionalAuth(api.GetCommentsByPost))
+	/*rtr.Get("/file/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", api.FileDownload)
+	rtr.Post("/file", api.FileUpload)*/
 
-	rtr.Get("/file/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", api.FileDownload)
-	rtr.Post("/file", api.FileUpload)
-
-	rtr.Post("/group/create", api.EnsureAuth(api.CreateGroup))
-	rtr.Get("/group/all", api.OptionalAuth(api.GetAllGroups))
-	rtr.Get("/group/my", api.OptionalAuth(api.GetMyGroups))
-	rtr.Get("/group/([0-9]+)", api.GroupAccessCheck(api.GetGroupByID))
+	rtr.Put("/group", api.EnsureAuth(api.CreateGroup))
+	rtr.Get("/groups", api.OptionalAuth(api.GetAllGroups))
+	rtr.Get("/groups/my", api.OptionalAuth(api.GetMyGroups))
+	rtr.Get("/group/([0-9]+)", api.EnsureAuth(api.GetGroupByID))//GroupAccessCheck
 	rtr.Post("/group/([0-9]+)/invite/([0-9]+)", api.EnsureAuth(api.GroupInvite))
+	rtr.Post("/group/([0-9]+)/accept/([0-9]+)", api.EnsureAuth(api.GroupInvite)) //TODO
 	rtr.Post("/group/([0-9]+)/join", api.EnsureAuth(api.JoinGroup))
 	rtr.Post("/group/([0-9]+)/leave", api.EnsureAuth(api.LeaveGroup))
 	rtr.Get("/group/([0-9]+)/members", api.GroupAccessCheck(api.GetGroupMembers))
+	rtr.Get("/group/([0-9]+)/invites", api.GroupAccessCheck(api.GetPendingInvites))
+	
 	rtr.Post("/group/([0-9]+)/transfer/([0-9]+)", api.EnsureAuth(api.TransferOwnership))
-	rtr.Get("/group/([0-9]+)/invite/all", api.GroupAccessCheck(api.GetPendingInvites))
 
-	rtr.Post("/event/create", api.EnsureAuth(api.CreateEvent))
+	/*rtr.Post("/event/create", api.EnsureAuth(api.CreateEvent))
 	rtr.Post("/event/([0-9]+)/going", api.EnsureAuth(api.EventGoing))
 	rtr.Post("/event/([0-9]+)/not-going", api.EnsureAuth(api.EventNotGoing))
 	rtr.Post("/event/([0-9]+)/unset", api.EnsureAuth(api.EventUnset))

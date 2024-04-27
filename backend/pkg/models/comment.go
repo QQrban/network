@@ -8,12 +8,12 @@ import (
 )
 
 type Comment struct {
-	ID        int64 `json:"ID"`
-	AboutID    int64 `json:"aboutID"`
-	AuthorID  int64 `json:"authorID"`
+	ID       int64 `json:"ID"`
+	AboutID  int64 `json:"aboutID"`
+	AuthorID int64 `json:"authorID"`
 
 	Content string `json:"content"`
-	//Images  string `json:"images"`
+	Images  string `json:"images"`
 
 	Created time.Time `json:"created"`
 
@@ -26,7 +26,7 @@ func (x *Comment) pointerSlice() []interface{} {
 		&x.AboutID,
 		&x.AuthorID,
 		&x.Content,
-		//&x.Images,
+		&x.Images,
 		&x.Created,
 	}
 }
@@ -93,7 +93,7 @@ func (model CommentModel) Insert(comment Comment) (int64, error) {
 		comment.AboutID,
 		comment.AuthorID,
 		comment.Content,
-		//comment.Images,
+		comment.Images,
 	)
 
 	if err != nil {

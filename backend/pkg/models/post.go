@@ -11,11 +11,11 @@ type Post struct {
 	PostID   int64  `json:"postID"`
 	AuthorID int64  `json:"authorID"`
 	GroupID  *int64 `json:"groupID"`
-	AboutID  *int64 `json:"aboutID"`
-
+	
 	Content string `json:"content"`
-	Images  string `json:"images"`
 	Status  string `json:"status"`
+	Images  string `json:"images"`
+	AboutID  *int64 `json:"aboutID"`
 
 	Created time.Time `json:"created"`
 

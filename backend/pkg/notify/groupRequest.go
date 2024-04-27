@@ -26,7 +26,7 @@ func (n Request) Message() string {
 	return fmt.Sprintf(
 		"%v has requested to join your group <strong>%v</strong>",
 		html.EscapeString(userGetName(n.requester)),
-		html.EscapeString(n.group.Name),
+		html.EscapeString(n.group.Title),
 	)
 }
 
@@ -39,7 +39,7 @@ func (n Request) Links() []Link {
 		},
 		{
 			name:   "Accept request",
-			url:    fmt.Sprintf("/submit/group/%v/invite/%v", n.group.GroupID, n.requester.ID),
+			url:    fmt.Sprintf("/submit/group/%v/invite/%v", n.group.ID, n.requester.ID),
 			method: "POST",
 		},
 	}

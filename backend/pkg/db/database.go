@@ -11,8 +11,8 @@ type Database struct {
 	Post    models.PostModel
 	File    models.FileModel
 	Comment models.CommentModel
-	/*Group   models.GroupModel
-	Event   models.EventModel*/
+	Group   models.GroupModel
+	Event   models.EventModel
 	Message models.MessageModel
 }
 
@@ -25,8 +25,8 @@ func NewDatabase(path string) *Database {
 		Post:    models.MakePostModel(db),
 		File:    models.MakeFileModel(db),
 		Comment: models.MakeCommentModel(db),
-		/*Group:   models.MakeGroupModel(db),
-		Event:   models.MakeEventModel(db),*/
+		Group:   models.MakeGroupModel(db),
+		Event:   models.MakeEventModel(db),
 		Message: models.MakeMessageModel(db),
 	}
 

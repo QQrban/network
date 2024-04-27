@@ -39,20 +39,22 @@ func prepare(rtr *router.Router) {
 	rtr.Put("/post", api.EnsureAuth(api.CreatePost))
 
 	/*rtr.Get("/file/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", api.FileDownload)
-	rtr.Post("/file", api.FileUpload)
+	rtr.Post("/file", api.FileUpload)*/
 
-	rtr.Post("/group/create", api.EnsureAuth(api.CreateGroup))
-	rtr.Get("/group/all", api.OptionalAuth(api.GetAllGroups))
-	rtr.Get("/group/my", api.OptionalAuth(api.GetMyGroups))
-	rtr.Get("/group/([0-9]+)", api.GroupAccessCheck(api.GetGroupByID))
+	rtr.Put("/group", api.EnsureAuth(api.CreateGroup))
+	rtr.Get("/groups", api.OptionalAuth(api.GetAllGroups))
+	rtr.Get("/groups/my", api.OptionalAuth(api.GetMyGroups))
+	rtr.Get("/group/([0-9]+)", api.EnsureAuth(api.GetGroupByID))//GroupAccessCheck
 	rtr.Post("/group/([0-9]+)/invite/([0-9]+)", api.EnsureAuth(api.GroupInvite))
+	rtr.Post("/group/([0-9]+)/accept/([0-9]+)", api.EnsureAuth(api.GroupInvite)) //TODO
 	rtr.Post("/group/([0-9]+)/join", api.EnsureAuth(api.JoinGroup))
 	rtr.Post("/group/([0-9]+)/leave", api.EnsureAuth(api.LeaveGroup))
 	rtr.Get("/group/([0-9]+)/members", api.GroupAccessCheck(api.GetGroupMembers))
+	rtr.Get("/group/([0-9]+)/invites", api.GroupAccessCheck(api.GetPendingInvites))
+	
 	rtr.Post("/group/([0-9]+)/transfer/([0-9]+)", api.EnsureAuth(api.TransferOwnership))
-	rtr.Get("/group/([0-9]+)/invite/all", api.GroupAccessCheck(api.GetPendingInvites))
 
-	rtr.Post("/event/create", api.EnsureAuth(api.CreateEvent))
+	/*rtr.Post("/event/create", api.EnsureAuth(api.CreateEvent))
 	rtr.Post("/event/([0-9]+)/going", api.EnsureAuth(api.EventGoing))
 	rtr.Post("/event/([0-9]+)/not-going", api.EnsureAuth(api.EventNotGoing))
 	rtr.Post("/event/([0-9]+)/unset", api.EnsureAuth(api.EventUnset))

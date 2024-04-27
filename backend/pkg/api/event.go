@@ -36,7 +36,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	id, err := Database.Event.Insert(*event)
 	panicIfErr(err)
 
-	event.EventID = id
+	event.ID = id
 	event.Created = time.Now()
 
 	writeJSON(w, event)
@@ -47,7 +47,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 
-		members, err := Database.Group.GetMembers(group.GroupID)
+		members, err := Database.Group.GetMembers(group.ID)
 		if err != nil {
 			log.Println(err)
 		}

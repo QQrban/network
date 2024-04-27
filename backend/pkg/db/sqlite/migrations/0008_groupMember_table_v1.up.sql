@@ -2,7 +2,7 @@ CREATE TABLE groupMember
 (
     `groupID`   INTEGER NOT NULL,
     `userID`    INTEGER NOT NULL, -- The user who is invited or who requests
-    `memberID`  INTEGER NOT NULL, -- The user who invited or owner if request
+    `memberID`  INTEGER, -- The user who invited or owner if request
     `type`      TEXT NOT NULL CHECK (type IN ('invite', 'request')),
     `presented` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `responded` DATE NOT NULL DEFAULT '',
@@ -26,7 +26,6 @@ CREATE TRIGGER groupMember_insert
         INSERT INTO groupMember (groupID, userID, memberID, type)
         VALUES (NEW.groupID, NEW.userID, (SELECT ownerID FROM "group" g WHERE g.ID = NEW.groupID), 'request');
     END;
-
 
 CREATE TRIGGER group_owner_leave
     BEFORE DELETE ON groupMember

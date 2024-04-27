@@ -3,13 +3,15 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
-	"github.com/mattn/go-sqlite3"
+	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
 	"social-network/pkg/router"
 	"strconv"
 	"time"
+
+	"github.com/mattn/go-sqlite3"
 )
 
 func GetAllGroups(w http.ResponseWriter, r *http.Request) {
@@ -64,8 +66,8 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 	group.OwnerID = session.UserID
 
 	// MAKE ALL GROUPS PUBLIC
-	group.Type = "public"
-
+	// group.Type = "public" // There are no private groups
+	fmt.Println("here0")
 	id, err := Database.Group.Insert(group)
 	panicUnlessError(err, sqlite3.ErrConstraintUnique)
 	if err != nil {
@@ -74,10 +76,17 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	group.GroupID = id
+	group.ID = id
 	group.Created = time.Now()
 
-	err = Database.Group.Join(group.GroupID, group.OwnerID)
+	// Join creator of the group as member
+	fmt.Println("here1")
+	err = Database.Group.Request(group.ID, group.OwnerID)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("here2")
+	err = Database.Group.Join(group.ID, group.OwnerID)
 	if err != nil {
 		panic(err)
 	}

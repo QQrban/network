@@ -25,7 +25,7 @@ func (n Invite) Targets() []int64 {
 func (n Invite) Message() string {
 	return fmt.Sprintf(
 		"You have been invited to the group <strong>%v</strong>.",
-		html.EscapeString(n.group.Name),
+		html.EscapeString(n.group.Title),
 	)
 }
 
@@ -33,8 +33,8 @@ func (n Invite) Links() []Link {
 	return []Link{
 		{
 			name: "Join group",
-			// url:    fmt.Sprintf("/api/group/%v/join", n.requester),
-			url:    fmt.Sprintf("/submit/group/%v/join", n.group.GroupID),
+			url:    fmt.Sprintf("/api/group/%v/join", n.group.ID),//n.requester),
+			//url:    fmt.Sprintf("/submit/group/%v/join", n.group.GroupID),
 			method: "POST",
 		},
 	}

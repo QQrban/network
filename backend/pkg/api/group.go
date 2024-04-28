@@ -80,13 +80,11 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 	group.Created = time.Now()
 
 	// Join creator of the group as member
-	fmt.Println("here1")
-	err = Database.Group.Request(group.ID, group.OwnerID)
+	err = Database.Group.Request(group.ID, group.OwnerID, group.OwnerID)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("here2")
-	err = Database.Group.Join(group.ID, group.OwnerID)
+	err = Database.Group.Join(group.ID, group.OwnerID, "accepted")
 	if err != nil {
 		panic(err)
 	}
@@ -105,13 +103,13 @@ func JoinGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	access, err := Database.Group.JoinCheck(groupID, session.UserID)
+	invited, err := Database.Group.JoinCheck(groupID, session.UserID)
 	panicIfErr(err)
-	if access {
-		err = Database.Group.Join(groupID, session.UserID)
+	if invited {
+		err = Database.Group.Join(groupID, session.UserID, "accepted")
 		panicIfErr(err)
 	} else {
-		err = Database.Group.Request(groupID, session.UserID)
+		err = Database.Group.Request(groupID, group.OwnerID, session.UserID)
 		panicIfErr(err)
 
 		go func() {
@@ -147,7 +145,8 @@ func GetGroupMembers(w http.ResponseWriter, r *http.Request) {
 func GroupInvite(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 	groupID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
-	inviteeID, _ := strconv.ParseInt(router.GetSlug(r, 1), 10, 64)
+	action := router.GetSlug(r, 1)
+	inviteeID, _ := strconv.ParseInt(router.GetSlug(r, 2), 10, 64)
 
 	// Check if I have access to the group I'm sending an invite to
 	group, err := Database.Group.GetByID(groupID, session.UserID)
@@ -160,21 +159,31 @@ func GroupInvite(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check if who I'm inviting is already in the group
-	access, err := Database.Group.IncludesUser(groupID, inviteeID)
+	member, err := Database.Group.IncludesUser(groupID, inviteeID)
 	if err != nil {
 		panic(err)
 	}
-	if access {
+	if member {
 		return
 	}
 
 	// Check if the person has already tried to join this group
-	requested, err := Database.Group.InviteCheck(groupID, inviteeID)
+	requested, err := Database.Group.RequestCheck(groupID, inviteeID)
 	panicIfErr(err)
+	fmt.Println("action:", action, "member:", member, "requested:", requested)
 	if requested {
-		// Invitee has already requested to join the group, so we join them
-		err = Database.Group.Join(groupID, inviteeID)
-		panicIfErr(err)
+		// Invitee has already requested to join the group, so owner accepts or rejects him/her
+		fmt.Println("action1", action)
+		if group.OwnerID == session.UserID {
+			if action == "invite" {
+				action = "accepted"
+			}
+			fmt.Println("action2", action)
+			err = Database.Group.Join(groupID, inviteeID, action)
+			panicIfErr(err)
+		} else {
+			writeStatusError(w, http.StatusForbidden)
+		}
 	} else {
 		// Checks passed, do the invite
 		err = Database.Group.Invite(groupID, session.UserID, inviteeID)

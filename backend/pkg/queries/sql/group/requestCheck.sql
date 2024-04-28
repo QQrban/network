@@ -1,7 +1,7 @@
 SELECT EXISTS(
    SELECT * FROM groupMember 
    WHERE groupID = ?1 
-      AND memberID = ?2 
-      AND type = 'invite' 
+      AND userID = ?2 
+      AND type = 'request'
       AND response = 'pending'
 );

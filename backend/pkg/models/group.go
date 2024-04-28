@@ -132,10 +132,10 @@ func (model GroupModel) Insert(group Group) (int64, error) {
 	return res.LastInsertId()
 }
 
-func (model GroupModel) Join(groupID, userID int64) error {
+func (model GroupModel) Join(groupID, userID int64, action string) error {
 	stmt := model.queries.Prepare("join")
 
-	_, err := stmt.Exec(groupID, userID)
+	_, err := stmt.Exec(groupID, userID, action)
 
 	if err != nil {
 		return fmt.Errorf("Group/Join: %w", err)
@@ -159,10 +159,10 @@ func (model GroupModel) JoinCheck(groupID, userID int64) (bool, error) {
 	return result, nil
 }
 
-func (model GroupModel) Request(groupID, userID int64) error {
+func (model GroupModel) Request(groupID, ownerID, userID int64) error {
 	stmt := model.queries.Prepare("request")
 
-	_, err := stmt.Exec(groupID, userID)
+	_, err := stmt.Exec(groupID, ownerID, userID)
 
 	if err != nil {
 		return fmt.Errorf("Group/Request: %w", err)
@@ -235,8 +235,8 @@ func (model GroupModel) Invite(groupID, myID, userID int64) error {
 	return nil
 }
 
-func (model GroupModel) InviteCheck(groupID, userID int64) (bool, error) {
-	stmt := model.queries.Prepare("inviteCheck")
+func (model GroupModel) RequestCheck(groupID, userID int64) (bool, error) {
+	stmt := model.queries.Prepare("requestCheck")
 
 	row := stmt.QueryRow(groupID, userID)
 
@@ -244,7 +244,7 @@ func (model GroupModel) InviteCheck(groupID, userID int64) (bool, error) {
 	err := row.Scan(&result)
 
 	if err != nil {
-		return false, fmt.Errorf("Group/InviteCheck: %w", err)
+		return false, fmt.Errorf("Group/RequestCheck: %w", err)
 	}
 
 	return result, nil
@@ -257,7 +257,6 @@ func (model GroupModel) IncludesUser(groupID, userID int64) (bool, error) {
 
 	var includes bool
 	err := row.Scan(&includes)
-
 	if err != nil {
 		return false, fmt.Errorf("Group/IncludesUser: %w", err)
 	}

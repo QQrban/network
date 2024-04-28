@@ -72,7 +72,7 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if match == nil {
 			continue
 		}
-		fmt.Println(match, rt.method, r.Method)
+		fmt.Println(match, rt.method, r.Method) // Debugging
 		if rt.method != r.Method {
 			// Wrong method
 			allowed = append(allowed, rt.method)
@@ -104,6 +104,7 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // GetSlug retrieves a capture group that was saved during route matching (0-indexed).
 func GetSlug(r *http.Request, index int) string {
 	slugs, ok := r.Context().Value("routerSlugs").([]string)
+	
 	if !ok || index >= len(slugs) {
 		return ""
 	}

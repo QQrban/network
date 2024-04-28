@@ -39,7 +39,12 @@ func (n Request) Links() []Link {
 		},
 		{
 			name:   "Accept request",
-			url:    fmt.Sprintf("/submit/group/%v/invite/%v", n.group.ID, n.requester.ID),
+			url:    fmt.Sprintf("/submit/group/%v/accepted/%v", n.group.ID, n.requester.ID),
+			method: "POST",
+		},
+		{
+			name:   "Reject request",
+			url:    fmt.Sprintf("/submit/group/%v/rejected/%v", n.group.ID, n.requester.ID),
 			method: "POST",
 		},
 	}

@@ -6,9 +6,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
-import DraftsIcon from "@mui/icons-material/Drafts";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ContactsIcon from "@mui/icons-material/Contacts";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import FollowTheSignsIcon from "@mui/icons-material/FollowTheSigns";
@@ -19,6 +19,8 @@ import {
   FollowersProps,
   followers,
   followings,
+  suggestions,
+  topContacts,
 } from "@/components/Profile/ContactsContent/mock";
 import FollowersSection from "@/components/shared/FollowersSection";
 
@@ -43,7 +45,7 @@ const NavItem: React.FC<NavItemProps> = ({
 
   return (
     <ListItem
-      sx={label === "Followers" || label === "Following" ? { pl: 4 } : null}
+      sx={label === "Followers" || label === "Followings" ? { pl: 4 } : null}
       onClick={onClick}
     >
       <ListItemIcon>
@@ -57,15 +59,18 @@ const NavItem: React.FC<NavItemProps> = ({
 export default function Followers() {
   const [open, setOpen] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("Suggestions");
-
-  const [peopleList, setPeopleList] = useState<FollowersProps[]>(followers);
+  const [peopleList, setPeopleList] = useState<FollowersProps[]>(suggestions);
 
   const handleActiveTab = (tab: string) => {
     setActiveTab(tab);
     if (tab === "Followers") {
       setPeopleList(followers);
-    } else if (tab === "Following") {
+    } else if (tab === "Followings") {
       setPeopleList(followings);
+    } else if (tab === "Suggestions") {
+      setPeopleList(suggestions);
+    } else if (tab === "Favorite Contacts") {
+      setPeopleList(topContacts);
     }
   };
 
@@ -105,10 +110,10 @@ export default function Followers() {
             onClick={() => handleActiveTab("Suggestions")}
           />
           <NavItem
-            icon={DraftsIcon}
-            label="Requests"
-            isActive={activeTab === "Requests"}
-            onClick={() => handleActiveTab("Requests")}
+            icon={StarBorderIcon}
+            label="Favorite Contacts"
+            isActive={activeTab === "Favorite Contacts"}
+            onClick={() => handleActiveTab("Favorite Contacts")}
           />
           <ListItemButton onClick={handleClick}>
             <ListItemIcon>
@@ -127,32 +132,33 @@ export default function Followers() {
               />
               <NavItem
                 icon={FollowTheSignsIcon}
-                label="Following"
-                isActive={activeTab === "Following"}
-                onClick={() => handleActiveTab("Following")}
+                label="Followings"
+                isActive={activeTab === "Followings"}
+                onClick={() => handleActiveTab("Followings")}
               />
             </List>
           </Collapse>
         </List>
       </Item>
+      <Typography
+        component="h2"
+        variant="h4"
+        sx={{
+          p: "24px 0 0 210px",
+        }}
+      >
+        {activeTab}
+      </Typography>
       <Box
         sx={{
-          padding: "50px 0 0 120px",
+          padding: "30px 0 30px 120px",
           display: "flex",
           gap: "29px",
           flexWrap: "wrap",
           justifyContent: "center",
         }}
       >
-        {activeTab === "Suggestions" && (
-          <Typography variant="h6">Here are some suggestions.</Typography>
-        )}
-        {activeTab === "Requests" && (
-          <Typography variant="h6">Here are requests.</Typography>
-        )}
-        {(activeTab === "Followers" || activeTab === "Following") && (
-          <FollowersSection activeTab={activeTab} peopleList={peopleList} />
-        )}
+        <FollowersSection activeTab={activeTab} peopleList={peopleList} />
       </Box>
     </Box>
   );

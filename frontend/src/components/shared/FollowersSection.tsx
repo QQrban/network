@@ -11,6 +11,7 @@ import { Item } from "./Item";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import EmailIcon from "@mui/icons-material/Email";
 import Image from "next/image";
 import noPhoto from "../../../public/Nophoto.jpg";
@@ -77,6 +78,10 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
               }}
             >
               <SpeedDialAction icon={<EmailIcon />} tooltipTitle="SEND EMAIL" />
+              <SpeedDialAction
+                icon={<StarBorderIcon />}
+                tooltipTitle="ADD TO FAVORITE"
+              />
 
               {follower.following ? (
                 <SpeedDialAction
@@ -127,11 +132,7 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
           </Item>
         ))
       ) : (
-        <Typography sx={{ fontSize: "30px" }}>
-          {activeTab || activeTab === "Followers"
-            ? "No followers yet"
-            : "Not following anyone yet."}
-        </Typography>
+        <Typography sx={{ fontSize: "30px" }}>No {activeTab} Yet!</Typography>
       )}
     </>
   );

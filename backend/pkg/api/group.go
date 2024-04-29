@@ -170,15 +170,12 @@ func GroupInvite(w http.ResponseWriter, r *http.Request) {
 	// Check if the person has already tried to join this group
 	requested, err := Database.Group.RequestCheck(groupID, inviteeID)
 	panicIfErr(err)
-	fmt.Println("action:", action, "member:", member, "requested:", requested)
 	if requested {
 		// Invitee has already requested to join the group, so owner accepts or rejects him/her
-		fmt.Println("action1", action)
 		if group.OwnerID == session.UserID {
 			if action == "invite" {
 				action = "accepted"
 			}
-			fmt.Println("action2", action)
 			err = Database.Group.Join(groupID, inviteeID, action)
 			panicIfErr(err)
 		} else {

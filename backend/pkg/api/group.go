@@ -3,7 +3,6 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -65,9 +64,6 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 
 	group.OwnerID = session.UserID
 
-	// MAKE ALL GROUPS PUBLIC
-	// group.Type = "public" // There are no private groups
-	fmt.Println("here0")
 	id, err := Database.Group.Insert(group)
 	panicUnlessError(err, sqlite3.ErrConstraintUnique)
 	if err != nil {
@@ -80,14 +76,14 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 	group.Created = time.Now()
 
 	// Join creator of the group as member
-	err = Database.Group.Request(group.ID, group.OwnerID, group.OwnerID)
+	/*err = Database.Group.Request(group.ID, group.OwnerID, group.OwnerID)
 	if err != nil {
 		panic(err)
 	}
-	err = Database.Group.Join(group.ID, group.OwnerID, "accepted")
+	err = Database.Group.Join(group.ID, group.OwnerID, "accept")
 	if err != nil {
 		panic(err)
-	}
+	}*/
 
 	writeJSON(w, group)
 }
@@ -106,7 +102,7 @@ func JoinGroup(w http.ResponseWriter, r *http.Request) {
 	invited, err := Database.Group.JoinCheck(groupID, session.UserID)
 	panicIfErr(err)
 	if invited {
-		err = Database.Group.Join(groupID, session.UserID, "accepted")
+		err = Database.Group.Join(groupID, session.UserID, "accept")
 		panicIfErr(err)
 	} else {
 		err = Database.Group.Request(groupID, group.OwnerID, session.UserID)
@@ -174,7 +170,7 @@ func GroupInvite(w http.ResponseWriter, r *http.Request) {
 		// Invitee has already requested to join the group, so owner accepts or rejects him/her
 		if group.OwnerID == session.UserID {
 			if action == "invite" {
-				action = "accepted"
+				action = "accept"
 			}
 			err = Database.Group.Join(groupID, inviteeID, action)
 			panicIfErr(err)

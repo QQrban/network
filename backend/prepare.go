@@ -45,8 +45,8 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/groups", api.OptionalAuth(api.GetAllGroups))
 	rtr.Get("/groups/my", api.OptionalAuth(api.GetMyGroups))
 	rtr.Get("/group/([0-9]+)", api.EnsureAuth(api.GetGroupByID))//GroupAccessCheck
-	rtr.Post("/group/([0-9]+)/(invite|accepted|rejected)/([0-9]+)", api.EnsureAuth(api.GroupInvite))
-	rtr.Post("/group/([0-9]+)/join", api.EnsureAuth(api.JoinGroup))
+	rtr.Post("/group/([0-9]+)/(invite|accept|reject)/([0-9]+)", api.EnsureAuth(api.GroupInvite))
+	rtr.Post("/group/([0-9]+)/(join|accept|reject)", api.EnsureAuth(api.JoinGroup))
 	rtr.Post("/group/([0-9]+)/leave", api.EnsureAuth(api.LeaveGroup))
 	rtr.Get("/group/([0-9]+)/members", api.GroupAccessCheck(api.GetGroupMembers))
 	rtr.Get("/group/([0-9]+)/invites", api.GroupAccessCheck(api.GetPendingInvites))

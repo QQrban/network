@@ -5,7 +5,7 @@
 -- WHERE groupID = ?1;
 
 SELECT g.*,
-(gm.response IS NOT NULL AND gm.response = 'accepted') AS IncludesMe, 
+(gm.response IS NOT NULL AND gm.response = 'accept') AS IncludesMe, 
 (gm.response IS NOT NULL AND gm.response = 'pending') AS PendingRequest
 FROM "group" g
 LEFT JOIN groupMember gm ON g.ID = gm.groupID AND gm.userID = ?2

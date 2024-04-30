@@ -255,7 +255,7 @@ func (model *UserModel) Unfollow(myID, targetID int64) error {
 func (model *UserModel) FollowAccept(myID, targetID int64) error {
 	stmt := model.queries.Prepare("followRespond")
 
-	_, err := stmt.Exec("accepted", targetID, myID)
+	_, err := stmt.Exec("accept", targetID, myID)
 
 	if err != nil {
 		return fmt.Errorf("User/FollowAccept: %w", err)
@@ -267,7 +267,7 @@ func (model *UserModel) FollowAccept(myID, targetID int64) error {
 func (model *UserModel) FollowReject(myID, targetID int64) error {
 	stmt := model.queries.Prepare("followRespond")
 
-	_, err := stmt.Exec("rejected", targetID, myID)
+	_, err := stmt.Exec("reject", targetID, myID)
 
 	if err != nil {
 		return fmt.Errorf("User/FollowReject: %w", err)

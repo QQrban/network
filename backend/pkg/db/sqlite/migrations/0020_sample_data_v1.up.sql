@@ -1,19 +1,19 @@
 INSERT INTO user 
 (email, password, firstname, lastname, nickname, image, about, birthday, private, country)
 VALUES 
-('tom@kood.ee', 'zaq12wsx', 'Tom', 'Voog', 'tom', NULL, 'backend dev', CURRENT_TIMESTAMP, false, 'EE'),
-('kurb@kood.ee', 'zaq12wsx', 'Kurb', 'Rama', 'kurb', NULL, 'frontend dev', CURRENT_TIMESTAMP, false, 'EE'),
-('nipi@kood.ee', 'zaq12wsx', 'Nipi', 'Tiri', 'nipi', NULL, 'full-stack dev', CURRENT_TIMESTAMP, true, 'EE');
+('tom@kood.ee', 'zaq12wsx', 'Tom', 'Voog', 'tom', NULL, 'backend dev', '1960-10-24T00:00:00Z', false, 'EE'),
+('kurb@kood.ee', 'zaq12wsx', 'Kurb', 'Rama', 'kurb', NULL, 'frontend dev', '1990-05-10T00:00:00Z', false, 'EE'),
+('nipi@kood.ee', 'zaq12wsx', 'Nipi', 'Tiri', 'nipi', NULL, 'full-stack dev', '2010-01-01T00:00:00Z', true, 'EE');
 
 INSERT INTO follow 
-(followerID, followeeID, response)
+(followerID, followeeID, created, responded, response)
 VALUES 
-(1, 2, "accepted"),
-(1, 3, "pending"),
-(2, 1, "accepted"),
-(2, 3, "accepted"),
-(3, 1, "rejected"),
-(3, 2, "accepted");
+(1, 2, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(1, 3, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "pending"),
+(2, 1, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(2, 3, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(3, 1, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "reject"),
+(3, 2, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept");
 
 INSERT INTO userMessage
 (senderID, receiverID, content, created)

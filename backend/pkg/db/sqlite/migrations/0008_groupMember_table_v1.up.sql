@@ -6,7 +6,7 @@ CREATE TABLE groupMember
     `type`      TEXT NOT NULL CHECK (type IN ('invite', 'request')),
     `presented` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `responded` DATE NOT NULL DEFAULT '',
-    `response`  TEXT NOT NULL DEFAULT 'pending' CHECK (response IN ('accepted', 'pending', 'rejected')),
+    `response`  TEXT NOT NULL DEFAULT 'pending' CHECK (response IN ('accept', 'pending', 'reject')),
 
     FOREIGN KEY (groupID)  REFERENCES `group` (ID),
     FOREIGN KEY (userID)   REFERENCES `user`  (ID),
@@ -19,13 +19,13 @@ CREATE INDEX groupMember_reverse
     ON groupMember (userID, groupID);
 
 -- When request is made to join a group, insert group owner ID as memberID
-CREATE TRIGGER groupMember_insert
-    BEFORE INSERT ON groupMember
-    WHEN NEW.type = 'request'
-    BEGIN
-        INSERT INTO groupMember (groupID, userID, memberID, type)
-        VALUES (NEW.groupID, NEW.userID, (SELECT ownerID FROM "group" g WHERE g.ID = NEW.groupID), 'request');
-    END;
+-- CREATE TRIGGER groupMember_insert
+--     BEFORE INSERT ON groupMember
+--     WHEN NEW.type = 'request'
+--     BEGIN
+--         INSERT INTO groupMember (groupID, userID, memberID, type)
+--         VALUES (NEW.groupID, NEW.userID, (SELECT ownerID FROM "group" g WHERE g.ID = NEW.groupID), 'request');
+--     END;
 
 CREATE TRIGGER group_owner_leave
     BEFORE DELETE ON groupMember

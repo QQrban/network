@@ -41,9 +41,9 @@ export default function NavigationMenu() {
           <HomeIcon sx={iconStyles("/")} />
         </Link>
       </TooltipStyled>
-      <TooltipStyled title="Followers">
-        <Link href="/followers" passHref>
-          <GroupIcon sx={iconStyles("/followers")} />
+      <TooltipStyled title="Contacts">
+        <Link href="/contacts" passHref>
+          <GroupIcon sx={iconStyles("/contacts")} />
         </Link>
       </TooltipStyled>
       <TooltipStyled title="Events">

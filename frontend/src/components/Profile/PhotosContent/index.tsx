@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Delete } from "@mui/icons-material";
 
@@ -20,11 +19,25 @@ export default function PhotosContent() {
       <Typography variant="h5" component="h3">
         Photos
       </Typography>
-
-      <Box sx={{ flexGrow: 1, mt: "18px" }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          mt: "18px",
+        }}
+      >
         <Grid container spacing={2}>
           {Array.from({ length: numDivs }, (_, index) => (
-            <Grid key={index} item md={2.3}>
+            <Grid
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  filter: "brightness(96%)",
+                },
+              }}
+              key={index}
+              item
+              md={2.3}
+            >
               <Item
                 sx={{
                   border: "1px solid #0000001a",

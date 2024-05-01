@@ -1,17 +1,6 @@
-import {
-  Box,
-  Button,
-  SpeedDialAction,
-  Typography,
-  SpeedDial,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import { Item } from "@/components/shared/Item";
-import Image from "next/image";
-import mockBg from "../../../public/mockBG.png";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DeleteIcon from "@mui/icons-material/Delete";
-import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import EventSection from "@/components/Events/EventSection";
 import { suggestions, yourEvents } from "@/components/Events/mock";
 

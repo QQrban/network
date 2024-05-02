@@ -30,11 +30,11 @@ func prepare(rtr *router.Router) {
 	//rtr.Post("/post/([0-9]+)/comment", api.EnsureAuth(api.EditComment))
 
 	rtr.Get("/user/([0-9]+)/posts", api.OptionalAuth(api.GetUserPosts))
-	//rtr.Get("/group/([0-9]+)/posts", api.GroupAccessCheck(api.GetGroupPosts))
+	rtr.Get("/group/([0-9]+)/posts", api.GroupAccessCheck(api.GetGroupPosts))
 	rtr.Get("/post/([0-9]+)", api.OptionalAuth(api.GetPostByID))
 	//rtr.Post("/post/([0-9]+)", api.EnsureAuth(api.EditPost))
 	rtr.Get("/posts/following", api.EnsureAuth(api.GetMyFollowingPosts))
-	//rtr.Get("/post/all/groups", api.EnsureAuth(api.GetMyGroupPosts))
+	rtr.Get("/posts/groups", api.EnsureAuth(api.GetMyGroupPosts))
 	rtr.Get("/posts", api.OptionalAuth(api.GetAllPosts))
 	rtr.Put("/post", api.EnsureAuth(api.CreatePost))
 
@@ -53,14 +53,15 @@ func prepare(rtr *router.Router) {
 	
 	rtr.Post("/group/([0-9]+)/transfer/([0-9]+)", api.EnsureAuth(api.TransferOwnership))
 
-	/*rtr.Post("/event/create", api.EnsureAuth(api.CreateEvent))
-	rtr.Post("/event/([0-9]+)/going", api.EnsureAuth(api.EventGoing))
-	rtr.Post("/event/([0-9]+)/not-going", api.EnsureAuth(api.EventNotGoing))
+	rtr.Put("/event", api.EnsureAuth(api.CreateEvent))
+	rtr.Put("/event/([0-9]+)/choice/([1-9])", api.EventAccessCheck(api.RespondEvent))
+	//rtr.Post("/event/([0-9]+)/going", api.EnsureAuth(api.EventGoing))
+	//rtr.Post("/event/([0-9]+)/not-going", api.EnsureAuth(api.EventNotGoing))
 	rtr.Post("/event/([0-9]+)/unset", api.EnsureAuth(api.EventUnset))
 	rtr.Get("/event/([0-9]+)", api.EventAccessCheck(api.GetEvent))
 	rtr.Get("/group/([0-9]+)/events", api.GroupAccessCheck(api.GetGroupEvents))
 	rtr.Get("/event/([0-9]+)/members", api.EventAccessCheck(api.GetEventMembers))
-	rtr.Get("/event/all", api.EnsureAuth(api.GetMyEvents))*/
+	rtr.Get("/events", api.EnsureAuth(api.GetMyEvents))
 
 	rtr.Post("/message/send", api.EnsureAuth(api.SendMessage))
 	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages)) // NB! What's this about?

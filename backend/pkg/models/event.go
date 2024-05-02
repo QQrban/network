@@ -3,8 +3,9 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	"regexp"
 	"social-network/pkg/queries"
+	"strconv"
 	"time"
 )
 
@@ -15,6 +16,7 @@ type Event struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Time        time.Time `json:"time"`
+	Options     string    `json:"options,omitempty"`
 	Created     time.Time `json:"created"`
 	MyStatus    *string   `json:"myStatus,omitempty"`
 }
@@ -24,6 +26,8 @@ type EventMembers struct {
 	NotGoing []*UserLimited `json:"notGoing"`
 }
 
+type EventMembers2 map[string][]*UserLimited
+
 func (x *Event) pointerSlice() []interface{} {
 	return []interface{}{
 		&x.ID,
@@ -32,6 +36,7 @@ func (x *Event) pointerSlice() []interface{} {
 		&x.Title,
 		&x.Description,
 		&x.Time,
+		&x.Options,
 		&x.Created,
 	}
 }
@@ -61,7 +66,20 @@ func (model EventModel) GetByID(eventID, myID int64) (*Event, error) {
 		return nil, fmt.Errorf("Event/GetByID: %w", err)
 	}
 
+	myStatus, _ := strconv.Atoi(*event.MyStatus)
+	event.MyStatus = getStatus(event.Options, myStatus-1)
 	return event, nil
+}
+
+// Extract the status from the options string
+func getStatus(options string, index int) *string {
+	matches := getOptions(options)
+	return &matches[index]
+}
+
+func getOptions(options string) []string {
+	re := regexp.MustCompile(`[\w\s]+`)
+	return re.FindAllString(options, -1)
 }
 
 func (model EventModel) GetByGroup(groupID, myID int64) ([]*Event, error) {
@@ -82,7 +100,8 @@ func (model EventModel) GetByGroup(groupID, myID int64) ([]*Event, error) {
 		if err != nil {
 			return nil, fmt.Errorf("Event/GetByGroup: %w", err)
 		}
-
+		myStatus, _ := strconv.Atoi(*event.MyStatus)
+		event.MyStatus = getStatus(event.Options, myStatus-1)
 		events = append(events, event)
 	}
 
@@ -102,11 +121,14 @@ func (model EventModel) GetByUser(userID int64) ([]*Event, error) {
 
 	for rows.Next() {
 		event := &Event{}
+		var status string
 
-		err = rows.Scan(event.pointerSlice()...)
+		err = rows.Scan(append(event.pointerSlice(), &status)...)
 		if err != nil {
 			return nil, fmt.Errorf("Event/GetByUser: %w", err)
 		}
+		statusInt, _ := strconv.Atoi(status)
+		event.MyStatus = getStatus(event.Options, statusInt-1)
 
 		events = append(events, event)
 	}
@@ -114,47 +136,51 @@ func (model EventModel) GetByUser(userID int64) ([]*Event, error) {
 	return events, nil
 }
 
-func (model EventModel) GetMembers(groupID int64) (*EventMembers, error) {
+func (model EventModel) GetMembers(eventID int64) (*EventMembers2, error) {
 	stmt := model.queries.Prepare("getMembers")
 
-	rows, err := stmt.Query(groupID)
+	rows, err := stmt.Query(eventID)
 	if err != nil {
 		return nil, fmt.Errorf("Event/GetMembers: %w", err)
 	}
 	defer rows.Close()
 
-	members := &EventMembers{
+	/*members0 := &EventMembers{
 		Going:    make([]*UserLimited, 0),
 		NotGoing: make([]*UserLimited, 0),
-	}
+	}*/
+	members := make(EventMembers2)
 
 	for rows.Next() {
 		member := &User{}
 		var status string
+		var options string
 
-		err = rows.Scan(append(member.pointerSlice(), &status)...)
+		err = rows.Scan(append(member.pointerSlice(), &options, &status)...)
 		if err != nil {
 			return nil, fmt.Errorf("Event/GetMembers: %w", err)
 		}
-
-		switch status {
+		statusInt, _ := strconv.Atoi(status)
+		statusStr := getStatus(options, statusInt-1)
+		members[*statusStr] = append(members[*statusStr], member.Limited())
+		/*switch status {
 		case "GOING":
 			members.Going = append(members.Going, member.Limited())
 		case "NOT_GOING":
 			members.NotGoing = append(members.NotGoing, member.Limited())
 		default:
 			log.Panicf("Event/GetMembers: Invalid going status: %v\n", status)
-		}
+		}*/
 	}
 
-	return members, nil
+	return &members, nil
 }
 
 func (model EventModel) Insert(group Event) (int64, error) {
 	stmt := model.queries.Prepare("insert")
 
 	res, err := stmt.Exec(
-		group.pointerSlice()[:6]...,
+		group.pointerSlice()[:7]...,
 	)
 
 	if err != nil {
@@ -228,4 +254,16 @@ func (model EventModel) CanJoin(eventID, userID int64) (bool, error) {
 	}
 
 	return result, nil
+}
+
+func (model EventModel) Respond(eventID, userID, choice int64) error {
+	stmt := model.queries.Prepare("respond")
+
+	_, err := stmt.Exec(eventID, userID, choice)
+
+	if err != nil {
+		return fmt.Errorf("Event/Respond: %w", err)
+	}
+
+	return nil
 }

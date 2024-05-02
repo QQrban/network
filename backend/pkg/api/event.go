@@ -33,6 +33,9 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if event.Options == "" {
+		event.Options = "Going,Not Going"
+	}
 	id, err := Database.Event.Insert(*event)
 	panicIfErr(err)
 
@@ -144,4 +147,21 @@ func GetMyEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, members)
+}
+
+func RespondEvent(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+	eventID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
+	choice, _ := strconv.ParseInt(router.GetSlug(r, 1), 10, 64)
+
+	access, err := Database.Event.CanJoin(eventID, session.UserID)
+	panicIfErr(err)
+	if !access {
+		log.Printf("RespondEvent: User %v is not part of event %v's group\n", session.UserID, eventID)
+		writeStatusError(w, http.StatusForbidden)
+		return
+	}
+
+	err = Database.Event.Respond(eventID, session.UserID, choice)
+	panicIfErr(err)
 }

@@ -27,7 +27,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If it's a group post, check that I have access
-	/*if post.GroupID != nil {
+	if post.GroupID != nil {
 		post.Status = "public"
 
 		access, err := Database.Group.IncludesUser(*post.GroupID, session.UserID)
@@ -36,7 +36,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			writeStatusError(w, http.StatusForbidden)
 			return
 		}
-	}*/
+	}
 
 	if post.Status == "manual" {
 		if post.AllowedUsers == nil {

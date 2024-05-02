@@ -27,6 +27,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Check if the user exists
 	user, err := Database.User.GetByEmail(credentials.Email)
 	panicUnlessError(err, sql.ErrNoRows)
+
 	if err != nil {
 		writeStatusError(w, http.StatusUnauthorized)
 		return
@@ -38,7 +39,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		writeStatusError(w, http.StatusUnauthorized)
 		return
 	}
-
 	// Valid credentials at this point
 	doLogin(w, user)
 	writeJSON(w, user)

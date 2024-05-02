@@ -2,7 +2,7 @@ CREATE TABLE eventMember
 (
     `eventID` INTEGER NOT NULL,
     `userID`  INTEGER NOT NULL,
-    `option`  TEXT    NOT NULL, --CHECK ( status IN ('GOING', 'NOT_GOING')),
+    `option`  INTEGER, --CHECK ( status IN ('GOING', 'NOT_GOING')),
     `created` DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     UNIQUE (eventID, userID) ON CONFLICT REPLACE,
@@ -24,11 +24,12 @@ BEGIN
     SELECT RAISE(IGNORE);
 END;
 
--- If a user leaves a group, remove them from that group's events
+-- If a user leaves a group, remove them from that group's events (+ with future deadlines)
 CREATE TRIGGER group_leave_events
     AFTER DELETE ON groupMember
 BEGIN
     DELETE FROM eventMember
     WHERE (SELECT groupID FROM event e WHERE e.ID = eventMember.eventID) = OLD.groupID AND
-          eventMember.userID = OLD.userID;
+          eventMember.userID = OLD.userID AND
+          (SELECT time FROM event e WHERE e.ID = eventMember.eventID) > CURRENT_TIMESTAMP;
 END;

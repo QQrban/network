@@ -10,6 +10,8 @@ import { Button, Divider } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
+import SearchBar from "@/components/Groups/SearchBar";
+import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -53,7 +55,7 @@ export default function Groups() {
 
   return (
     <Box sx={{ p: "40px", display: "flex", gap: "23px" }}>
-      <Item radius="8px" sx={{ width: "80%" }}>
+      <Item radius="8px" sx={{ width: "75%" }}>
         <Box
           sx={{
             p: "8px 12px 0 0",
@@ -79,6 +81,13 @@ export default function Groups() {
           >
             Create Group
           </Button>
+        </Box>
+        <Box
+          sx={{
+            p: "16px 0 0 16px",
+          }}
+        >
+          <SearchBar />
         </Box>
         <CustomTabPanel value={value} index={0}>
           <GroupItem
@@ -111,9 +120,7 @@ export default function Groups() {
           />
         </CustomTabPanel>
       </Item>
-      <Item radius="8px" sx={{ p: "12px", width: "20%" }}>
-        asdasd
-      </Item>
+      <SuggestionsGroups />
     </Box>
   );
 }

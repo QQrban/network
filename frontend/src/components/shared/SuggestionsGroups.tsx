@@ -1,22 +1,12 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import ContactsSection from "../shared/ContactsSection";
-import { Item } from "../shared/Item";
+import { Avatar, Box, IconButton, Tooltip, Typography } from "@mui/material";
+import { Item } from "./Item";
 import mockBg from "../../../public/icons/google.svg";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-export default function RightColumn() {
+export default function SuggestionsGroups() {
   return (
     <Box
       sx={{
-        height: "900px",
-        position: "sticky",
         top: "90px",
       }}
     >
@@ -79,14 +69,6 @@ export default function RightColumn() {
             ))}
           </Box>
         </Item>
-      </Box>
-      <Box sx={{ mt: "23px" }}>
-        <Typography sx={{ color: "#2a2a2a" }} variant="h5">
-          Contacts
-        </Typography>
-        <Box sx={{ mt: "8px" }}>
-          <ContactsSection />
-        </Box>
       </Box>
     </Box>
   );

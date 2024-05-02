@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Button,
@@ -15,6 +17,8 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import EmailIcon from "@mui/icons-material/Email";
 import Image from "next/image";
 import noPhoto from "../../../public/Nophoto.jpg";
+import { useState } from "react";
+import AlertDialog from "./Dialog";
 
 const StyledButton = styled(Button)`
   position: absolute;
@@ -30,6 +34,14 @@ interface Props {
 }
 
 export default function FollowersSection({ peopleList, activeTab }: Props) {
+  const [open, setOpen] = useState<boolean>(false);
+  const [followerName, setFollowerName] = useState<string>("");
+
+  const unfollowHandler = (name: string) => {
+    setOpen(true);
+    setFollowerName(name);
+  };
+
   return (
     <>
       {peopleList?.length ? (
@@ -85,6 +97,7 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
 
               {follower.following ? (
                 <SpeedDialAction
+                  onClick={() => unfollowHandler(follower.name)}
                   icon={<PersonRemoveIcon />}
                   tooltipTitle="UNFOLLOW"
                 />
@@ -120,6 +133,7 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
                   sx={{ opacity: 0.9 }}
                   variant="contained"
                   color="primary"
+                  onClick={() => unfollowHandler(follower.name)}
                 >
                   Unfollow
                 </StyledButton>
@@ -134,6 +148,12 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
       ) : (
         <Typography sx={{ fontSize: "30px" }}>No {activeTab} Yet!</Typography>
       )}
+      <AlertDialog
+        title={`Unfollow ${followerName}`}
+        dialogText="Are you sure you want to unfollow?"
+        open={open}
+        setOpen={setOpen}
+      />
     </>
   );
 }

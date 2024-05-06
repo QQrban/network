@@ -18,6 +18,8 @@ import { useFormik } from "formik";
 import dayjs from "dayjs";
 import { validationSchema } from "./validation";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "@/redux/features/auth/authSlice";
 
 interface FormValues {
   firstName: string;
@@ -46,6 +48,8 @@ const initialValues: FormValues = {
 
 export default function RegisterContent() {
   const [avatar, setAvatar] = useState<string | null>(null);
+
+  const dispatch = useDispatch();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -78,11 +82,13 @@ export default function RegisterContent() {
 
         const response = await fetch("http://localhost:8888/register", {
           method: "PUT",
+          credentials: "include",
           body: JSON.stringify(values),
         });
 
         if (response.ok) {
           resetForm();
+          dispatch(loginSuccess(""));
           console.log("User registered successfully");
         } else {
           console.error("Registration failed");

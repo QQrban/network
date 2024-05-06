@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Item } from "@/components/shared/Item";
 import {
+  Avatar,
   Box,
   Button,
   SpeedDial,
@@ -11,6 +12,7 @@ import mockBg from "../../../../public/mockBG.png";
 import noPhoto from "../../../../public/background-svgrepo-com.png";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
 
 export default function GroupPage() {
   return (
@@ -27,6 +29,7 @@ export default function GroupPage() {
           width: "70%",
           overflow: "hidden",
           position: "relative",
+          alignSelf: "flex-start",
         }}
         radius="8px"
       >
@@ -95,25 +98,72 @@ export default function GroupPage() {
           </SpeedDial>
         </Box>
       </Item>
-      <Item
+      <Box
         sx={{
           alignSelf: "flex-start",
-          p: "14px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "23px",
           width: "30%",
         }}
-        radius="8px"
       >
-        <Typography sx={{ fontWeight: 600, fontSize: "24px" }}>
-          About
-        </Typography>
-        <Typography sx={{ mt: "9px" }}>
-          Welcome to Green Energy Lovers, the ultimate hangout for those who get
-          a buzz from buzzwords like "sustainable", "renewable", and "100%
-          organic electricity". This group is for anyone who believes their love
-          for Mother Earth can be measured in kilowatt-hours and those who dream
-          of dating a wind turbine.
-        </Typography>
-      </Item>
+        <Item
+          sx={{
+            p: "14px",
+          }}
+          radius="8px"
+        >
+          <Typography sx={{ fontWeight: 600, fontSize: "24px" }}>
+            About
+          </Typography>
+          <Typography sx={{ mt: "9px" }}>
+            Welcome to Green Energy Lovers, the ultimate hangout for those who
+            get a buzz from buzzwords like "sustainable", "renewable", and "100%
+            organic electricity". This group is for anyone who believes their
+            love for Mother Earth can be measured in kilowatt-hours and those
+            who dream of dating a wind turbine.
+          </Typography>
+        </Item>
+        <Item
+          sx={{
+            p: "14px",
+          }}
+          radius="8px"
+        >
+          <Typography sx={{ fontWeight: 600, fontSize: "24px" }}>
+            Admins
+          </Typography>
+          <Box
+            sx={{
+              mt: "12px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <Avatar src="/broken-image.jpg" />
+            <Box>
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "17px",
+                }}
+              >
+                Albert Einstein
+              </Typography>
+              <Typography
+                sx={{
+                  color: "#0000007b",
+                  fontSize: "13px",
+                }}
+              >
+                Theoretical physicist
+              </Typography>
+            </Box>
+          </Box>
+        </Item>
+        <SuggestionsGroups />
+      </Box>
     </Box>
   );
 }

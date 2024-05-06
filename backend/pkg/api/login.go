@@ -127,3 +127,15 @@ func Register(w http.ResponseWriter, r *http.Request) {
 // func registerValidate(user models.User) *map[string]string {
 // 	return nil
 // }
+
+func CheckAuth(w http.ResponseWriter, r *http.Request) {
+	// GET /check-auth
+	session := getSession(r)
+
+	user, err := Database.User.GetByID(session.UserID)
+	if err != nil {
+		panic(err)
+	}
+
+	writeJSON(w, user)
+}

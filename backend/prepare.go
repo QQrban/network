@@ -11,6 +11,7 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
 	rtr.Get("/user/([0-9]+)", api.OptionalAuth(api.GetUserByID))
 	rtr.Get("/user/([^/]+)", api.GetUserByEmail)
+	rtr.Get("/users", api.EnsureAuth(api.GetAllUsers))
 	rtr.Post("/user", api.EnsureAuth(api.UpdateUser))
 	rtr.Get("/user", api.EnsureAuth(api.GetUserBySession))
 
@@ -45,13 +46,13 @@ func prepare(rtr *router.Router) {
 	rtr.Put("/group", api.EnsureAuth(api.CreateGroup))
 	rtr.Get("/groups", api.OptionalAuth(api.GetAllGroups))
 	rtr.Get("/groups/my", api.OptionalAuth(api.GetMyGroups))
-	rtr.Get("/group/([0-9]+)", api.EnsureAuth(api.GetGroupByID))//GroupAccessCheck
+	rtr.Get("/group/([0-9]+)", api.EnsureAuth(api.GetGroupByID)) //GroupAccessCheck
 	rtr.Post("/group/([0-9]+)/(invite|accept|reject)/([0-9]+)", api.EnsureAuth(api.GroupInvite))
 	rtr.Post("/group/([0-9]+)/(join|accept|reject)", api.EnsureAuth(api.JoinGroup))
 	rtr.Post("/group/([0-9]+)/leave", api.EnsureAuth(api.LeaveGroup))
 	rtr.Get("/group/([0-9]+)/members", api.GroupAccessCheck(api.GetGroupMembers))
 	rtr.Get("/group/([0-9]+)/invites", api.GroupAccessCheck(api.GetPendingInvites))
-	
+
 	rtr.Post("/group/([0-9]+)/transfer/([0-9]+)", api.EnsureAuth(api.TransferOwnership))
 
 	rtr.Put("/event", api.EnsureAuth(api.CreateEvent))

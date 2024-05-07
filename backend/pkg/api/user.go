@@ -233,3 +233,11 @@ func GetKnownUsers(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, users)
 }
+
+func GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+	users, err := Database.User.All(session.UserID)
+	panicIfErr(err)
+
+	writeJSON(w, users)
+}

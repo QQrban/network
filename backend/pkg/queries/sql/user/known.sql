@@ -1,8 +1,8 @@
 -- Lists following and users that have sent a message
 
 WITH known AS (
-    SELECT CASE WHEN senderID != ?1 THEN senderID ELSE receiverID END knownID, max(messageID) as sortKey
-    FROM messageUser
+    SELECT CASE WHEN senderID != ?1 THEN senderID ELSE receiverID END knownID, max(userMessage.ID) as sortKey
+    FROM userMessage
     WHERE senderID = ?1
        OR receiverID = ?1
     GROUP BY knownID
@@ -18,7 +18,7 @@ FROM (SELECT user.*
 
       SELECT user.*
       FROM follow f
-               JOIN user ON f.followingID = user.ID
+               JOIN user ON f.followeeID = user.ID
       WHERE f.followerID = ?1) user
 LEFT JOIN known k ON user.ID = k.knownID
 WHERE user.ID != 0

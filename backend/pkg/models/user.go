@@ -350,3 +350,28 @@ func (model *UserModel) Known(myID int64) ([]*UserLimited, error) {
 
 	return users, nil
 }
+
+func (model *UserModel) All(myID int64) ([]*UserLimited, error) {
+	stmt := model.queries.Prepare("all")
+
+	rows, err := stmt.Query(myID)
+	if err != nil {
+		return nil, fmt.Errorf("User/All1: %w", err)
+	}
+	defer rows.Close()
+
+	users := make([]*UserLimited, 0)
+
+	for rows.Next() {
+		user := &User{}
+
+		err = rows.Scan(user.pointerSlice()...)
+		if err != nil {
+			return nil, fmt.Errorf("User/All2: %w", err)
+		}
+
+		users = append(users, user.Limited())
+	}
+
+	return users, nil
+}

@@ -20,7 +20,7 @@ export default function Header() {
         width: "100%",
         height: "56px",
         gap: "20px",
-        padding: "0 20px",
+        padding: "30px",
       }}
     >
       <Box

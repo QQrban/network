@@ -27,7 +27,7 @@ export default function Login({ showLoading, setShowLoading }: LoginProps) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: "190px",
+        gap: "60px",
       }}
     >
       {isLoginPage ? <BigLogo /> : ""}

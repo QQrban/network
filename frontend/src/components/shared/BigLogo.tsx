@@ -29,6 +29,7 @@ export default function BigLogo() {
           mt: "8px",
           fontFamily: "Schoolbell",
           fontSize: "28px",
+          textAlign: "center",
         }}
       >
         Where you want to meet people, chat, and don&apos;t want to leave!

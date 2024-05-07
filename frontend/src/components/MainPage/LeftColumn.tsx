@@ -4,6 +4,7 @@ import { Item } from "../shared/Item";
 import noProfilePic from "../../../public/icons/noPhoto.svg";
 import { styled } from "@mui/material";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 const StatisticsItemText = styled(Typography)`
   width: 100px;
@@ -23,6 +24,9 @@ const StatisticsItemNumber = styled(Typography)`
 `;
 
 export default function LeftColumn() {
+  const userData = useSelector((state: any) => state.authReducer);
+  console.log(userData);
+
   let id: number = 10561654311;
 
   return (

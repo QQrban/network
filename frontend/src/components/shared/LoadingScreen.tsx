@@ -1,16 +1,18 @@
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
-import { Logo } from "../Logo";
 import BigLogo from "./BigLogo";
+import { Item } from "./Item";
 
 export default function LoadingScreen() {
   return (
-    <Box
+    <Item
+      radius="8px"
       sx={{
-        width: "100%",
-        position: "fixed",
+        border: "4px solid #4a4a4a",
         background: "#fff",
-        height: "100vh",
+        width: "100%",
+        height: "calc(100vh - 40px)",
+        m: "0 auto",
       }}
     >
       <Box
@@ -26,6 +28,6 @@ export default function LoadingScreen() {
         <BigLogo />
         <LinearProgress sx={{ mt: "25px" }} />
       </Box>
-    </Box>
+    </Item>
   );
 }

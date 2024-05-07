@@ -20,7 +20,7 @@ export default function RootLayout({
         sx={{
           minHeight: "100vh",
           background: "#819eb0",
-          p: "40px 110px 40px 110px",
+          p: "20px 70px 20px 110px",
           overflow: "hidden",
         }}
         component="body"

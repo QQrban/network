@@ -74,7 +74,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           width: "100%",
-          height: "calc(100vh - 80px)",
+          height: "calc(100vh - 40px)",
           m: "0 auto",
           overflowX: "none",
           overflowY: "scroll",

@@ -4,16 +4,6 @@ VALUES
 ('tom@kood.ee', 'zaq12wsx', 'Tom', 'Voog', 'tom', NULL, 'Backend Developer', '1960-10-24T00:00:00Z', false, 'EE'),
 ('kurb@kood.ee', 'zaq12wsx', 'Kurban', 'Ramazanov', 'kramazan', NULL, 'Frontend Developer', '1990-05-10T00:00:00Z', false, 'EE'),
 ('nipi@kood.ee', 'zaq12wsx', 'Nipi', 'Tiri', 'nipi', NULL, 'Full-stack Developer', '2010-01-01T00:00:00Z', true, 'BG');
-('sara@kood.ee', 'zaq12wsx', 'Sara', 'Kivi', 'skivi', NULL, 'Backend Developer', '1988-03-15T00:00:00Z', false, 'RU'),
-('marko@kood.ee', 'zaq12wsx', 'Marko', 'Mets', 'mmets', NULL, 'Frontend Developer', '1992-07-22T00:00:00Z', true, 'FR'),
-('liina@kood.ee', 'zaq12wsx', 'Liina', 'Vaher', 'lvaher', NULL, 'Full-stack Developer', '1995-11-30T00:00:00Z', false, 'AM'),
-('juhan@kood.ee', 'zaq12wsx', 'Juhan', 'Lepp', 'jlepp', NULL, 'Backend Developer', '1985-02-17T00:00:00Z', true, 'BI'),
-('kristi@kood.ee', 'zaq12wsx', 'Kristi', 'Tamm', 'ktamm', NULL, 'Frontend Developer', '1999-12-12T00:00:00Z', false, 'EE'),
-('oliver@kood.ee', 'zaq12wsx', 'Oliver', 'Saar', 'osaar', NULL, 'Full-stack Developer', '2001-08-19T00:00:00Z', true, 'EE'),
-('eva@kood.ee', 'zaq12wsx', 'Eva', 'Kask', 'ekask', NULL, 'Backend Developer', '1970-05-25T00:00:00Z', false, 'EE'),
-('lauri@kood.ee', 'zaq12wsx', 'Lauri', 'Paju', 'lpaju', NULL, 'Frontend Developer', '1983-09-09T00:00:00Z', true, 'EE'),
-('anneli@kood.ee', 'zaq12wsx', 'Anneli', 'Orav', 'aorav', NULL, 'Full-stack Developer', '1994-06-07T00:00:00Z', false, 'EE'),
-('toomas@kood.ee', 'zaq12wsx', 'Toomas', 'Hein', 'thein', NULL, 'Backend Developer', '1989-10-10T00:00:00Z', true, 'EE');
 
 
 INSERT INTO follow 

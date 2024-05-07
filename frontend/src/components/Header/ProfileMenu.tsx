@@ -3,8 +3,10 @@
 import Link from "next/link";
 import TooltipStyled from "../shared/TooltipStyled";
 import { useState } from "react";
-import { Avatar, IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 import { fetchFromServer } from "@/lib/api";
+import profileSvg from "../../../public/icons/profile.svg";
+import Image from "next/image";
 
 export default function ProfileMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -42,14 +44,20 @@ export default function ProfileMenu() {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <Avatar
-            src="../../../public/Nophoto.jpg"
-            sx={{ width: 42, height: 42 }}
-          ></Avatar>
+          <Image
+            style={{ width: "42px", height: "42px" }}
+            src={profileSvg}
+            alt="Profile"
+          />
         </IconButton>
       </TooltipStyled>
       <Menu
         sx={{
+          "& .MuiPaper-root": {
+            border: "2px solid #4a4a4a",
+            borderRadius: "8px",
+            boxShadow: "none",
+          },
           zIndex: 9999,
         }}
         id="basic-menu"
@@ -59,11 +67,35 @@ export default function ProfileMenu() {
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
       >
-        <MenuItem onClick={handleClose}>
-          <Link href={`/profile/${id}`}>Profile</Link>
+        <Link href={`/profile/${id}`}>
+          <MenuItem
+            sx={{
+              fontFamily: "Schoolbell, cursive",
+              fontSize: "18px",
+            }}
+            onClick={handleClose}
+          >
+            Profile
+          </MenuItem>
+        </Link>
+        <MenuItem
+          sx={{
+            fontFamily: "Schoolbell, cursive",
+            fontSize: "18px",
+          }}
+          onClick={handleLogout}
+        >
+          Logout
         </MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>
   );

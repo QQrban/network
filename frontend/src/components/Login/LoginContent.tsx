@@ -7,10 +7,12 @@ import {
   FormControlLabel,
   TextField,
   Typography,
+  styled,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
+import { StyledTextField, SuccessBtn } from "./styles";
 
 interface LoginProps {
   setShowLoading: React.Dispatch<boolean>;
@@ -30,6 +32,7 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
       password: "",
     },
     validationSchema,
+
     onSubmit: async (values) => {
       try {
         setShowLoading(true);
@@ -46,7 +49,7 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
           const data = await response.json();
           dispatch(
             loginSuccess({
-              id: data.id,
+              id: data.ID,
               email: data.email,
               firstName: data.firstName,
               lastName: data.lastName,
@@ -71,20 +74,26 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Typography variant="h4" component="h3">
+      <Typography
+        sx={{
+          fontFamily: "Schoolbell",
+          color: "dodgerblue",
+          textAlign: "center",
+          fontSize: "80px",
+        }}
+        variant="h2"
+        component="h3"
+      >
         Sign In
       </Typography>
       <Box
         sx={{
-          mt: "20px",
+          mt: "50px",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        <TextField
-          sx={{
-            width: "100%",
-          }}
+        <StyledTextField
           id="email"
           name="email"
           label="Email"
@@ -96,11 +105,8 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
           helperText={formik.touched.email && formik.errors.email}
           variant="outlined"
         />
-        <TextField
-          sx={{
-            width: "100%",
-            mt: "20px",
-          }}
+        <StyledTextField
+          sx={{ mt: "15px" }}
           id="password"
           name="password"
           label="Password"
@@ -113,18 +119,19 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
           variant="outlined"
         />
         <FormControlLabel
-          sx={{ mb: "8px", mt: "8px" }}
+          sx={{ mb: "8px", mt: "0px", width: "170px" }}
           control={<Checkbox defaultChecked />}
           label="Remember Me"
+          componentsProps={{
+            typography: {
+              sx: {
+                fontSize: "20px",
+                fontFamily: "Schoolbell, cursive",
+              },
+            },
+          }}
         />
-        <Button
-          sx={{ height: "50px" }}
-          type="submit"
-          variant="contained"
-          color="success"
-        >
-          Log In
-        </Button>
+        <SuccessBtn type="submit">Log In</SuccessBtn>
       </Box>
     </form>
   );

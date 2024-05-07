@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Grid,
-  Typography,
-  styled,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import PostsSection from "../shared/PostsSection";
 import CreatePost from "../shared/CreatePost";
 

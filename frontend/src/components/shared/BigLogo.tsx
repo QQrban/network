@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import logo from "../../../public/icons/big-logo.svg";
+import logo from "../../../public/icons/globalNet.svg";
 import Image from "next/image";
 
 export default function BigLogo() {
@@ -13,13 +13,25 @@ export default function BigLogo() {
     >
       <Image src={logo} alt="big logo" />
       <Typography
-        variant="h2"
+        variant="h1"
         component="h1"
         sx={{
+          fontFamily: "Schoolbell",
+          fontSize: "38px",
+        }}
+      >
+        SketchSphere
+      </Typography>
+      <Typography
+        variant="h2"
+        component="h2"
+        sx={{
+          mt: "8px",
+          fontFamily: "Schoolbell",
           fontSize: "28px",
         }}
       >
-        Connect, Discover, Advance – Your Career Network
+        Where you want to meet people, chat, and don&apos;t want to leave!
       </Typography>
     </Box>
   );

@@ -24,10 +24,8 @@ const StatisticsItemNumber = styled(Typography)`
 `;
 
 export default function LeftColumn() {
-  const userData = useSelector((state: any) => state.authReducer);
+  const userData = useSelector((state: any) => state.authReducer.value);
   console.log(userData);
-
-  let id: number = 10561654311;
 
   return (
     <Item
@@ -40,7 +38,7 @@ export default function LeftColumn() {
       }}
       radius="8px"
     >
-      <Link href={`/profile/${id}`}>
+      <Link href={`/profile/${userData.id}`}>
         <Box
           sx={{
             display: "flex",
@@ -64,7 +62,7 @@ export default function LeftColumn() {
               }}
               component="h4"
             >
-              Kurban Ramazanov
+              {`${userData.firstName} ${userData.lastName}`}
             </Typography>
             <Typography
               sx={{

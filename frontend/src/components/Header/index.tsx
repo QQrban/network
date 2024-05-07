@@ -1,4 +1,3 @@
-import NavigationMenu from "./NavigationMenu";
 import { Item } from "../shared/Item";
 import HeaderMenu from "./HeaderMenu";
 import SearchHeader from "./SearchHeader";
@@ -12,6 +11,9 @@ export default function Header() {
         position: "sticky",
         top: "0",
         zIndex: "9998",
+        border: "none",
+        borderBottom: "3px solid #b0b0b0",
+        boxShadow: "none",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -34,7 +36,6 @@ export default function Header() {
       >
         <SearchHeader />
       </Box>
-      <NavigationMenu />
       <HeaderMenu />
     </Item>
   );

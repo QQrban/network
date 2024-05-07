@@ -1,7 +1,9 @@
 import { Avatar, Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { Item } from "./Item";
 import mockBg from "../../../public/icons/google.svg";
+import addIcon from "../../../public/icons/add.svg";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Image from "next/image";
 
 export default function SuggestionsGroups() {
   return (
@@ -11,11 +13,15 @@ export default function SuggestionsGroups() {
       }}
     >
       <Box>
-        <Typography sx={{ color: "#2a2a2a" }} variant="h5">
+        <Typography
+          sx={{ color: "#2a2a2a", fontFamily: "Schoolbell", fontSize: "26px" }}
+          variant="h5"
+        >
           This might interest you
         </Typography>
         <Item
           sx={{
+            boxShadow: "none",
             mt: "8px",
             p: "10px",
           }}
@@ -35,7 +41,7 @@ export default function SuggestionsGroups() {
               >
                 <Box sx={{ display: "flex", gap: "9px" }}>
                   <Avatar
-                    alt="Google"
+                    alt="Cats"
                     src={mockBg}
                     sx={{ width: 56, height: 56 }}
                   />
@@ -48,21 +54,45 @@ export default function SuggestionsGroups() {
                   >
                     <Typography
                       sx={{
+                        fontFamily: "Schoolbell, cursive",
                         fontWeight: 600,
                         color: "#2a2a2a",
-                        fontSize: "14px",
+                        fontSize: "17px",
                       }}
                     >
-                      Google
+                      CuteCatsClub
                     </Typography>
-                    <Typography sx={{ color: "#a2a1a1", fontSize: "13px" }}>
-                      Software Development
+                    <Typography
+                      sx={{
+                        color: "#a2a1a1",
+                        fontSize: "15px",
+                        fontFamily: "Comic Neue",
+                      }}
+                    >
+                      Animal lovers
                     </Typography>
                   </Box>
                 </Box>
-                <Tooltip placement="right" title="Join Group">
+                <Tooltip
+                  placement="right"
+                  title={
+                    <Typography
+                      sx={{
+                        fontFamily: "Schoolbell",
+                        letterSpacing: "2px",
+                      }}
+                      fontSize={16}
+                    >
+                      Join Group
+                    </Typography>
+                  }
+                >
                   <IconButton>
-                    <AddCircleIcon color="primary" fontSize="large" />
+                    <Image
+                      style={{ width: "30px", height: "30px" }}
+                      src={addIcon}
+                      alt="add"
+                    />
                   </IconButton>
                 </Tooltip>
               </Box>

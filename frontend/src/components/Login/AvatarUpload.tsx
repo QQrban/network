@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Avatar, Box, Input } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
+import profileIcon from "../../../public/icons/profile.svg";
 
 interface AvatarUploadProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -41,9 +42,10 @@ export default function AvatarUpload({ onChange }: AvatarUploadProps) {
       <label htmlFor="avatar-upload">
         <Tooltip title="Upload Avatar">
           <Avatar
-            src={preview || ""}
+            src={preview || profileIcon.src}
             sx={{
               mt: "10px",
+              border: "4px solid #4a4a4a",
               width: 90,
               height: 90,
               cursor: "pointer",

@@ -8,7 +8,10 @@ import { fetchFromServer } from "@/lib/api";
 import LoadingScreen from "@/components/shared/LoadingScreen";
 import Login from "@/components/Login/index";
 import Header from "@/components/Header";
+import NavigationMenu from "@/components/NavigationMenu";
+import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
+import bgWall from "../../public/icons/wall.svg";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
   const [showLoading, setShowLoading] = useState(true);
@@ -29,7 +32,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
             const data = await response.json();
             dispatch(
               loginSuccess({
-                id: data.id,
+                id: data.ID,
                 email: data.email,
                 firstName: data.firstName,
                 lastName: data.lastName,
@@ -38,6 +41,9 @@ export default function MainScreen({ children }: { children: ReactNode }) {
                 country: data.country,
               })
             );
+            const getUser = await fetchFromServer(`/user/${data.ID}`);
+            const userData = await getUser.json();
+            console.log(userData);
           }
         }
       } catch (error) {
@@ -58,22 +64,53 @@ export default function MainScreen({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {auth ? <Header /> : ""}
-      <Box
+      {auth && <NavigationMenu />}
+      <Item
+        radius="8px"
         sx={{
-          position: "relative",
-          background: "#F5F9FC",
-          width: "1300px",
-          m: "0 auto",
+          border: "4px solid #4a4a4a",
+          backgroundImage: `url(${bgWall.src})`,
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          width: "1800px",
+          height: "920px",
+          m: "40px auto 0 150px",
+          overflowX: "none",
+          overflowY: "scroll",
+          pb: "23px",
+          "&::-webkit-scrollbar": {
+            width: "5px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#ccc",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "transparent",
+          },
         }}
       >
+        {auth ? <Header /> : ""}
         {authChecked &&
           (auth ? (
             children
           ) : (
-            <Login showLoading={showLoading} setShowLoading={setShowLoading} />
+            <Box
+              sx={{
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Login
+                showLoading={showLoading}
+                setShowLoading={setShowLoading}
+              />
+            </Box>
           ))}
-      </Box>
+      </Item>
     </>
   );
 }

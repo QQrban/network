@@ -11,6 +11,7 @@ export default function Home() {
     <Box
       sx={{
         display: "flex",
+        justifyContent: "center",
         padding: "32px 29px 0 29px",
         gap: "23px",
       }}
@@ -27,7 +28,14 @@ export default function Home() {
       >
         <RightColumn />
         <Box sx={{ mt: "23px" }}>
-          <Typography sx={{ color: "#2a2a2a" }} variant="h5">
+          <Typography
+            sx={{
+              color: "#2a2a2a",
+              fontFamily: "Schoolbell",
+              fontSize: "26px",
+            }}
+            variant="h5"
+          >
             Contacts
           </Typography>
           <Box sx={{ mt: "8px" }}>

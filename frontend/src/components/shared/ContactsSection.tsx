@@ -54,10 +54,19 @@ export default function ContactsSection() {
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     variant="dot"
                   >
-                    <Avatar alt={friend} src="/static/images/avatar/1.jpg" />
+                    <Avatar alt={friend} src="" />
                   </StyledBadge>
                 </ListItemAvatar>
-                <ListItemText id={labelId} primary={friend} />
+                <ListItemText
+                  sx={{
+                    ".MuiListItemText-primary": {
+                      fontFamily: "Schoolbell, cursive",
+                      fontSize: "19px",
+                    },
+                  }}
+                  id={labelId}
+                  primary={friend}
+                />
               </ListItemButton>
             </ListItem>
           );

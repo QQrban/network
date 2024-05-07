@@ -54,8 +54,8 @@ export default function Groups() {
   };
 
   return (
-    <Box sx={{ p: "40px", display: "flex", gap: "23px" }}>
-      <Item radius="8px" sx={{ width: "75%" }}>
+    <Box>
+      <Item radius="8px">
         <Box
           sx={{
             p: "8px 12px 0 0",

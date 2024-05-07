@@ -1,5 +1,4 @@
 import * as Yup from "yup";
-import dayjs from "dayjs";
 
 export const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
@@ -14,13 +13,5 @@ export const validationSchema = Yup.object().shape({
     .required("Confirm Password is required"),
   birthday: Yup.date()
     .nullable()
-    .required("Please enter a complete and correct date")
-    .test("birthday", "Please enter a valid date", (value) => {
-      if (!value) {
-        return false;
-      }
-
-      const dayjsDate = dayjs(value);
-      return dayjsDate.isValid();
-    }),
+    .required("Please enter a complete and correct date"),
 });

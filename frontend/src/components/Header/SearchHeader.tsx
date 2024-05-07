@@ -1,18 +1,19 @@
-import SearchIcon from "@mui/icons-material/Search";
-import { IconButton, Paper, InputBase } from "@mui/material";
-import { Logo } from "../Logo";
+import { IconButton, InputBase, Box } from "@mui/material";
+import search from "../../../public/icons/search.svg";
+import Image from "next/image";
 
 export default function SearchHeader() {
   return (
-    <Paper
+    <Box
       component="form"
       sx={{
         p: "2px 4px",
         display: "flex",
         alignItems: "center",
-        width: 270,
+        width: 300,
         height: 35,
-        bgcolor: "#BEBEBE9b",
+        bgcolor: "transparent",
+        border: "1px solid #4b4b4b",
         borderRadius: "10px",
       }}
     >
@@ -21,18 +22,19 @@ export default function SearchHeader() {
         sx={{ p: "10px", pointerEvents: "none" }}
         aria-label="search"
       >
-        <SearchIcon
-          sx={{
-            color: "grey",
-            fontSize: "30px",
-          }}
-        />
+        <Image style={{ width: 25 }} src={search} alt="search" />
       </IconButton>
       <InputBase
-        sx={{ ml: 1, flex: 1, color: "black" }}
-        placeholder="Search netWork"
+        sx={{
+          ml: 1,
+          flex: 1,
+          color: "black",
+          fontFamily: "Schoolbell",
+          fontSize: "20px",
+        }}
+        placeholder="Search SketchSphere"
         inputProps={{ "aria-label": "search through the website" }}
       />
-    </Paper>
+    </Box>
   );
 }

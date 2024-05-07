@@ -6,13 +6,21 @@ interface TooltipStyledProps extends TooltipProps {
   children: React.ReactElement;
 }
 
-export default function TooltipStyled({
-  title,
-  children,
-  ...restProps
-}: TooltipStyledProps) {
+export default function TooltipStyled({ title, children }: TooltipStyledProps) {
   return (
-    <Tooltip title={<Typography fontSize={16}>{title}</Typography>}>
+    <Tooltip
+      title={
+        <Typography
+          sx={{
+            fontFamily: "Schoolbell",
+            letterSpacing: "2px",
+          }}
+          fontSize={19}
+        >
+          {title}
+        </Typography>
+      }
+    >
       {children}
     </Tooltip>
   );

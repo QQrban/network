@@ -1,8 +1,9 @@
 import { Badge, Box, IconButton, Tooltip } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MailIcon from "@mui/icons-material/Mail";
 import TooltipStyled from "../shared/TooltipStyled";
 import ProfileMenu from "./ProfileMenu";
+import mailIcon from "../../../public/icons/mail.svg";
+import notificationIcon from "../../../public/icons/bell.svg";
+import Image from "next/image";
 
 export default function HeaderMenu() {
   let id: number = 10561654311;
@@ -17,14 +18,22 @@ export default function HeaderMenu() {
       <TooltipStyled title="Chat">
         <IconButton>
           <Badge badgeContent={4} color="error">
-            <MailIcon sx={{ fontSize: "29px" }} color="primary" />
+            <Image
+              style={{ width: "32px", height: "32px" }}
+              src={mailIcon}
+              alt="Profile"
+            />
           </Badge>
         </IconButton>
       </TooltipStyled>
-      <TooltipStyled title="notifications">
+      <TooltipStyled title="Notifications">
         <IconButton>
           <Badge badgeContent={999} color="error">
-            <NotificationsIcon sx={{ fontSize: "29px" }} color="primary" />
+            <Image
+              style={{ width: "32px", height: "32px" }}
+              src={notificationIcon}
+              alt="Profile"
+            />
           </Badge>
         </IconButton>
       </TooltipStyled>

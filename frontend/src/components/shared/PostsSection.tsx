@@ -1,7 +1,7 @@
 import { Item } from "@/components/shared/Item";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../public/Nophoto.jpg";
+import noPhoto from "../../../public/icons/profile.svg";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import ShareIcon from "@mui/icons-material/Share";

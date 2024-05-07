@@ -23,8 +23,8 @@ export default function NavigationMenu() {
       <Box
         sx={{
           position: "absolute",
-          right: "-60px",
-          top: "-45px",
+          left: "-15px",
+          top: "-40px",
           transform: "translateY(-50%)",
           display: "flex",
           flexDirection: "column",
@@ -32,11 +32,13 @@ export default function NavigationMenu() {
           color: "white",
         }}
       >
-        <Typography sx={{ fontSize: "16px", fontFamily: "inherit" }}>
+        <Typography
+          sx={{ fontSize: "15px", fontFamily: "inherit", width: "90px" }}
+        >
           You are here
         </Typography>
         <Image
-          style={{ transform: "rotate(115deg)" }}
+          style={{ transform: "rotate(90deg)", width: "50px" }}
           src={arrowIcon}
           alt="arrow"
         />

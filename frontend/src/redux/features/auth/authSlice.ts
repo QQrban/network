@@ -6,29 +6,36 @@ type InitialState = {
 
 type AuthState = {
   isAuth: boolean;
-  username: string;
-  uid: string;
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  nickname: string;
+  birthday?: string;
+  country?: string;
 };
 
-const initialState = {
+const initialState: InitialState = {
   value: {
     isAuth: false,
-    username: "",
-    uid: "",
-  } as AuthState,
-} as InitialState;
+    id: 0,
+    email: "",
+    firstName: "",
+    lastName: "",
+    nickname: "",
+    birthday: undefined,
+    country: undefined,
+  },
+};
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logIn: (state, action: PayloadAction<string>) => {
-      return {
-        value: {
-          isAuth: true,
-          username: action.payload,
-          uid: "uasuidnkwje123nkqjenkw6788qenjk",
-        },
+    logIn: (state, action: PayloadAction<Omit<AuthState, "isAuth">>) => {
+      state.value = {
+        isAuth: true,
+        ...action.payload,
       };
     },
     logOut: (state) => {

@@ -1,24 +1,60 @@
 "use client";
 
-import Header from "@/components/Header";
-import Login from "@/components/Login/index";
-import { Box } from "@mui/material";
-import { ReactNode, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCookie } from "./getCookie";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
+import { fetchFromServer } from "@/lib/api";
+import LoadingScreen from "@/components/shared/LoadingScreen";
+import Login from "@/components/Login/index";
+import Header from "@/components/Header";
+import { Box } from "@mui/material";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
+  const [showLoading, setShowLoading] = useState(true);
   const auth = useSelector((state: any) => state.authReducer.value.isAuth);
+  const [authChecked, setAuthChecked] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const cookieVal = await getCookie();
-      if (cookieVal) dispatch(loginSuccess(""));
-    };
+    async function fetchData() {
+      try {
+        const cookieVal = await getCookie();
+        if (cookieVal) {
+          const response = await fetchFromServer("/check-auth", {
+            method: "GET",
+            credentials: "include",
+          });
+          if (response.ok) {
+            const data = await response.json();
+            dispatch(
+              loginSuccess({
+                id: data.id,
+                email: data.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                nickname: data.nickname,
+                birthday: data.birthday,
+                country: data.country,
+              })
+            );
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setAuthChecked(true);
+        setTimeout(() => {
+          setShowLoading(false);
+        }, 500);
+      }
+    }
     fetchData();
   }, [dispatch]);
+
+  if (showLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
@@ -31,7 +67,12 @@ export default function MainScreen({ children }: { children: ReactNode }) {
           m: "0 auto",
         }}
       >
-        {auth ? children : <Login />}
+        {authChecked &&
+          (auth ? (
+            children
+          ) : (
+            <Login showLoading={showLoading} setShowLoading={setShowLoading} />
+          ))}
       </Box>
     </>
   );

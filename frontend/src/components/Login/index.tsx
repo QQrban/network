@@ -1,14 +1,24 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
-import BigLogo from "./BigLogo";
+import BigLogo from "../shared/BigLogo";
 import { Item } from "../shared/Item";
 import googleLogo from "../../../public/icons/google.svg";
 import Image from "next/image";
 import { useState } from "react";
 import LoginContent from "./LoginContent";
 import RegisterContent from "./Register/RegisterContent";
+import LoadingScreen from "../shared/LoadingScreen";
 
-export default function Login() {
+interface LoginProps {
+  showLoading: boolean;
+  setShowLoading: React.Dispatch<boolean>;
+}
+
+export default function Login({ showLoading, setShowLoading }: LoginProps) {
   const [isLoginPage, setIsLoginPage] = useState<boolean>(true);
+
+  if (showLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Box
@@ -34,7 +44,11 @@ export default function Login() {
             minWidth: "420px",
           }}
         >
-          {isLoginPage ? <LoginContent /> : <RegisterContent />}
+          {isLoginPage ? (
+            <LoginContent setShowLoading={setShowLoading} />
+          ) : (
+            <RegisterContent setShowLoading={setShowLoading} />
+          )}
           <Divider>OR</Divider>
           <Button
             sx={{

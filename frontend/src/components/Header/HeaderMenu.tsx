@@ -1,10 +1,8 @@
 import { Badge, Box, IconButton, Tooltip } from "@mui/material";
-import Image from "next/image";
-import noPhoto from "../../../public/Nophoto.jpg";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MailIcon from "@mui/icons-material/Mail";
-import Link from "next/link";
 import TooltipStyled from "../shared/TooltipStyled";
+import ProfileMenu from "./ProfileMenu";
 
 export default function HeaderMenu() {
   let id: number = 10561654311;
@@ -39,11 +37,7 @@ export default function HeaderMenu() {
           borderRadius: "50%",
         }}
       >
-        <TooltipStyled title="Profile">
-          <Link href={`/profile/${id}`}>
-            <Image src={noPhoto} alt="profilePic" />
-          </Link>
-        </TooltipStyled>
+        <ProfileMenu />
       </Box>
     </Box>
   );

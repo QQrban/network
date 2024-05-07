@@ -20,6 +20,11 @@ import { validationSchema } from "./validation";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
+import { fetchFromServer } from "@/lib/api";
+
+interface RegisterProps {
+  setShowLoading: React.Dispatch<boolean>;
+}
 
 interface FormValues {
   firstName: string;
@@ -46,7 +51,7 @@ const initialValues: FormValues = {
   birthday: null,
 };
 
-export default function RegisterContent() {
+export default function RegisterContent({ setShowLoading }: RegisterProps) {
   const [avatar, setAvatar] = useState<string | null>(null);
 
   const dispatch = useDispatch();
@@ -68,10 +73,8 @@ export default function RegisterContent() {
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        console.log(values);
-
+        setShowLoading(true);
         const formData = new FormData();
-
         if (avatar) {
           formData.append("avatar", avatar);
         }
@@ -80,15 +83,25 @@ export default function RegisterContent() {
           formData.append(key, value.toString());
         });
 
-        const response = await fetch("http://localhost:8888/register", {
+        const response = await fetchFromServer("/register", {
           method: "PUT",
           credentials: "include",
           body: JSON.stringify(values),
         });
-
         if (response.ok) {
           resetForm();
-          dispatch(loginSuccess(""));
+          const data = await response.json();
+          dispatch(
+            loginSuccess({
+              id: data.id,
+              email: data.email,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              nickname: data.nickname,
+              birthday: data.birthday,
+              country: data.country,
+            })
+          );
           console.log("User registered successfully");
         } else {
           console.error("Registration failed");
@@ -96,7 +109,9 @@ export default function RegisterContent() {
       } catch (error) {
         console.error("Error during form submission:", error);
       } finally {
-        setSubmitting(false);
+        setTimeout(() => {
+          setShowLoading(false);
+        }, 500);
       }
     },
   });

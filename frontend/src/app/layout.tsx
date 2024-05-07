@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-
 import type { Metadata } from "next";
 import "./global.css";
 import { Roboto } from "next/font/google";
@@ -21,6 +20,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log(process.env.GO_SERVER_URL);
   return (
     <html lang="en">
       <Box

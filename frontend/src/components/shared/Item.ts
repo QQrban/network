@@ -8,5 +8,6 @@ interface ItemProps {
 
 export const Item = styled(Paper)<ItemProps>(({ radius }) => ({
   border: "2px solid #b0b0b0",
+  boxShadow: "none",
   borderRadius: radius,
 }));

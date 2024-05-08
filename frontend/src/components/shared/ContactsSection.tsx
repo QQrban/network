@@ -6,6 +6,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import { StyledBadge } from "./StyledBadge";
+import Image from "next/image";
+import noPhoto from "../../../public/icons/profile.svg";
 
 export default function ContactsSection() {
   const friends: Array<string> = [
@@ -20,7 +22,6 @@ export default function ContactsSection() {
   return (
     <Item
       sx={{
-        border: "1px solid #00000017",
         display: "flex",
         flexDirection: "column",
         width: "290px",
@@ -54,7 +55,11 @@ export default function ContactsSection() {
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     variant="dot"
                   >
-                    <Avatar alt={friend} src="" />
+                    <Image
+                      style={{ width: "30px", height: "30px" }}
+                      src={noPhoto}
+                      alt="contacts"
+                    />
                   </StyledBadge>
                 </ListItemAvatar>
                 <ListItemText

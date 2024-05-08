@@ -1,15 +1,16 @@
 import { Box, Divider, Typography } from "@mui/material";
 import Image from "next/image";
 import { Item } from "../shared/Item";
-import noProfilePic from "../../../public/icons/noPhoto.svg";
+import noProfilePic from "../../../public/icons/profile.svg";
 import { styled } from "@mui/material";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 
 const StatisticsItemText = styled(Typography)`
   width: 100px;
-  font-size: 14px;
+  font-size: 16px;
   color: #878787;
+  font-family: "Comic Neue, cursive";
   text-align: left;
 `;
 
@@ -19,7 +20,8 @@ const StatisticsItemsContainer = styled(Box)`
 `;
 
 const StatisticsItemNumber = styled(Typography)`
-  font-size: 14px;
+  font-size: 16px;
+  font-family: "Comic Neue, cursive";
   color: #325187;
 `;
 
@@ -33,7 +35,7 @@ export default function LeftColumn() {
         position: "sticky",
         top: "90px",
         width: "290px",
-        maxHeight: "430px",
+        alignSelf: "flex-start",
         pb: "10px",
       }}
       radius="8px"
@@ -51,6 +53,9 @@ export default function LeftColumn() {
             sx={{
               width: "72px",
               height: "72px",
+              border: "3px solid #6f6f6f",
+              borderRadius: "50%",
+              overflow: "hidden",
             }}
           >
             <Image src={noProfilePic} alt="profile pic" />
@@ -58,20 +63,12 @@ export default function LeftColumn() {
           <Box sx={{ textAlign: "center" }}>
             <Typography
               sx={{
-                fontSize: "20px",
+                fontSize: "24px",
+                fontFamily: "Schoolbell",
               }}
               component="h4"
             >
               {`${userData.firstName} ${userData.lastName}`}
-            </Typography>
-            <Typography
-              sx={{
-                color: "#7F7F7F",
-                fontSize: "12px",
-              }}
-              component="div"
-            >
-              React, Next.js developer
             </Typography>
           </Box>
         </Box>
@@ -86,15 +83,6 @@ export default function LeftColumn() {
           gap: "12px",
         }}
       >
-        {/* DATA FROM API */}
-        <StatisticsItemsContainer>
-          <StatisticsItemText>Profile views</StatisticsItemText>
-          <StatisticsItemNumber>590</StatisticsItemNumber>
-        </StatisticsItemsContainer>
-        <StatisticsItemsContainer>
-          <StatisticsItemText>Post reactions</StatisticsItemText>
-          <StatisticsItemNumber>13</StatisticsItemNumber>
-        </StatisticsItemsContainer>
         <StatisticsItemsContainer>
           <StatisticsItemText>Followers</StatisticsItemText>
           <StatisticsItemNumber>126</StatisticsItemNumber>
@@ -110,6 +98,9 @@ export default function LeftColumn() {
           sx={{
             textAlign: "left",
             p: "10px 50px 5px 50px",
+            fontFamily: "Comic Neue",
+            fontWeight: 600,
+            fontSize: "18px",
           }}
         >
           Your shortcuts
@@ -124,16 +115,18 @@ export default function LeftColumn() {
         >
           <Typography
             sx={{
-              fontSize: "14px",
+              fontSize: "18px",
               color: "#6495ED",
+              fontFamily: "Schoolbell",
             }}
           >
             Ctrl + Alt + Delete Club
           </Typography>
           <Typography
             sx={{
-              fontSize: "14px",
+              fontSize: "18px",
               color: "#6495ED",
+              fontFamily: "Schoolbell",
             }}
           >
             JS Gladiators

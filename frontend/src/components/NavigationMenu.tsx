@@ -33,12 +33,16 @@ export default function NavigationMenu() {
         }}
       >
         <Typography
-          sx={{ fontSize: "15px", fontFamily: "inherit", width: "90px" }}
+          sx={{
+            fontSize: "13px",
+            fontFamily: "Gloria Hallelujah !important",
+            width: "90px",
+          }}
         >
           You are here
         </Typography>
         <Image
-          style={{ transform: "rotate(90deg)", width: "50px" }}
+          style={{ transform: "rotate(90deg)", width: "40px" }}
           src={arrowIcon}
           alt="arrow"
         />

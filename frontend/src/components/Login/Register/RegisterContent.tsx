@@ -19,7 +19,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
-import { StyledTextArea, StyledTextField, SuccessBtn } from "../styles";
+import { StyledTextArea, StyledTextField } from "../styles";
+import { SuccessBtn } from "@/components/shared/styles";
 
 interface RegisterProps {
   setShowLoading: React.Dispatch<boolean>;

@@ -1,14 +1,20 @@
 "use client";
 
-import { Box, Button, styled } from "@mui/material";
+import { Box, IconButton, styled } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../../../public/Nophoto.jpg";
+import noPhoto from "../../../../../public/icons/profile.svg";
+import confirmBtn from "../../../../../public/icons/confirmButton.svg";
+import picture from "../../../../../public/icons/picture.svg";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import ImageIcon from "@mui/icons-material/Image";
-import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
 import { useState } from "react";
+import ConfirmBtn from "@/components/shared/ConfirmBtn";
 
-export default function AddComment() {
+interface CommentProps {
+  inputRef: React.RefObject<HTMLTextAreaElement>;
+}
+
+export default function AddComment({ inputRef }: CommentProps) {
   const [commentText, setCommentText] = useState("");
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -40,6 +46,7 @@ export default function AddComment() {
           }}
         >
           <TextareaAutosize
+            ref={inputRef}
             maxLength={1250}
             aria-label="empty textarea"
             placeholder="Type something..."
@@ -51,13 +58,18 @@ export default function AddComment() {
               display: "flex",
               alignItems: "center",
               position: "absolute",
-              right: "10px",
+              right: "0",
               gap: "10px",
-              bottom: "10px",
+              bottom: "0",
             }}
           >
-            <SentimentSatisfiedIcon sx={{ color: "#8F8F8F" }} />
-            <ImageIcon sx={{ color: "#8F8F8F" }} />
+            <IconButton>
+              <Image
+                style={{ width: "32px", height: "32px" }}
+                src={picture}
+                alt="picture"
+              />
+            </IconButton>
           </Box>
         </Box>
       </Box>
@@ -67,15 +79,7 @@ export default function AddComment() {
             p: "0 10px 10px 60px",
           }}
         >
-          <Button
-            sx={{
-              height: "30px",
-              textTransform: "capitalize",
-            }}
-            variant="contained"
-          >
-            Comment
-          </Button>
+          <ConfirmBtn backgroundImage={confirmBtn.src} text="Comment" />
         </Box>
       )}
     </Box>
@@ -86,15 +90,15 @@ const TextareaAutosize = styled(BaseTextareaAutosize)(
   () => `
   box-sizing: border-box;
   width: 100%;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
+  font-family: 'Comic Neue', sans-serif;
+  font-size: 15px;
   resize: none;
   line-height: 1.5;
   padding: 8px 75px 8px 12px;
   border-radius: 8px;
   color: #1C2025;
   background: #fff;
-  border: 1px solid #DAE2ED;
+  border: 2px solid #868686;
   box-shadow: 0px 2px 2px #F3F6F9;
   &:hover {
     border-color: #3399FF;

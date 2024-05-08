@@ -1,17 +1,27 @@
 import { Item } from "@/components/shared/Item";
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
 import Image from "next/image";
 import noPhoto from "../../../public/icons/profile.svg";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
-import ShareIcon from "@mui/icons-material/Share";
+
 import ReactionToPost from "../Profile/MainBoard/PostsSection/ReactionToPost";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CommentsPost from "../Profile/MainBoard/PostsSection/CommentsPost";
 import mockBg from "../../../public/mockBG.png";
+import likeIcon from "../../../public/icons/like.svg";
+import commentIcon from "../../../public/icons/comment.svg";
 import AddComment from "../Profile/MainBoard/PostsSection/AddComment";
+import { useRef } from "react";
 
 export default function PostsSection() {
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   const reactions: Array<string> = [
     "Johnny Bravo",
     "Albert Einstein",
@@ -24,14 +34,13 @@ export default function PostsSection() {
   return (
     <Item
       sx={{
-        mt: "13px",
         width: "600px",
       }}
       radius="8px"
     >
       <Box
         sx={{
-          p: "10px 17px",
+          p: "5px 17px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -48,6 +57,8 @@ export default function PostsSection() {
             sx={{
               width: "36px",
               height: "36px",
+              overflow: "hidden",
+              border: "2px solid #4a4a4a",
               borderRadius: "50%",
             }}
           >
@@ -56,8 +67,9 @@ export default function PostsSection() {
           <Box>
             <Typography
               sx={{
-                fontSize: "14px",
+                fontSize: "18px",
                 color: "#2a2a2a",
+                fontFamily: "Gloria Hallelujah !important",
               }}
             >
               Kurban Ramazanov
@@ -65,14 +77,14 @@ export default function PostsSection() {
             <Typography
               sx={{
                 color: "#BEBEBE",
-                fontSize: "11px",
+                fontSize: "14px",
               }}
             >
               April 16, 2024
             </Typography>
           </Box>
         </Box>
-        <Button
+        <IconButton
           sx={{
             cursor: "pointer",
           }}
@@ -83,11 +95,11 @@ export default function PostsSection() {
               fontSize: "35px",
             }}
           />
-        </Button>
+        </IconButton>
       </Box>
       <Box
         sx={{
-          p: "10px 17px",
+          p: "5px 17px",
         }}
       >
         <Typography>
@@ -131,42 +143,37 @@ export default function PostsSection() {
         <Typography
           sx={{
             color: "#8F8F8F",
-            fontSize: "13px",
+            fontSize: "16px",
+            fontFamily: "Schoolbell !important",
           }}
         >
           {`${reactions[0]} and ${reactions.length} others`}
         </Typography>
       </Box>
       <Divider />
-
       <Box
         sx={{
           p: "10px 17px",
+          width: "100%",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
+          gap: "40px",
         }}
       >
         <ReactionToPost
-          icon={<ThumbUpIcon sx={{ color: "#8F8F8F" }} />}
+          icon={<Image src={likeIcon} alt="like" />}
           label="Like"
           onClick={() => console.log("Like")}
         />
         <ReactionToPost
-          icon={<ChatBubbleIcon sx={{ color: "#8F8F8F" }} />}
+          icon={<Image src={commentIcon} alt="comment" />}
           label="Comment"
-          onClick={() => console.log("Comment")}
-        />
-        <ReactionToPost
-          icon={<ShareIcon sx={{ color: "#8F8F8F" }} />}
-          label="Share"
-          onClick={() => console.log("Share")}
+          onClick={focusInput}
         />
       </Box>
       <Divider />
       <CommentsPost />
-      <CommentsPost />
-      <AddComment />
+      <AddComment inputRef={inputRef} />
     </Item>
   );
 }

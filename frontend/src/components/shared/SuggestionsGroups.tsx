@@ -43,7 +43,13 @@ export default function SuggestionsGroups() {
                   <Avatar
                     alt="Cats"
                     src={mockBg}
-                    sx={{ width: 56, height: 56 }}
+                    sx={{
+                      border: "2px solid #4a4a4a",
+                      width: 56,
+                      height: 56,
+                      fontSize: "28px",
+                      fontFamily: "Schoolbell !important",
+                    }}
                   />
                   <Box
                     sx={{

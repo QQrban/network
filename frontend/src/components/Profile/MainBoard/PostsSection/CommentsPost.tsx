@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../../../public/Nophoto.jpg";
+import noPhoto from "../../../../../public/icons/profile.svg";
 
 export default function CommentsPost() {
   return (
@@ -20,6 +20,9 @@ export default function CommentsPost() {
           sx={{
             width: "36px",
             height: "36px",
+            border: "2px solid #4a4a4a",
+            borderRadius: "50%",
+            overflow: "hidden",
           }}
         >
           <Image src={noPhoto} alt="profile pic" />
@@ -33,30 +36,22 @@ export default function CommentsPost() {
         >
           <Typography
             sx={{
-              fontSize: "13px",
+              fontSize: "16px",
               fontWeight: 700,
             }}
           >
             Denzel Washington
           </Typography>
-          <Typography
-            sx={{
-              color: "#AEAEAE",
-              fontSize: "11px",
-            }}
-          >
-            actor, producer, and director
-          </Typography>
         </Box>
       </Box>
       <Box
         sx={{
-          m: "9px 0 0 38px",
+          m: "0 0 0 42px",
         }}
       >
         <Typography
           sx={{
-            fontSize: "13px",
+            fontSize: "15px",
           }}
         >
           Good luck, Kurban! You&apos;re doing the right thing! If I manage to
@@ -71,9 +66,8 @@ export default function CommentsPost() {
             gap: "10px",
           }}
         >
-          <Typography fontSize={13}>5d</Typography>
-          <Typography fontSize={13}>Like</Typography>
-          <Typography fontSize={13}>Reply</Typography>
+          <Typography fontSize={16}>5d</Typography>
+          <Typography fontSize={16}>Like</Typography>
         </Box>
       </Box>
     </Box>

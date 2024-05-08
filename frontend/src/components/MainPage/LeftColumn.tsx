@@ -27,7 +27,6 @@ const StatisticsItemNumber = styled(Typography)`
 
 export default function LeftColumn() {
   const userData = useSelector((state: any) => state.authReducer.value);
-  console.log(userData);
 
   return (
     <Item

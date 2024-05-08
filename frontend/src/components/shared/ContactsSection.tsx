@@ -25,7 +25,7 @@ export default function ContactsSection() {
         display: "flex",
         flexDirection: "column",
         width: "290px",
-        height: "340px",
+        height: "300px",
         overflowY: "scroll",
         "&::-webkit-scrollbar": {
           width: "5px",

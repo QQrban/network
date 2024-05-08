@@ -12,7 +12,8 @@ import {
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
-import { StyledTextField, SuccessBtn } from "./styles";
+import { StyledTextField } from "./styles";
+import { SuccessBtn } from "../shared/styles";
 
 interface LoginProps {
   setShowLoading: React.Dispatch<boolean>;

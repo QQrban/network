@@ -11,22 +11,16 @@ import {
 import { FollowersProps } from "../Profile/ContactsContent/mock";
 import { Item } from "./Item";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import EmailIcon from "@mui/icons-material/Email";
 import Image from "next/image";
-import noPhoto from "../../../public/Nophoto.jpg";
+import noPhoto from "../../../public/icons/profile.svg";
+import mail from "../../../public/icons/mail.svg";
+import personAdd from "../../../public/icons/personAdd.svg";
+import personRemove from "../../../public/icons/personRemove.svg";
+import successBtn from "../../../public/icons/successBtn.svg";
+import errorBtn from "../../../public/icons/errorBtn.svg";
 import { useState } from "react";
 import AlertDialog from "./Dialog";
-
-const StyledButton = styled(Button)`
-  position: absolute;
-  bottom: 12px;
-  width: 120px;
-  left: 50%;
-  transform: translateX(-50%);
-`;
+import ConfirmBtn from "./ConfirmBtn";
 
 interface Props {
   peopleList: FollowersProps[];
@@ -49,13 +43,12 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
           <Item
             sx={{
               width: "225px",
-              height: "260px",
               p: "12px",
               display: "flex",
               flexDirection: "column",
               gap: "12px",
               alignItems: "center",
-              border: "1px solid #00000011",
+              justifyContent: "space-between",
               position: "relative",
             }}
             key={index}
@@ -89,29 +82,72 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
                 },
               }}
             >
-              <SpeedDialAction icon={<EmailIcon />} tooltipTitle="SEND EMAIL" />
               <SpeedDialAction
-                icon={<StarBorderIcon />}
-                tooltipTitle="ADD TO FAVORITE"
+                icon={
+                  <Image
+                    style={{ width: "25px", height: "25px" }}
+                    src={mail}
+                    alt="mail"
+                  />
+                }
+                tooltipTitle={
+                  <Typography
+                    sx={{
+                      fontFamily: "SchoolBell !important",
+                      fontSize: "18",
+                    }}
+                  >
+                    Send Email
+                  </Typography>
+                }
               />
-
               {follower.following ? (
                 <SpeedDialAction
                   onClick={() => unfollowHandler(follower.name)}
-                  icon={<PersonRemoveIcon />}
-                  tooltipTitle="UNFOLLOW"
+                  icon={
+                    <Image
+                      style={{ width: "25px", height: "25px" }}
+                      src={personRemove}
+                      alt="unfollow"
+                    />
+                  }
+                  tooltipTitle={
+                    <Typography
+                      sx={{
+                        fontFamily: "SchoolBell !important",
+                        fontSize: "18px",
+                      }}
+                    >
+                      Unfollow
+                    </Typography>
+                  }
                 />
               ) : (
                 <SpeedDialAction
-                  icon={<PersonAddIcon />}
-                  tooltipTitle="FOLLOW"
+                  icon={
+                    <Image
+                      style={{ width: "25px", height: "25px" }}
+                      src={personAdd}
+                      alt="follow"
+                    />
+                  }
+                  tooltipTitle={
+                    <Typography
+                      sx={{
+                        fontFamily: "SchoolBell !important",
+                        fontSize: "18",
+                      }}
+                    >
+                      Follow
+                    </Typography>
+                  }
                 />
               )}
             </SpeedDial>
             <Box
               sx={{
-                width: "100px",
-                height: "100px",
+                width: "90px",
+                height: "90px",
               }}
             >
               <Image
@@ -121,28 +157,18 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
             </Box>
             <Box sx={{ textAlign: "center" }}>
               <Typography
-                sx={{ fontWeight: 600, color: "#2a2a2a", fontSize: "18px" }}
+                sx={{ fontWeight: 600, color: "#2a2a2a", fontSize: "20px" }}
               >
-                {follower.name}
+                {follower.name.length > 20
+                  ? follower.name.slice(0, 19) + "..."
+                  : follower.name}
               </Typography>
-              <Typography sx={{ fontSize: "13px", color: "ThreeDShadow" }}>
-                {follower.position}
-              </Typography>
-              {follower.following ? (
-                <StyledButton
-                  sx={{ opacity: 0.9 }}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => unfollowHandler(follower.name)}
-                >
-                  Unfollow
-                </StyledButton>
-              ) : (
-                <StyledButton variant="outlined" color="primary">
-                  Follow
-                </StyledButton>
-              )}
             </Box>
+            {follower.following ? (
+              <ConfirmBtn backgroundImage={errorBtn.src} text="Unfollow" />
+            ) : (
+              <ConfirmBtn backgroundImage={successBtn.src} text="Follow" />
+            )}
           </Item>
         ))
       ) : (

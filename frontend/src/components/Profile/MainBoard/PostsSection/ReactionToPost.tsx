@@ -22,8 +22,22 @@ export default function ReactionToPost({
       }}
       onClick={onClick}
     >
-      {icon}
-      <Typography sx={{ color: "#8F8F8F" }}>{label}</Typography>
+      <Box
+        sx={{
+          width: "30px",
+          height: "30px",
+        }}
+      >
+        {icon}
+      </Box>
+      <Typography
+        sx={{
+          color: "#4a4a4a",
+          fontFamily: "Gloria Hallelujah !important",
+        }}
+      >
+        {label}
+      </Typography>
     </Box>
   );
 }

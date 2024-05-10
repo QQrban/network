@@ -6,7 +6,6 @@ import notificationIcon from "../../../public/icons/bell.svg";
 import Image from "next/image";
 
 export default function HeaderMenu() {
-  let id: number = 10561654311;
   return (
     <Box
       sx={{

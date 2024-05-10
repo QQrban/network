@@ -84,7 +84,7 @@ export default function SuggestionsGroups() {
                   title={
                     <Typography
                       sx={{
-                        fontFamily: "Schoolbell",
+                        fontFamily: "Schoolbell !important",
                         letterSpacing: "2px",
                       }}
                       fontSize={16}

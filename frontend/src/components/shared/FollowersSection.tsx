@@ -1,19 +1,13 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  SpeedDial,
-  SpeedDialAction,
-  Typography,
-  styled,
-} from "@mui/material";
+import { Box, SpeedDial, SpeedDialAction, Typography } from "@mui/material";
 import { FollowersProps } from "../Profile/ContactsContent/mock";
 import { Item } from "./Item";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Image from "next/image";
 import noPhoto from "../../../public/icons/profile.svg";
 import mail from "../../../public/icons/mail.svg";
+import star from "../../../public/icons/star.svg";
 import personAdd from "../../../public/icons/personAdd.svg";
 import personRemove from "../../../public/icons/personRemove.svg";
 import successBtn from "../../../public/icons/successBtn.svg";
@@ -101,6 +95,25 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
                   </Typography>
                 }
               />
+              <SpeedDialAction
+                icon={
+                  <Image
+                    style={{ width: "25px", height: "25px" }}
+                    src={star}
+                    alt="favorite"
+                  />
+                }
+                tooltipTitle={
+                  <Typography
+                    sx={{
+                      fontFamily: "SchoolBell !important",
+                      fontSize: "18",
+                    }}
+                  >
+                    Favorite
+                  </Typography>
+                }
+              />
               {follower.following ? (
                 <SpeedDialAction
                   onClick={() => unfollowHandler(follower.name)}
@@ -165,7 +178,11 @@ export default function FollowersSection({ peopleList, activeTab }: Props) {
               </Typography>
             </Box>
             {follower.following ? (
-              <ConfirmBtn backgroundImage={errorBtn.src} text="Unfollow" />
+              <ConfirmBtn
+                onClick={() => unfollowHandler(follower.name)}
+                backgroundImage={errorBtn.src}
+                text="Unfollow"
+              />
             ) : (
               <ConfirmBtn backgroundImage={successBtn.src} text="Follow" />
             )}

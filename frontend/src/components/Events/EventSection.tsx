@@ -1,17 +1,17 @@
+"use client";
+
 import { Item } from "../shared/Item";
-import {
-  Box,
-  Button,
-  SpeedDialAction,
-  Typography,
-  SpeedDial,
-} from "@mui/material";
+import { Box, SpeedDialAction, Typography, SpeedDial } from "@mui/material";
 import Image from "next/image";
 import mockBg from "../../../public/mockBG.png";
+import eventBg from "../../../public/eventBG.svg";
+import noSign from "../../../public/icons/noSign.svg";
+import confirmedBtn from "../../../public/icons/confirmButton.svg";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import NotInterestedIcon from "@mui/icons-material/NotInterested";
-import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import { Event } from "./mock";
+import ConfirmBtn from "../shared/ConfirmBtn";
+import AlertDialog from "../shared/Dialog";
+import { useState } from "react";
 
 interface EventSectionProps {
   sectionName: string;
@@ -22,9 +22,21 @@ export default function EventSection({
   sectionName,
   events,
 }: EventSectionProps) {
+  const [open, setOpen] = useState<boolean>(false);
+  const [eventName, setEventName] = useState<string>("");
+
+  const handleClick = (name: string) => {
+    setOpen(true);
+    setEventName(name);
+  };
+
   return (
-    <Item radius="8px" sx={{ p: "20px" }}>
-      <Typography variant="h4" component="h5">
+    <>
+      <Typography
+        sx={{ fontFamily: "Gloria Hallelujah !important" }}
+        variant="h4"
+        component="h5"
+      >
         {sectionName}
       </Typography>
       <Box
@@ -40,9 +52,11 @@ export default function EventSection({
           <Item
             key={event.id}
             sx={{
+              backgroundImage: `url(${eventBg.src})`,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
               cursor: "pointer",
-              width: "360px",
-              height: "420px",
+              width: "320px",
               overflow: "hidden",
               display: "flex",
               flexDirection: "column",
@@ -84,11 +98,18 @@ export default function EventSection({
               }}
             >
               <SpeedDialAction
+                onClick={() => handleClick(event.title)}
                 icon={
-                  event.interested ? <NotInterestedIcon /> : <StarOutlineIcon />
+                  <Image
+                    style={{ width: "20px", height: "20px" }}
+                    src={noSign}
+                    alt="noSign"
+                  />
                 }
                 tooltipTitle={
-                  event.interested ? "NOT INTERESTED" : "INTERESTED"
+                  <Typography sx={{ fontFamily: "Schoolbell !important" }}>
+                    Not Interested
+                  </Typography>
                 }
               />
             </SpeedDial>
@@ -98,7 +119,7 @@ export default function EventSection({
                 width: "100%",
               }}
             >
-              <Image src={mockBg} alt="" />
+              <Image src={mockBg} alt="scratches" />
             </Box>
             <Box
               sx={{
@@ -111,6 +132,7 @@ export default function EventSection({
                   sx={{
                     fontSize: "22px",
                     fontWeight: 600,
+                    fontFamily: "Schoolbell !important",
                   }}
                 >
                   {event.title}
@@ -120,22 +142,20 @@ export default function EventSection({
                 </Typography>
               </Box>
             </Box>
-            <Button
-              sx={{
-                width: "200px",
-                alignSelf: "center",
-              }}
-              component="label"
-              variant={event.interested ? "contained" : "outlined"}
-              tabIndex={-1}
-              startIcon={<StarOutlineIcon />}
-            >
-              Interested
-            </Button>
+            <ConfirmBtn
+              onClick={() => handleClick(event.title)}
+              backgroundImage={confirmedBtn.src}
+              text="Interested"
+            />
           </Item>
         ))}
       </Box>
-      <Box></Box>
-    </Item>
+      <AlertDialog
+        title={`*${eventName.toUpperCase()}?*`}
+        dialogText="Are you sure you don't want to go to this event?"
+        open={open}
+        setOpen={setOpen}
+      />
+    </>
   );
 }

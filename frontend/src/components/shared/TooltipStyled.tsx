@@ -12,7 +12,7 @@ export default function TooltipStyled({ title, children }: TooltipStyledProps) {
       title={
         <Typography
           sx={{
-            fontFamily: "Schoolbell",
+            fontFamily: "Schoolbell !important",
             letterSpacing: "2px",
           }}
           fontSize={19}

@@ -6,6 +6,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import ConfirmBtn from "./ConfirmBtn";
 import confirmBtn from "../../../public/icons/confirmButton.svg";
+import { Box } from "@mui/material";
 
 interface AlertDialogProps {
   open: boolean;
@@ -53,11 +54,17 @@ export default function AlertDialog({
         >
           Cancel
         </Button>
-        <ConfirmBtn
-          backgroundImage={confirmBtn.src}
-          text="Confirm"
-          onClick={handleClose}
-        />
+        <Box
+          sx={{
+            maxWidth: "120px",
+          }}
+        >
+          <ConfirmBtn
+            backgroundImage={confirmBtn.src}
+            text="Confirm"
+            onClick={handleClose}
+          />
+        </Box>
       </DialogActions>
     </Dialog>
   );

@@ -15,7 +15,6 @@ export default function ConfirmBtn({
     <SuccessBtn
       onClick={onClick}
       sx={{
-        width: "120px",
         fontSize: "20px",
         height: "44px",
         mt: 0,

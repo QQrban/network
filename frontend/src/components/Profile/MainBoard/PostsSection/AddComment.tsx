@@ -77,6 +77,7 @@ export default function AddComment({ inputRef }: CommentProps) {
         <Box
           sx={{
             p: "0 10px 10px 60px",
+            width: "180px",
           }}
         >
           <ConfirmBtn backgroundImage={confirmBtn.src} text="Comment" />

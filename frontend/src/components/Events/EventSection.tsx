@@ -1,33 +1,33 @@
 "use client";
 
 import { Item } from "../shared/Item";
-import { Box, SpeedDialAction, Typography, SpeedDial } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import mockBg from "../../../public/mockBG.png";
 import eventBg from "../../../public/eventBG.svg";
-import noSign from "../../../public/icons/noSign.svg";
 import confirmedBtn from "../../../public/icons/confirmButton.svg";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import errorBtn from "../../../public/icons/errorBtn.svg";
 import { Event } from "./mock";
 import ConfirmBtn from "../shared/ConfirmBtn";
 import AlertDialog from "../shared/Dialog";
 import { useState } from "react";
 
 interface EventSectionProps {
-  sectionName: string;
   events: Event[];
+  page?: string;
 }
 
-export default function EventSection({
-  sectionName,
-  events,
-}: EventSectionProps) {
+export default function EventSection({ events, page }: EventSectionProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [eventName, setEventName] = useState<string>("");
 
-  const handleClick = (name: string) => {
-    setOpen(true);
-    setEventName(name);
+  const handleClick = (name: string, interested: boolean) => {
+    if (interested) {
+      setOpen(true);
+      setEventName(name);
+    } else {
+      return false;
+    }
   };
 
   return (
@@ -36,16 +36,13 @@ export default function EventSection({
         sx={{ fontFamily: "Gloria Hallelujah !important" }}
         variant="h4"
         component="h5"
-      >
-        {sectionName}
-      </Typography>
+      ></Typography>
       <Box
         sx={{
           mt: "23px",
-          display: "flex",
-          flexWrap: "wrap",
           gap: "23px",
-          justifyContent: "center",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         {events.map((event) => (
@@ -56,12 +53,13 @@ export default function EventSection({
               backgroundPosition: "center",
               backgroundSize: "cover",
               cursor: "pointer",
-              width: "320px",
               overflow: "hidden",
               display: "flex",
-              flexDirection: "column",
+              gap: "23px",
+              height: "190px",
+              alignItems: "center",
               justifyContent: "space-between",
-              pb: "10px",
+              p: "10px",
               position: "relative",
               "&:hover": {
                 filter: "brightness(97%)",
@@ -69,84 +67,61 @@ export default function EventSection({
             }}
             radius="12px"
           >
-            <SpeedDial
+            <Box
               sx={{
-                position: "absolute",
-                top: "6px",
-                right: "-2px",
-              }}
-              ariaLabel="SpeedDial openIcon example"
-              icon={<MoreVertIcon sx={{ color: "grey" }} />}
-              direction="down"
-              FabProps={{
-                sx: {
-                  backgroundColor: "#ffffffe0",
-                  width: "36px",
-                  height: "32px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    backgroundColor: "white",
-                  },
-                  "&:active": {
-                    backgroundColor: "white",
-                    boxShadow: "none",
-                  },
-                  "&:focus": {
-                    outline: "none",
-                  },
-                },
+                display: "flex",
               }}
             >
-              <SpeedDialAction
-                onClick={() => handleClick(event.title)}
-                icon={
-                  <Image
-                    style={{ width: "20px", height: "20px" }}
-                    src={noSign}
-                    alt="noSign"
-                  />
-                }
-                tooltipTitle={
-                  <Typography sx={{ fontFamily: "Schoolbell !important" }}>
-                    Not Interested
+              <Box
+                sx={{
+                  width: "180px",
+                  height: "120px",
+                  borderRadius: "6px",
+                  overflow: "hidden",
+                }}
+              >
+                <Image src={mockBg} alt="scratches" />
+              </Box>
+              <Box
+                sx={{
+                  p: "20px",
+                }}
+              >
+                <Box>
+                  <Typography sx={{ fontWeight: 600 }}>{event.date}</Typography>
+                  <Typography
+                    sx={{
+                      fontSize: "22px",
+                      fontWeight: 600,
+                      width: "190px",
+                      fontFamily: "Schoolbell !important",
+                    }}
+                  >
+                    {event.title}
                   </Typography>
-                }
-              />
-            </SpeedDial>
-            <Box
-              sx={{
-                height: "230px",
-                width: "100%",
-              }}
-            >
-              <Image src={mockBg} alt="scratches" />
-            </Box>
-            <Box
-              sx={{
-                p: "20px",
-              }}
-            >
-              <Box>
-                <Typography sx={{ fontWeight: 600 }}>{event.date}</Typography>
-                <Typography
-                  sx={{
-                    fontSize: "22px",
-                    fontWeight: 600,
-                    fontFamily: "Schoolbell !important",
-                  }}
-                >
-                  {event.title}
-                </Typography>
-                <Typography sx={{ color: "#2a2a2a6c" }}>
-                  {event.location}
-                </Typography>
+                  <Typography sx={{ color: "#2a2a2a6c" }}>
+                    {event.location}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
-            <ConfirmBtn
-              onClick={() => handleClick(event.title)}
-              backgroundImage={confirmedBtn.src}
-              text="Interested"
-            />
+            <Box
+              sx={{
+                maxWidth: "300px",
+                fontSize: "16px",
+              }}
+            >
+              {event.description}
+            </Box>
+            <Box sx={{ width: "180px" }}>
+              <ConfirmBtn
+                onClick={() => handleClick(event.title, event.interested)}
+                backgroundImage={
+                  event.interested ? confirmedBtn.src : errorBtn.src
+                }
+                text={event.interested ? "Interested" : "Not Interested"}
+              />
+            </Box>
           </Item>
         ))}
       </Box>

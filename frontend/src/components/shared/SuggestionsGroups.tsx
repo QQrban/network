@@ -2,7 +2,6 @@ import { Avatar, Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { Item } from "./Item";
 import mockBg from "../../../public/icons/google.svg";
 import addIcon from "../../../public/icons/add.svg";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Image from "next/image";
 
 export default function SuggestionsGroups() {
@@ -34,7 +33,7 @@ export default function SuggestionsGroups() {
               gap: "14px",
             }}
           >
-            {[0, 1, 2, 3].map((_, index) => (
+            {[0, 1, 2].map((_, index) => (
               <Box
                 key={index}
                 sx={{ display: "flex", justifyContent: "space-between" }}

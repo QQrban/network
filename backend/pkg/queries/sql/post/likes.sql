@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM "like" WHERE postID = ?1;

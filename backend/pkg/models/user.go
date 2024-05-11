@@ -375,3 +375,22 @@ func (model *UserModel) All(myID int64) ([]*UserLimited, error) {
 
 	return users, nil
 }
+
+func (model *UserModel) FollowStats(myID int64) (map[string]int, error) {
+	stmt := model.queries.Prepare("followStats")
+
+	row := stmt.QueryRow(myID)
+
+	stats := make(map[string]int)
+
+	err := row.Scan(
+		stats["followers"],
+		stats["following"],
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("User/FollowStats: %w", err)
+	}
+
+	return stats, nil
+}

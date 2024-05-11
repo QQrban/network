@@ -11,11 +11,11 @@ type Post struct {
 	PostID   int64  `json:"postID"`
 	AuthorID int64  `json:"authorID"`
 	GroupID  *int64 `json:"groupID"`
-	
+
 	Content string `json:"content"`
 	Status  string `json:"status"`
 	Images  string `json:"images"`
-	AboutID  *int64 `json:"aboutID"`
+	AboutID *int64 `json:"aboutID"`
 
 	Created time.Time `json:"created"`
 
@@ -242,4 +242,44 @@ func (model PostModel) InsertAllowedUser(postID, userID int64) error {
 	}
 
 	return nil
+}
+
+func (model PostModel) Like(postID, userID int64) (int, error) {
+	stmt := model.queries.Prepare("hasLiked")
+	res := stmt.QueryRow(postID, userID)
+
+	var hasLiked bool
+	err := res.Scan(&hasLiked)
+
+	if err != nil {
+		return -1, fmt.Errorf("Post/Like1: %w", err)
+	}
+	if hasLiked {
+		stmt := model.queries.Prepare("unlike")
+		_, err := stmt.Exec(postID, userID)
+
+		if err != nil {
+			return -1, fmt.Errorf("Post/Like2: %w", err)
+		}
+	} else {
+		stmt := model.queries.Prepare("like")
+
+		_, err := stmt.Exec(postID, userID)
+
+		if err != nil {
+			return -1, fmt.Errorf("Post/Like3: %w", err)
+		}
+	}
+
+	stmt = model.queries.Prepare("likes")
+	res = stmt.QueryRow(postID)
+
+	var likes int
+	err = res.Scan(&likes)
+
+	if err != nil {
+		return -1, fmt.Errorf("Post/Like4: %w", err)
+	}
+
+	return likes, nil
 }

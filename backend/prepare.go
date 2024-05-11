@@ -34,6 +34,7 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/user/([0-9]+)/posts", api.OptionalAuth(api.GetUserPosts))
 	rtr.Get("/group/([0-9]+)/posts", api.GroupAccessCheck(api.GetGroupPosts))
 	rtr.Get("/post/([0-9]+)", api.OptionalAuth(api.GetPostByID))
+	rtr.Put("/post/([0-9]+)/like", api.EnsureAuth(api.LikePost))
 	//rtr.Post("/post/([0-9]+)", api.EnsureAuth(api.EditPost))
 	rtr.Get("/posts/following", api.EnsureAuth(api.GetMyFollowingPosts))
 	rtr.Get("/posts/groups", api.EnsureAuth(api.GetMyGroupPosts))
@@ -67,4 +68,9 @@ func prepare(rtr *router.Router) {
 
 	rtr.Post("/message/send", api.EnsureAuth(api.SendMessage))
 	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages)) // NB! What's this about?
+
+	rtr.Get("/stats", api.EnsureAuth(api.GetStats))
+	rtr.Get("/stats/user/([0-9]+)", api.EnsureAuth(api.GetUserStats))
+	rtr.Get("/stats/group/([0-9]+)", api.EnsureAuth(api.GetGroupStats))
+	rtr.Get("/stats/event/([0-9]+)", api.EnsureAuth(api.GetEventStats))
 }

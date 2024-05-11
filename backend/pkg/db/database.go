@@ -14,6 +14,7 @@ type Database struct {
 	Group   models.GroupModel
 	Event   models.EventModel
 	Message models.MessageModel
+	Stats   models.StatsModel
 }
 
 func NewDatabase(path string) *Database {
@@ -28,6 +29,7 @@ func NewDatabase(path string) *Database {
 		Group:   models.MakeGroupModel(db),
 		Event:   models.MakeEventModel(db),
 		Message: models.MakeMessageModel(db),
+		Stats:   models.MakeStatsModel(db),
 	}
 
 	return database

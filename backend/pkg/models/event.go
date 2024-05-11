@@ -176,6 +176,21 @@ func (model EventModel) GetMembers(eventID int64) (*EventMembers2, error) {
 	return &members, nil
 }
 
+func (model EventModel) GetOptions(eventID int64) ([]string, error) {
+	stmt := model.queries.Prepare("getOptions")
+
+	row := stmt.QueryRow(eventID)
+
+	var options string
+	err := row.Scan(&options)
+
+	if err != nil {
+		return nil, fmt.Errorf("Event/GetOptions: %w", err)
+	}
+
+	return getOptions(options), nil
+}
+
 func (model EventModel) Insert(group Event) (int64, error) {
 	stmt := model.queries.Prepare("insert")
 

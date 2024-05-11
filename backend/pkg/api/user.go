@@ -241,3 +241,11 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, users)
 }
+
+func GetFollowStats(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+	stats, err := Database.User.FollowStats(session.UserID)
+	panicIfErr(err)
+
+	writeJSON(w, stats)
+}

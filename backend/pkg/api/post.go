@@ -201,3 +201,15 @@ func GetMyFollowingPosts(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, posts)
 }
+
+func LikePost(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	slug := router.GetSlug(r, 0)
+	postID, _ := strconv.ParseInt(slug, 10, 64)
+
+	likes, err := Database.Post.Like(postID, session.UserID)
+	panicIfErr(err)
+
+	writeJSON(w, likes)
+}

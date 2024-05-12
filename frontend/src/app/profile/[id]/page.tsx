@@ -5,22 +5,26 @@ import PhotosContent from "@/components/Profile/PhotosContent";
 import MainBoard from "@/components/Profile/MainBoard";
 import ProfileCard from "@/components/Profile/ProfileCard";
 import { Item } from "@/components/shared/Item";
+import profileCardBg from "../../../../public/eventBG.svg";
+
 import { Box } from "@mui/material";
 import { useState } from "react";
 
 export default function ProfilePage() {
-  const [selectedTab, setSelectedTab] = useState<String>("Posts");
+  const [selectedTab, setSelectedTab] = useState<String>("Main Board");
 
   const renderContent = () => {
     switch (selectedTab) {
       case "Main Board":
-        return <MainBoard />;
+        return <MainBoard setSelectedTab={setSelectedTab} />;
       case "Contacts":
         return <ContactsContent />;
       case "Photos":
-        return <PhotosContent />;
+        return (
+          <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={false} />
+        );
       default:
-        return <MainBoard />;
+        return <MainBoard setSelectedTab={setSelectedTab} />;
     }
   };
 
@@ -35,10 +39,15 @@ export default function ProfilePage() {
         <Item
           sx={{
             overflow: "hidden",
+            backgroundImage: `url(${profileCardBg.src})`,
+            backgroundPosition: "center",
           }}
           radius="8px"
         >
-          <ProfileCard setSelectedTab={setSelectedTab} />
+          <ProfileCard
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+          />
         </Item>
         <Box
           sx={{

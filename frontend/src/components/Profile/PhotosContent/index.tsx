@@ -3,31 +3,80 @@
 import { Item } from "@/components/shared/Item";
 import {
   Box,
-  Grid,
+  Button,
   SpeedDial,
   SpeedDialAction,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Delete } from "@mui/icons-material";
+import wall from "../../../../public/mockBG.png";
+import deleteIcon from "../../../../public/icons/delete.svg";
+import AlertDialog from "@/components/shared/Dialog";
+import { useState } from "react";
 
-export default function PhotosContent() {
-  const numDivs = 7;
+interface PhotosContentProps {
+  isMainBoard: boolean;
+  setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
+}
+
+export default function PhotosContent({
+  isMainBoard,
+  setSelectedTab,
+}: PhotosContentProps) {
+  const [open, setOpen] = useState<boolean>(false);
+
+  const nums = [0, 1, 2, 3, 4, 5, 6];
+
+  const newNums = isMainBoard ? nums.slice(0, 3) : nums;
+
   return (
-    <Box>
-      <Typography variant="h5" component="h3">
-        Photos
-      </Typography>
+    <Box sx={{ mt: "23px" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography
+          sx={{
+            fontFamily: "Gloria Hallelujah !important",
+            fontSize: "30px",
+            p: `${!isMainBoard && "0 60px"}`,
+          }}
+        >
+          Photos
+        </Typography>
+        {isMainBoard && (
+          <Button onClick={() => setSelectedTab("Photos")}>
+            <Typography
+              sx={{
+                fontFamily: "Gloria Hallelujah !important",
+                fontSize: "18px",
+              }}
+            >
+              View All Photos &#x2192;
+            </Typography>
+          </Button>
+        )}
+      </Box>
       <Box
         sx={{
           flexGrow: 1,
           mt: "18px",
         }}
       >
-        <Grid container spacing={2}>
-          {Array.from({ length: numDivs }, (_, index) => (
-            <Grid
+        <Box
+          sx={{
+            display: "flex",
+            gap: "23px",
+            justifyContent: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          {newNums.map((_, index) => (
+            <Box
               sx={{
                 cursor: "pointer",
                 "&:hover": {
@@ -35,12 +84,9 @@ export default function PhotosContent() {
                 },
               }}
               key={index}
-              item
-              md={2.3}
             >
               <Item
                 sx={{
-                  border: "1px solid #0000001a",
                   width: "220px",
                   height: "270px",
                   position: "relative",
@@ -63,7 +109,7 @@ export default function PhotosContent() {
                       height: "32px",
                       boxShadow: "none",
                       "&:hover": {
-                        backgroundColor: "#00000014",
+                        backgroundColor: "white",
                       },
                       "&:active": {
                         backgroundColor: "transparent",
@@ -76,16 +122,39 @@ export default function PhotosContent() {
                   }}
                 >
                   <SpeedDialAction
-                    icon={<Delete />}
-                    tooltipTitle="DELETE PHOTO"
+                    onClick={() => setOpen(true)}
+                    icon={
+                      <Image
+                        width={30}
+                        height={30}
+                        src={deleteIcon}
+                        alt="delete"
+                      />
+                    }
+                    tooltipTitle={
+                      <Typography
+                        sx={{
+                          fontFamily: "Schoolbell !important",
+                          fontSize: "20px",
+                        }}
+                      >
+                        Delete Photo
+                      </Typography>
+                    }
                   />
                 </SpeedDial>
-                <Image src="" alt="" />
+                <Image src={wall} alt="photo" />
               </Item>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </Box>
+      <AlertDialog
+        title="Are you sure you don't want to delete this photo?"
+        dialogText=""
+        open={open}
+        setOpen={setOpen}
+      />
     </Box>
   );
 }

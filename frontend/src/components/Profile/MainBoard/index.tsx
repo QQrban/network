@@ -1,16 +1,17 @@
 "use client";
 
-import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import CreatePost from "../../shared/CreatePost";
-import ContactInfo from "./ContactInfo";
-import EducationSection from "../../shared/EducationSection";
 import PostsSection from "../../shared/PostsSection";
 import { useRouter } from "next/navigation";
-import ExperienceSection from "../../shared/ExperienceSection";
 import { Item } from "@/components/shared/Item";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
+import PhotosContent from "../PhotosContent";
 
-export default function MainBoard() {
+interface Props {
+  setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
+}
+
+export default function MainBoard({ setSelectedTab }: Props) {
   const posts = ["post", "post"];
   const router = useRouter();
   let id: number = 10561654311;
@@ -26,7 +27,7 @@ export default function MainBoard() {
     >
       <Box
         sx={{
-          width: "50%",
+          width: "600px",
         }}
       >
         <CreatePost />
@@ -44,6 +45,8 @@ export default function MainBoard() {
               onClick={() => router.push(`/profile/${id}/all-posts`)}
               sx={{
                 mt: "20px",
+                fontFamily: "Gloria Hallelujah",
+                fontSize: "18px",
               }}
             >
               View All Posts &#x2192;
@@ -64,74 +67,38 @@ export default function MainBoard() {
           </Typography>
         )}
       </Box>
-      <Box
-        sx={{
-          width: "50%",
-        }}
-      >
-        <ContactInfo />
+      <Box>
         <Item
-          sx={{
-            mt: "23px",
-          }}
           radius="8px"
-        >
-          <Box
-            sx={{
-              p: "10px 17px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography fontSize={20}>Education</Typography>
-            <IconButton>
-              <BorderColorIcon sx={{ color: "#2a2a2a" }} />
-            </IconButton>
-          </Box>
-          <Divider />
-          <Box
-            sx={{
-              p: "10px 17px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "15px",
-            }}
-          >
-            <EducationSection size="medium" />
-          </Box>
-        </Item>
-        <Item
           sx={{
-            mt: "23px",
+            width: "100%",
+            p: "10px 20px",
+            alignSelf: "flex-start",
           }}
-          radius="8px"
         >
-          <Box
+          <Typography
             sx={{
-              p: "10px 17px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              fontFamily: "Gloria Hallelujah !important",
+              fontWeight: 600,
+              fontSize: "28px",
             }}
           >
-            <Typography fontSize={20}>Experience</Typography>
-            <IconButton>
-              <BorderColorIcon sx={{ color: "#2a2a2a" }} />
-            </IconButton>
-          </Box>
-          <Divider />
-          <Box
-            sx={{
-              p: "10px 17px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "15px",
-            }}
-          >
-            <ExperienceSection size="medium" />
-          </Box>
+            About
+          </Typography>
+          <Typography sx={{ mt: "13px" }}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+            ac porttitor odio. Quisque suscipit neque arcu, non volutpat orci
+            condimentum nec. Morbi efficitur a mauris a ultrices. Sed luctus,
+            nibh id facilisis ullamcorper, diam purus euismod odio, quis
+            fringilla sapien ligula eu dolor. Nunc id tempor mi. Nunc id urna eu
+            nisl venenatis aliquet. Donec id urna rutrum, scelerisque ex
+            facilisis, rhoncus elit. Nunc tellus felis, aliquam nec pharetra ac,
+            rhoncus eu erat. Suspendisse maximus pellentesque pulvinar. In hac
+            habitasse platea dictumst. Fusce tempus volutpat felis, vitae
+            faucibus eros eleifend nec. Maecenas commodo luctus leo ut ornare.
+          </Typography>
         </Item>
+        <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={true} />
       </Box>
     </Box>
   );

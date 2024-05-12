@@ -3,14 +3,22 @@
 import LeftColumnMainPage from "@/components/MainPage/LeftColumn";
 import PostsSection from "@/components/shared/PostsSection";
 import ContactsSection from "@/components/shared/ContactsSection";
-import { Item } from "@/components/shared/Item";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
-export default function showAllPosts() {
+export default function ShowAllPosts() {
   const posts = ["post", "post", "post", "post"];
 
   return (
-    <>
+    <Box sx={{ mt: "13px" }}>
+      <Typography
+        sx={{
+          fontFamily: "Gloria Hallelujah !important",
+          fontSize: "39px",
+          textAlign: "center",
+        }}
+      >
+        All Posts
+      </Typography>
       <Box
         sx={{
           display: "flex",
@@ -23,7 +31,7 @@ export default function showAllPosts() {
           sx={{
             mt: "23px",
             position: "sticky",
-            top: "80px",
+            top: "10px",
             height: "430px",
           }}
         >
@@ -34,15 +42,12 @@ export default function showAllPosts() {
             position: "relative",
           }}
         >
-          <Item
-            sx={{
-              overflow: "hidden",
-            }}
-            radius="8px"
-          ></Item>
           <Box
             sx={{
               mt: "25px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "23px",
             }}
           >
             {posts
@@ -61,6 +66,6 @@ export default function showAllPosts() {
           <ContactsSection />
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }

@@ -1,8 +1,10 @@
 "use client";
 
-import { Box, Button, styled } from "@mui/material";
+import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { FollowersProps, followers, followings } from "./mock";
+import ConfirmBtn from "@/components/shared/ConfirmBtn";
+import confirmBtn from "../../../../public/icons/confirmButton.svg";
 
 import FollowersSection from "@/components/shared/FollowersSection";
 
@@ -23,18 +25,30 @@ export default function ContactsContent() {
           gap: "26px",
         }}
       >
-        <Button
-          onClick={() => setActiveTab(true)}
-          variant={activeTab ? "contained" : "outlined"}
+        <Box
+          sx={{
+            background: activeTab ? "#500606" : "",
+            width: "160px",
+          }}
         >
-          Followers
-        </Button>
-        <Button
-          onClick={() => setActiveTab(false)}
-          variant={!activeTab ? "contained" : "outlined"}
+          <ConfirmBtn
+            backgroundImage={confirmBtn.src}
+            text="Followers"
+            onClick={() => setActiveTab(true)}
+          />
+        </Box>
+        <Box
+          sx={{
+            background: !activeTab ? "#500606" : "",
+            width: "160px",
+          }}
         >
-          Following
-        </Button>
+          <ConfirmBtn
+            backgroundImage={confirmBtn.src}
+            text="Following"
+            onClick={() => setActiveTab(false)}
+          />
+        </Box>
       </Box>
       <Box
         sx={{

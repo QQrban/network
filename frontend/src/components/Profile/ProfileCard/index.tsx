@@ -1,27 +1,33 @@
 "use client";
 
 import { Box, Divider, Typography } from "@mui/material";
-import ProfileBackground from "./ProfileBackground";
 import ProfileAvatar from "./ProfileAvatar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const tabStyle = (isActive: boolean) => ({
   pb: "11px",
   borderBottom: isActive ? "3px solid #6495ED" : "none",
+  fontFamily: "Schoolbell !important",
+  fontSize: "19px",
   cursor: "pointer",
 });
 
 interface Props {
+  selectedTab: String;
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
 }
 
-export default function ProfileCard({ setSelectedTab }: Props) {
+export default function ProfileCard({ setSelectedTab, selectedTab }: Props) {
   const [activeTab, setActiveTab] = useState<String>("Main Board");
 
   const handleTabClick = (tabName: String) => {
     setActiveTab(tabName);
     setSelectedTab(tabName);
   };
+
+  useEffect(() => {
+    setActiveTab(selectedTab);
+  }, [selectedTab]);
 
   const tabs = ["Main Board", "Contacts", "Photos"];
 
@@ -30,29 +36,20 @@ export default function ProfileCard({ setSelectedTab }: Props) {
       sx={{
         position: "relative",
         textAlign: "center",
+        mt: "23px",
       }}
     >
-      <ProfileBackground />
       <ProfileAvatar />
       <Typography
         sx={{
-          fontSize: "32px",
-          mt: "85px",
+          fontSize: "42px",
           fontWeight: 600,
           color: "#2A2A2A",
+          fontFamily: "Gloria Hallelujah",
         }}
         component="h2"
       >
         Kurban Ramazanov
-      </Typography>
-      <Typography
-        sx={{
-          fontSize: "14px",
-          color: "#959595",
-        }}
-        component="h2"
-      >
-        Frontend (React, Next.js) developer
       </Typography>
       <Divider sx={{ mt: "11px" }} />
       <Box

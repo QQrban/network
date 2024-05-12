@@ -6,12 +6,15 @@ import PostsSection from "../../shared/PostsSection";
 import { useRouter } from "next/navigation";
 import { Item } from "@/components/shared/Item";
 import PhotosContent from "../PhotosContent";
+import { useSelector } from "react-redux";
 
 interface Props {
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
 }
 
 export default function MainBoard({ setSelectedTab }: Props) {
+  const profile = useSelector((state: any) => state.profileReducer.value);
+
   const posts = ["post", "post"];
   const router = useRouter();
   let id: number = 10561654311;
@@ -85,17 +88,18 @@ export default function MainBoard({ setSelectedTab }: Props) {
           >
             About
           </Typography>
-          <Typography sx={{ mt: "13px" }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-            ac porttitor odio. Quisque suscipit neque arcu, non volutpat orci
-            condimentum nec. Morbi efficitur a mauris a ultrices. Sed luctus,
-            nibh id facilisis ullamcorper, diam purus euismod odio, quis
-            fringilla sapien ligula eu dolor. Nunc id tempor mi. Nunc id urna eu
-            nisl venenatis aliquet. Donec id urna rutrum, scelerisque ex
-            facilisis, rhoncus elit. Nunc tellus felis, aliquam nec pharetra ac,
-            rhoncus eu erat. Suspendisse maximus pellentesque pulvinar. In hac
-            habitasse platea dictumst. Fusce tempus volutpat felis, vitae
-            faucibus eros eleifend nec. Maecenas commodo luctus leo ut ornare.
+          <Typography
+            sx={{
+              mt: "13px",
+              fontSize: "21px",
+              fontFamily: profile.about
+                ? "inherit"
+                : "Gloria Hallelujah !important",
+            }}
+          >
+            {profile.about
+              ? profile.about
+              : "Mr. X preferred to remain incognito and said nothing about himself."}
           </Typography>
         </Item>
         <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={true} />

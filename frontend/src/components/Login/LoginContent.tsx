@@ -59,7 +59,6 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
               country: data.country,
             })
           );
-          console.log("Login successful");
         } else {
           console.error("Login failed");
         }

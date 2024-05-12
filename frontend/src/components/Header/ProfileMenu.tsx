@@ -7,6 +7,7 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import { fetchFromServer } from "@/lib/api";
 import profileSvg from "../../../public/icons/profile.svg";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 export default function ProfileMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -15,14 +16,13 @@ export default function ProfileMenu() {
     setAnchorEl(event.currentTarget);
   };
 
-  let id: number = 10561654311;
+  const id = useSelector((state: any) => state.authReducer.value.id);
 
   const handleLogout = async () => {
     const response = await fetchFromServer("/logout", {
       method: "GET",
       credentials: "include",
     });
-    console.log(response);
 
     if (response.ok) {
       handleClose();

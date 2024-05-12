@@ -3,6 +3,7 @@
 import { Box, Divider, Typography } from "@mui/material";
 import ProfileAvatar from "./ProfileAvatar";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const tabStyle = (isActive: boolean) => ({
   pb: "11px",
@@ -19,6 +20,7 @@ interface Props {
 
 export default function ProfileCard({ setSelectedTab, selectedTab }: Props) {
   const [activeTab, setActiveTab] = useState<String>("Main Board");
+  const profile = useSelector((state: any) => state.profileReducer.value);
 
   const handleTabClick = (tabName: String) => {
     setActiveTab(tabName);
@@ -49,7 +51,7 @@ export default function ProfileCard({ setSelectedTab, selectedTab }: Props) {
         }}
         component="h2"
       >
-        Kurban Ramazanov
+        {profile.firstName} {profile.lastName}
       </Typography>
       <Divider sx={{ mt: "11px" }} />
       <Box

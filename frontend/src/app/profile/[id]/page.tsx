@@ -8,9 +8,40 @@ import { Item } from "@/components/shared/Item";
 import profileCardBg from "../../../../public/eventBG.svg";
 
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchFromServer } from "@/lib/api";
+import { usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { putProfile } from "@/redux/features/profile/profileSlice";
 
 export default function ProfilePage() {
+  const dispatch = useDispatch();
+
+  const pathname = usePathname().slice(-1);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const getUser = await fetchFromServer(`/user/${pathname}`);
+        const userData = await getUser.json();
+        dispatch(
+          putProfile({
+            id: userData.ID,
+            about: userData.about,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            nickname: userData.nickname,
+            private: userData.private,
+          })
+        );
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    }
+
+    fetchData();
+  }, [pathname, dispatch]);
+
   const [selectedTab, setSelectedTab] = useState<String>("Main Board");
 
   const renderContent = () => {
@@ -41,6 +72,8 @@ export default function ProfilePage() {
             overflow: "hidden",
             backgroundImage: `url(${profileCardBg.src})`,
             backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
           }}
           radius="8px"
         >
@@ -52,6 +85,8 @@ export default function ProfilePage() {
         <Box
           sx={{
             mt: "25px",
+            width: "1300px",
+            m: "23px auto 0 auto",
           }}
         >
           {renderContent()}

@@ -28,7 +28,7 @@ export default function PhotosContent({
 
   const nums = [0, 1, 2, 3, 4, 5, 6];
 
-  const newNums = isMainBoard ? nums.slice(0, 3) : nums;
+  const newNums = isMainBoard ? nums.slice(0, 4) : nums;
 
   return (
     <Box sx={{ mt: "23px" }}>

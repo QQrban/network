@@ -7,10 +7,32 @@ import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import confirmBtn from "../../../../public/icons/confirmButton.svg";
 
 import FollowersSection from "@/components/shared/FollowersSection";
+import { usePathname } from "next/navigation";
+import { fetchFromServer } from "@/lib/api";
 
 export default function ContactsContent() {
   const [activeTab, setActiveTab] = useState<boolean>(true);
   const [peopleList, setPeopleList] = useState<FollowersProps[]>(followers);
+  const [profileId, setProfileId] = useState<string>("");
+
+  const pathname = usePathname().split("/").pop();
+
+  useEffect(() => {
+    if (pathname !== undefined) {
+      setProfileId(pathname);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    const getFollowers = async () => {
+      if (profileId) {
+        const response = await fetchFromServer(`/user/${profileId}/followers`);
+        const data = await response.json();
+        console.log(data);
+      }
+    };
+    getFollowers();
+  }, [profileId]);
 
   useEffect(() => {
     activeTab ? setPeopleList(followers) : setPeopleList(followings);

@@ -102,7 +102,6 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
               country: data.country,
             })
           );
-          console.log("User registered successfully");
         } else {
           console.error("Registration failed");
         }

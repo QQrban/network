@@ -15,8 +15,9 @@ import bgWall from "../../public/icons/wall.svg";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
   const [showLoading, setShowLoading] = useState(true);
-  const auth = useSelector((state: any) => state.authReducer.value.isAuth);
   const [authChecked, setAuthChecked] = useState(false);
+
+  const auth = useSelector((state: any) => state.authReducer.value.isAuth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -41,9 +42,6 @@ export default function MainScreen({ children }: { children: ReactNode }) {
                 country: data.country,
               })
             );
-            const getUser = await fetchFromServer(`/user/${data.ID}`);
-            const userData = await getUser.json();
-            console.log(userData);
           }
         }
       } catch (error) {

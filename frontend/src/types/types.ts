@@ -1,6 +1,7 @@
 export interface ContactsProps {
-  id: number;
+  ID: number;
   firstName: string;
   lastName: string;
   nickname: string;
+  image: string | null;
 }

@@ -2,17 +2,14 @@
 
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import { FollowersProps, followers, followings } from "./mock";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import confirmBtn from "../../../../public/icons/confirmButton.svg";
 
 import FollowersSection from "@/components/shared/FollowersSection";
 import { usePathname } from "next/navigation";
-import { fetchFromServer } from "@/lib/api";
 
 export default function ContactsContent() {
-  const [activeTab, setActiveTab] = useState<boolean>(true);
-  const [peopleList, setPeopleList] = useState<FollowersProps[]>(followers);
+  const [activeTab, setActiveTab] = useState<string>("Followers");
   const [profileId, setProfileId] = useState<string>("");
 
   const pathname = usePathname().split("/").pop();
@@ -22,21 +19,6 @@ export default function ContactsContent() {
       setProfileId(pathname);
     }
   }, [pathname]);
-
-  useEffect(() => {
-    const getFollowers = async () => {
-      if (profileId) {
-        const response = await fetchFromServer(`/user/${profileId}/followers`);
-        const data = await response.json();
-        console.log(data);
-      }
-    };
-    getFollowers();
-  }, [profileId]);
-
-  useEffect(() => {
-    activeTab ? setPeopleList(followers) : setPeopleList(followings);
-  }, [activeTab]);
 
   return (
     <Box>
@@ -49,26 +31,26 @@ export default function ContactsContent() {
       >
         <Box
           sx={{
-            background: activeTab ? "#500606" : "",
+            background: activeTab === "Followers" ? "#500606" : "",
             width: "160px",
           }}
         >
           <ConfirmBtn
             backgroundImage={confirmBtn.src}
             text="Followers"
-            onClick={() => setActiveTab(true)}
+            onClick={() => setActiveTab("Followers")}
           />
         </Box>
         <Box
           sx={{
-            background: !activeTab ? "#500606" : "",
+            background: activeTab === "Following" ? "#500606" : "",
             width: "160px",
           }}
         >
           <ConfirmBtn
             backgroundImage={confirmBtn.src}
             text="Following"
-            onClick={() => setActiveTab(false)}
+            onClick={() => setActiveTab("Following")}
           />
         </Box>
       </Box>
@@ -81,7 +63,7 @@ export default function ContactsContent() {
           justifyContent: "center",
         }}
       >
-        <FollowersSection activeTab={activeTab} peopleList={peopleList} />
+        <FollowersSection activeTab={activeTab} profileId={profileId} />
       </Box>
     </Box>
   );

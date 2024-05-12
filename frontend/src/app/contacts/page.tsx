@@ -2,13 +2,9 @@
 
 import { useState } from "react";
 import { Box, Tab, Tabs, Typography, styled } from "@mui/material";
-import {
-  FollowersProps,
-  followers,
-  followings,
-  topContacts,
-} from "@/components/Profile/ContactsContent/mock";
+
 import FollowersSection from "@/components/shared/FollowersSection";
+import { useSelector } from "react-redux";
 
 const StyledTab = styled(Tab)`
   font-family: Gloria Hallelujah, sans-serif;
@@ -17,17 +13,10 @@ const StyledTab = styled(Tab)`
 
 export default function Followers() {
   const [activeTab, setActiveTab] = useState<string>("Followers");
-  const [peopleList, setPeopleList] = useState<FollowersProps[]>(followers);
+  const profileId = useSelector((state: any) => state.authReducer.value.id);
 
   const handleActiveTab = (tab: string) => {
     setActiveTab(tab);
-    if (tab === "Followers") {
-      setPeopleList(followers);
-    } else if (tab === "Followings") {
-      setPeopleList(followings);
-    } else if (tab === "Favorite Contacts") {
-      setPeopleList(topContacts);
-    }
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -42,7 +31,7 @@ export default function Followers() {
         aria-label="Followers tabs"
       >
         <StyledTab label="Followers" value="Followers" />
-        <StyledTab label="Followings" value="Followings" />
+        <StyledTab label="Followings" value="Following" />
         <StyledTab label="Favorite Contacts" value="Favorite Contacts" />
       </Tabs>
       <Typography
@@ -64,7 +53,7 @@ export default function Followers() {
           justifyContent: "center",
         }}
       >
-        <FollowersSection activeTab={activeTab} peopleList={peopleList} />
+        <FollowersSection activeTab={activeTab} profileId={profileId} />
       </Box>
     </Box>
   );

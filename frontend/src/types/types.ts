@@ -5,3 +5,13 @@ export interface ContactsProps {
   nickname: string;
   image: string | null;
 }
+
+export interface GroupProps {
+  ID: number;
+  created: string;
+  title: string;
+  description: string;
+  IncludesMe: boolean;
+  ownerID: number;
+  pendingRequest: boolean;
+}

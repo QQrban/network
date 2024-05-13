@@ -128,7 +128,6 @@ export default function SearchHeader() {
               <Box
                 onClick={clickedLink}
                 sx={{
-                  fontFamily: "Gloria Hallelujah !important",
                   fontSize: "20px",
                   "&:hover": {
                     background: "#dedede",

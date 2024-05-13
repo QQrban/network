@@ -16,10 +16,11 @@ import AlertDialog from "../shared/Dialog";
 
 interface GroupItemProps {
   title: string;
-  members: number;
+  members?: number;
+  groupId: number;
 }
 
-export default function GroupItem({ title, members }: GroupItemProps) {
+export default function GroupItem({ title, members, groupId }: GroupItemProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   const leaveGroup: MouseEventHandler<HTMLElement> = async (event) => {
@@ -29,7 +30,7 @@ export default function GroupItem({ title, members }: GroupItemProps) {
 
   return (
     <>
-      <Link href="/groups/1">
+      <Link href={`/groups/${groupId}`}>
         <List
           sx={{
             cursor: "pointer",
@@ -49,7 +50,19 @@ export default function GroupItem({ title, members }: GroupItemProps) {
                 <Image src={noPhoto} alt="profile" />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={title} secondary={`${members} members`} />
+            <ListItemText
+              primary={
+                <Typography
+                  sx={{
+                    fontSize: "28px",
+                    fontFamily: "Schoolbell !important",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {title}
+                </Typography>
+              }
+            />
           </ListItem>
           <SpeedDial
             onClick={(e) => e.preventDefault()}

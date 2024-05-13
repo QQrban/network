@@ -11,15 +11,18 @@ import successBtn from "../../../public/icons/successBtn.svg";
 import { useEffect, useState } from "react";
 import { fetchFromServer } from "@/lib/api";
 import CreateGroupModal from "@/components/Group/CreateGroupModal";
+import { GroupProps } from "@/types/types";
 
 export default function Groups() {
-  const [groups, setGroups] = useState([]);
+  const [groups, setGroups] = useState<GroupProps[]>([]);
   const [createdGroup, setCreatedGroup] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
   const fetchGroups = async () => {
     try {
-      const response = await fetchFromServer("/groups");
+      const response = await fetchFromServer("/groups", {
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         setGroups(data);
@@ -95,24 +98,22 @@ export default function Groups() {
         }}
       >
         <Item
-          sx={{ width: "70%", overflow: "hidden", pr: "10px" }}
+          sx={{
+            width: "70%",
+            overflow: "hidden",
+            pr: "10px",
+            alignSelf: "flex-start",
+          }}
           radius="8px"
         >
-          <Box
-            sx={{
-              p: "16px 0 0 16px",
-            }}
-          ></Box>
-          {groups ? (
-            <>
-              <GroupItem title="Ctrl + Alt + Delete Club" members={57982} />
-              <Divider />
-              <GroupItem title="Ctrl + Alt + Delete Club" members={57982} />
-              <Divider />
-              <GroupItem title="FOR JS!" members={8796} />
-              <Divider />
-              <GroupItem title="Python Maniacs" members={22901} />
-            </>
+          {groups.length > 0 ? (
+            groups.map((group) => (
+              <GroupItem
+                key={group.ID}
+                groupId={group.ID}
+                title={group.title}
+              />
+            ))
           ) : (
             <Typography
               sx={{

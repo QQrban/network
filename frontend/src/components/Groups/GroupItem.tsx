@@ -40,7 +40,7 @@ export default function GroupItem({ title, members, groupId }: GroupItemProps) {
             alignItems: "center",
             justifyContent: "space-between",
             height: "80px",
-            p: "6px",
+            p: "10px",
             "&:hover": { bgcolor: "#f3f3f3" },
           }}
         >

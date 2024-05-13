@@ -113,7 +113,7 @@ export default function EventSection({ events, page }: EventSectionProps) {
             >
               {event.description}
             </Box>
-            <Box sx={{ width: "180px" }}>
+            <Box sx={{ maxWidth: "200px" }}>
               <ConfirmBtn
                 onClick={() => handleClick(event.title, event.interested)}
                 backgroundImage={

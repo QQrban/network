@@ -25,7 +25,6 @@ export default function Groups() {
       });
       if (response.ok) {
         const data = await response.json();
-
         setGroups(data);
         console.log(data);
       } else {
@@ -102,7 +101,6 @@ export default function Groups() {
           sx={{
             width: "70%",
             overflow: "hidden",
-            pr: "10px",
             alignSelf: "flex-start",
           }}
           radius="8px"

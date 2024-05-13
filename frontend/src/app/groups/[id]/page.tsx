@@ -23,11 +23,13 @@ import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import confirmBtn from "../../../../public/icons/confirmButton.svg";
 import copyIcon from "../../../../public/icons/copy.svg";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreatePost from "@/components/shared/CreatePost";
 import PostsSection from "@/components/shared/PostsSection";
 import EventSection from "@/components/Events/EventSection";
 import { yourEvents } from "@/components/Events/mock";
+import { usePathname } from "next/navigation";
+import { fetchFromServer } from "@/lib/api";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -41,7 +43,29 @@ const StyledTab = styled(Tab)`
 `;
 
 export default function GroupPage() {
+  const [mainInfo, setMainInfo] = useState([]);
   const [activeTab, setActiveTab] = useState<string>("posts");
+
+  const pathname = usePathname().split("/").pop();
+
+  useEffect(() => {
+    const fetchGroup = async () => {
+      try {
+        const response = await fetchFromServer(`/group/${pathname}`, {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+        } else {
+          throw new Error("Failed to fetch groups");
+        }
+      } catch (error) {
+        console.error("Failed to fetch groups:", error);
+      }
+    };
+    fetchGroup();
+  }, [pathname]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue);

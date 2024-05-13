@@ -14,4 +14,5 @@ export interface GroupProps {
   IncludesMe: boolean;
   ownerID: number;
   pendingRequest: boolean;
+  ownerName: string;
 }

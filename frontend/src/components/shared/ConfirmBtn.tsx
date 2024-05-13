@@ -22,6 +22,9 @@ export default function ConfirmBtn({
         height: "44px",
         mt: 0,
         backgroundImage: `url(${backgroundImage})`,
+        "&:hover": {
+          filter: "brightness(92%)",
+        },
       }}
     >
       {text}

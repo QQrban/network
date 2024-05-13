@@ -32,99 +32,71 @@ export default function EventSection({ events, page }: EventSectionProps) {
 
   return (
     <>
-      <Typography
-        sx={{ fontFamily: "Gloria Hallelujah !important" }}
-        variant="h4"
-        component="h5"
-      ></Typography>
-      <Box
-        sx={{
-          mt: "23px",
-          gap: "23px",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {events.map((event) => (
-          <Item
-            key={event.id}
+      {events.map((event) => (
+        <Item
+          key={event.id}
+          sx={{
+            backgroundImage: `url(${eventBg.src})`,
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            gap: "23px",
+            alignItems: "center",
+            justifyContent: "space-between",
+            p: "10px",
+            position: "relative",
+          }}
+          radius="12px"
+        >
+          <Box
             sx={{
-              backgroundImage: `url(${eventBg.src})`,
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-              cursor: "pointer",
-              overflow: "hidden",
               display: "flex",
-              gap: "23px",
-              height: "190px",
-              alignItems: "center",
-              justifyContent: "space-between",
-              p: "10px",
-              position: "relative",
-              "&:hover": {
-                filter: "brightness(97%)",
-              },
+              flexDirection: "column",
             }}
-            radius="12px"
           >
             <Box
               sx={{
-                display: "flex",
+                p: "20px",
               }}
             >
-              <Box
-                sx={{
-                  width: "180px",
-                  height: "120px",
-                  borderRadius: "6px",
-                  overflow: "hidden",
-                }}
-              >
-                <Image src={mockBg} alt="scratches" />
-              </Box>
-              <Box
-                sx={{
-                  p: "20px",
-                }}
-              >
-                <Box>
-                  <Typography sx={{ fontWeight: 600 }}>{event.date}</Typography>
-                  <Typography
-                    sx={{
-                      fontSize: "22px",
-                      fontWeight: 600,
-                      width: "190px",
-                      fontFamily: "Schoolbell !important",
-                    }}
-                  >
-                    {event.title}
-                  </Typography>
-                  <Typography sx={{ color: "#2a2a2a6c" }}>
-                    {event.location}
-                  </Typography>
-                </Box>
+              <Box>
+                <Typography sx={{ fontWeight: 600 }}>{event.date}</Typography>
+                <Typography
+                  sx={{
+                    fontSize: "22px",
+                    fontWeight: 600,
+                    fontFamily: "Schoolbell !important",
+                  }}
+                >
+                  {event.title}
+                </Typography>
+                <Typography sx={{ color: "#2a2a2a6c" }}>
+                  {event.location}
+                </Typography>
               </Box>
             </Box>
-            <Box
-              sx={{
-                maxWidth: "300px",
-                fontSize: "16px",
-              }}
-            >
-              {event.description}
-            </Box>
-            <Box sx={{ maxWidth: "200px" }}>
-              <ConfirmBtn
-                onClick={() => handleClick(event.title, event.interested)}
-                backgroundImage={
-                  event.interested ? confirmedBtn.src : errorBtn.src
-                }
-                text={event.interested ? "Interested" : "Not Interested"}
-              />
-            </Box>
-          </Item>
-        ))}
-      </Box>
+          </Box>
+          <Box
+            sx={{
+              maxWidth: "300px",
+              fontSize: "16px",
+            }}
+          >
+            {event.description}
+          </Box>
+          <Box sx={{ maxWidth: "200px" }}>
+            <ConfirmBtn
+              onClick={() => handleClick(event.title, event.interested)}
+              backgroundImage={
+                event.interested ? confirmedBtn.src : errorBtn.src
+              }
+              text={event.interested ? "Interested" : "Not Interested"}
+            />
+          </Box>
+        </Item>
+      ))}
       <AlertDialog
         title={`*${eventName.toUpperCase()}?*`}
         dialogText="Are you sure you don't want to go to this event?"

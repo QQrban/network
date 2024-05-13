@@ -27,7 +27,9 @@ export default function Events() {
         Your Events
       </Typography>
       {events.length > 0 ? (
-        <EventSection events={events} />
+        <Box sx={{ mt: "23px", display: "flex", gap: "23px" }}>
+          <EventSection events={events} />
+        </Box>
       ) : (
         <Typography sx={{ fontSize: "30px" }}>
           You are not currently participating in any events.

@@ -12,15 +12,13 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import mockBg from "../../../../public/mockBG.png";
 import cardBg from "../../../../public/icons/cardBG.svg";
 import profileIcon from "../../../../public/icons/profile.svg";
-import noPhoto from "../../../../public/background-svgrepo-com.png";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
 import Link from "next/link";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import confirmBtn from "../../../../public/icons/confirmButton.svg";
+import successBtn from "../../../../public/icons/successBtn.svg";
 import copyIcon from "../../../../public/icons/copy.svg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -30,6 +28,7 @@ import EventSection from "@/components/Events/EventSection";
 import { yourEvents } from "@/components/Events/mock";
 import { usePathname } from "next/navigation";
 import { fetchFromServer } from "@/lib/api";
+import { GroupProps } from "@/types/types";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -43,7 +42,7 @@ const StyledTab = styled(Tab)`
 `;
 
 export default function GroupPage() {
-  const [mainInfo, setMainInfo] = useState([]);
+  const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
 
   const pathname = usePathname().split("/").pop();
@@ -56,6 +55,7 @@ export default function GroupPage() {
         });
         if (response.ok) {
           const data = await response.json();
+          setMainInfo(data);
           console.log(data);
         } else {
           throw new Error("Failed to fetch groups");
@@ -76,11 +76,12 @@ export default function GroupPage() {
       sx={{
         p: "40px",
         display: "flex",
+        justifyContent: "center",
         gap: "23px",
         position: "relative",
       }}
     >
-      <Box sx={{ width: "70%" }}>
+      <Box sx={{ width: "600px" }}>
         <Item
           sx={{
             overflow: "hidden",
@@ -95,46 +96,35 @@ export default function GroupPage() {
         >
           <Box
             sx={{
-              width: "100%",
-              height: "180px",
-              backgroundImage: `url(${mockBg.src})`,
-            }}
-          ></Box>
-          <Box
-            sx={{
-              width: "160px",
-              height: "160px",
-              border: "4px solid #ffffff",
-              backgroundImage: `url(${noPhoto.src})`,
-              backgroundColor: "white",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              position: "absolute",
-              top: "90px",
-              left: "30px",
-            }}
-          ></Box>
-          <Box
-            sx={{
-              p: "90px 0 6px 40px",
+              p: "20px",
               display: "flex",
               flexDirection: "column",
               gap: "8px",
             }}
           >
-            <StyledTypography>Green energy lovers</StyledTypography>
+            <StyledTypography>{mainInfo && mainInfo.title}</StyledTypography>
             <Typography sx={{ color: "#979797" }}>98327 members</Typography>
-            <Box sx={{ maxWidth: "250px" }}>
-              <ConfirmBtn
-                backgroundImage={confirmBtn.src}
-                text="Request to Join Group"
-              />
+            <Box
+              sx={{
+                display: "flex",
+                gap: "23px",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box sx={{ width: "120px" }}>
+                <ConfirmBtn backgroundImage={confirmBtn.src} text="Invite" />
+              </Box>
+              <Box sx={{ width: "190px" }}>
+                <ConfirmBtn
+                  backgroundImage={successBtn.src}
+                  text="Create Event"
+                />
+              </Box>
             </Box>
             <SpeedDial
               sx={{
                 position: "absolute",
-                top: "190px",
+                top: "20px",
                 right: "12px",
               }}
               ariaLabel="SpeedDial openIcon example"
@@ -203,7 +193,6 @@ export default function GroupPage() {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                width: "600px",
                 gap: "23px",
               }}
             >
@@ -213,60 +202,16 @@ export default function GroupPage() {
               <PostsSection />
               <PostsSection />
             </Box>
-            <Item
-              sx={{
-                position: "sticky",
-                top: "90px",
-                alignSelf: "flex-start",
-                width: "100%",
-                p: "14px",
-              }}
-              radius="8px"
-            >
-              <StyledTypography>Top Group Members</StyledTypography>
-              {[0, 1, 2, 3, 4, 5, 6].map((_, index) => (
-                <Link key={index} href="#">
-                  <Box
-                    sx={{
-                      mt: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      padding: "4px",
-                      "&:hover": {
-                        backgroundColor: "#cacaca49",
-                      },
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: "45px",
-                        height: "45px",
-                        borderRadius: "50%",
-                        overflow: "hidden",
-                        border: "2px solid #cacacac9",
-                      }}
-                    >
-                      <Image src={profileIcon} alt="profile" />
-                    </Box>
-                    <Box>
-                      <Typography
-                        sx={{
-                          fontFamily: "Schoolbell !important",
-                          fontWeight: 600,
-                          fontSize: "17px",
-                        }}
-                      >
-                        Albert Einstein
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Link>
-              ))}
-            </Item>
           </Box>
         ) : (
-          <Box>
+          <Box
+            sx={{
+              mt: "23px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "23px",
+            }}
+          >
             <EventSection events={yourEvents} />
           </Box>
         )}
@@ -279,7 +224,6 @@ export default function GroupPage() {
           display: "flex",
           flexDirection: "column",
           gap: "23px",
-          width: "30%",
         }}
       >
         <Item
@@ -290,11 +234,7 @@ export default function GroupPage() {
         >
           <StyledTypography>About</StyledTypography>
           <Typography sx={{ mt: "9px" }}>
-            Welcome to Green Energy Lovers, the ultimate hangout for those who
-            get a buzz from buzzwords like "sustainable", "renewable", and "100%
-            organic electricity". This group is for anyone who believes their
-            love for Mother Earth can be measured in kilowatt-hours and those
-            who dream of dating a wind turbine.
+            {mainInfo && mainInfo.description}
           </Typography>
         </Item>
         <Item
@@ -304,16 +244,30 @@ export default function GroupPage() {
           radius="8px"
         >
           <StyledTypography>Admins</StyledTypography>
-          <Link href="/profile/123">
+          <Link href={`/profile/${mainInfo?.ownerID}`}>
             <Box
               sx={{
                 mt: "12px",
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
+                p: "4px",
+                "&:hover": {
+                  background: "#edededc8",
+                },
               }}
             >
-              <Avatar src="/broken-image.jpg" />
+              <Box
+                sx={{
+                  width: "45px",
+                  height: "45px",
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  border: "2px solid #cacacac9",
+                }}
+              >
+                <Image src={profileIcon} alt="profile" />
+              </Box>
               <Box>
                 <Typography
                   sx={{
@@ -322,13 +276,63 @@ export default function GroupPage() {
                     fontSize: "17px",
                   }}
                 >
-                  Albert Einstein
+                  {mainInfo && mainInfo.ownerName}
                 </Typography>
               </Box>
             </Box>
           </Link>
         </Item>
-        <SuggestionsGroups />
+        <Item
+          sx={{
+            position: "sticky",
+            top: "90px",
+            alignSelf: "flex-start",
+            width: "100%",
+            p: "14px",
+          }}
+          radius="8px"
+        >
+          <StyledTypography>Top Group Members</StyledTypography>
+          {[0, 1, 2, 3, 4, 5, 6].map((_, index) => (
+            <Link key={index} href="#">
+              <Box
+                sx={{
+                  mt: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "4px",
+                  "&:hover": {
+                    backgroundColor: "#cacaca49",
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: "45px",
+                    height: "45px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: "2px solid #cacacac9",
+                  }}
+                >
+                  <Image src={profileIcon} alt="profile" />
+                </Box>
+                <Box>
+                  <Typography
+                    sx={{
+                      fontFamily: "Schoolbell !important",
+                      fontWeight: 600,
+                      fontSize: "17px",
+                    }}
+                  >
+                    Albert Einstein
+                  </Typography>
+                </Box>
+              </Box>
+            </Link>
+          ))}
+        </Item>
       </Box>
     </Box>
   );

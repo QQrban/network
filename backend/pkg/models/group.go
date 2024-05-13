@@ -20,8 +20,9 @@ type Group struct {
 
 type GroupPlus struct {
 	*Group
-	IncludesMe     bool `json:"includesMe"`
-	PendingRequest bool `json:"pendingRequest"`
+	IncludesMe     bool   `json:"includesMe"`
+	PendingRequest bool   `json:"pendingRequest"`
+	OwnerName      string `json:"ownerName"`
 }
 
 func (x *Group) pointerSlice() []interface{} {
@@ -60,8 +61,15 @@ func (model GroupModel) GetByID(groupID, myID int64) (*GroupPlus, error) {
 	err := row.Scan(append(group.pointerSlice(), &groupPlus.IncludesMe, &groupPlus.PendingRequest)...)
 
 	if err != nil {
-		return nil, fmt.Errorf("Group/GetByID: %w", err)
+		return nil, fmt.Errorf("Group/GetByID1: %w", err)
 	}
+
+	owner := MakeUserModel(model.db)
+	ownerSlice, err := owner.GetByID(group.OwnerID)
+	if err != nil {
+		return nil, fmt.Errorf("Group/GetByID2: %w", err)
+	}
+	groupPlus.OwnerName = ownerSlice.FirstName + " " + ownerSlice.LastName
 
 	return groupPlus, nil
 }

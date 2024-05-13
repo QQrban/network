@@ -4,15 +4,18 @@ interface ConfirmBtnProps {
   text: string;
   backgroundImage: string;
   onClick?: () => void;
+  type?: "button" | "submit" | undefined;
 }
 
 export default function ConfirmBtn({
   text,
   backgroundImage,
   onClick,
+  type,
 }: ConfirmBtnProps) {
   return (
     <SuccessBtn
+      type={type}
       onClick={onClick}
       sx={{
         fontSize: "20px",

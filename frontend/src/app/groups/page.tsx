@@ -6,9 +6,46 @@ import GroupItem from "@/components/Groups/GroupItem";
 import { Divider, Typography } from "@mui/material";
 import SearchBar from "@/components/Groups/SearchBar";
 import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
+import ConfirmBtn from "@/components/shared/ConfirmBtn";
+import successBtn from "../../../public/icons/successBtn.svg";
+import { useEffect, useState } from "react";
+import { fetchFromServer } from "@/lib/api";
+import CreateGroupModal from "@/components/Group/CreateGroupModal";
 
 export default function Groups() {
-  const groups = true;
+  const [groups, setGroups] = useState([]);
+  const [createdGroup, setCreatedGroup] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const fetchGroups = async () => {
+    try {
+      const response = await fetchFromServer("/groups");
+      if (response.ok) {
+        const data = await response.json();
+        setGroups(data);
+        console.log(data);
+      } else {
+        throw new Error("Failed to fetch groups");
+      }
+    } catch (error) {
+      console.error("Failed to fetch groups:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGroups();
+  }, []);
+
+  useEffect(() => {
+    if (createdGroup) {
+      fetchGroups();
+      setCreatedGroup(false);
+    }
+  }, [createdGroup]);
+
+  if (!groups) {
+    return <Box>Loading...</Box>;
+  }
 
   return (
     <Box
@@ -19,13 +56,35 @@ export default function Groups() {
         gap: "23px",
       }}
     >
-      <Typography
-        sx={{ fontFamily: "Gloria Hallelujah" }}
-        component="h2"
-        variant="h3"
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
-        Your Groups
-      </Typography>
+        <Typography
+          sx={{ fontFamily: "Gloria Hallelujah" }}
+          component="h2"
+          variant="h3"
+        >
+          Your Groups
+        </Typography>
+        <Box
+          sx={{
+            width: "190px",
+            "&:hover": {
+              backgroundColor: "dodgerblue",
+            },
+          }}
+        >
+          <ConfirmBtn
+            onClick={() => setOpen(true)}
+            backgroundImage={successBtn.src}
+            text="Create Group"
+          />
+        </Box>
+      </Box>
       <Box>
         <SearchBar />
       </Box>
@@ -71,6 +130,11 @@ export default function Groups() {
           <SuggestionsGroups />
         </Box>
       </Box>
+      <CreateGroupModal
+        setCreatedGroup={setCreatedGroup}
+        open={open}
+        setOpen={setOpen}
+      />
     </Box>
   );
 }

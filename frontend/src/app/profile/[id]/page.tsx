@@ -17,13 +17,15 @@ import { putProfile } from "@/redux/features/profile/profileSlice";
 export default function ProfilePage() {
   const dispatch = useDispatch();
 
-  const pathname = usePathname().slice(-1);
+  const pathname = usePathname().split("/").pop();
 
   useEffect(() => {
     async function fetchData() {
       try {
         const getUser = await fetchFromServer(`/user/${pathname}`);
         const userData = await getUser.json();
+        console.log(userData);
+
         dispatch(
           putProfile({
             id: userData.ID,

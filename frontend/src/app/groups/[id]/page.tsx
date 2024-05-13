@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import mockBg from "../../../../public/mockBG.png";
 import cardBg from "../../../../public/icons/cardBG.svg";
+import profileIcon from "../../../../public/icons/profile.svg";
 import noPhoto from "../../../../public/background-svgrepo-com.png";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
@@ -200,7 +201,7 @@ export default function GroupPage() {
             >
               <StyledTypography>Top Group Members</StyledTypography>
               {[0, 1, 2, 3, 4, 5, 6].map((_, index) => (
-                <Link key={index} href="/profile/123">
+                <Link key={index} href="#">
                   <Box
                     sx={{
                       mt: "12px",
@@ -213,7 +214,17 @@ export default function GroupPage() {
                       },
                     }}
                   >
-                    <Avatar src="/broken-image.jpg" />
+                    <Box
+                      sx={{
+                        width: "45px",
+                        height: "45px",
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                        border: "2px solid #cacacac9",
+                      }}
+                    >
+                      <Image src={profileIcon} alt="profile" />
+                    </Box>
                     <Box>
                       <Typography
                         sx={{

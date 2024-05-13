@@ -1,6 +1,5 @@
 import { Avatar, Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { Item } from "./Item";
-import mockBg from "../../../public/icons/google.svg";
 import addIcon from "../../../public/icons/add.svg";
 import Image from "next/image";
 
@@ -39,17 +38,6 @@ export default function SuggestionsGroups() {
                 sx={{ display: "flex", justifyContent: "space-between" }}
               >
                 <Box sx={{ display: "flex", gap: "9px" }}>
-                  <Avatar
-                    alt="Cats"
-                    src={mockBg}
-                    sx={{
-                      border: "2px solid #4a4a4a",
-                      width: 56,
-                      height: 56,
-                      fontSize: "28px",
-                      fontFamily: "Schoolbell !important",
-                    }}
-                  />
                   <Box
                     sx={{
                       display: "flex",

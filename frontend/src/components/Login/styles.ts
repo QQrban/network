@@ -9,7 +9,6 @@ export const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiInputLabel-root": {
     fontSize: "20px",
     fontFamily: '"Schoolbell", cursive',
-    height: "20px",
   },
   ".css-1wc848c-MuiFormHelperText-root.Mui-error": {
     fontFamily: '"Comic Neue", cursive',

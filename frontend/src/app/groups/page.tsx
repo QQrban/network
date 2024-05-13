@@ -20,11 +20,12 @@ export default function Groups() {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetchFromServer("/groups", {
+      const response = await fetchFromServer("/groups/my", {
         credentials: "include",
       });
       if (response.ok) {
         const data = await response.json();
+
         setGroups(data);
         console.log(data);
       } else {

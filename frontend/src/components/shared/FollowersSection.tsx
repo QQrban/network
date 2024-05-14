@@ -37,6 +37,8 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
             `/user/${profileId}/followers`
           );
           const data = await response.json();
+          console.log(data);
+
           setPeopleList(data);
         } else if (activeTab === "Following") {
           const response = await fetchFromServer(

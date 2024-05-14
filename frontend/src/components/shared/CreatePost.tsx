@@ -5,11 +5,21 @@ import { Item } from "@/components/shared/Item";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 
-export default function CreatePost() {
+interface CreatePostProps {
+  setOpenPostModal: React.Dispatch<boolean>;
+}
+
+export default function CreatePost({ setOpenPostModal }: CreatePostProps) {
   const userData = useSelector((state: any) => state.authReducer.value);
+
+  const openModal = () => {
+    console.log(123);
+    setOpenPostModal(true);
+  };
 
   return (
     <Item
+      onClick={openModal}
       sx={{
         ":hover": {
           opacity: 0.9,

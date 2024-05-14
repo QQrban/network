@@ -10,7 +10,7 @@ import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import successBtn from "../../../public/icons/successBtn.svg";
 import { useEffect, useState } from "react";
 import { fetchFromServer } from "@/lib/api";
-import CreateGroupModal from "@/components/Group/CreateGroupModal";
+import CreateGroupModal from "@/components/Groups/CreateGroupModal";
 import { GroupProps } from "@/types/types";
 
 export default function Groups() {

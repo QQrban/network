@@ -21,6 +21,9 @@ import ConfirmBtn from "../shared/ConfirmBtn";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { usePathname } from "next/navigation";
+import path from "path";
+import { json } from "stream/consumers";
+import { fetchFromServer } from "@/lib/api";
 
 interface CreatePostModalProps {
   openPostModal: boolean;
@@ -119,9 +122,10 @@ export default function CreatePostModal({
         console.log(`${key}:`, value);
       }
 
-      const response = await fetch("/post", {
-        method: "PUT",
+      const response = await fetchFromServer("/post", {
+        method: "POST",
         body: formData,
+        mode: "cors",
         credentials: "include",
       });
 

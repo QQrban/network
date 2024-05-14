@@ -37,7 +37,6 @@ export default function SearchHeader() {
         nickname: user.nickname,
         image: user.image || null,
       }));
-
       setAllUsers(users);
     };
     fetchPeople();

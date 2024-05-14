@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux";
 import { putProfile } from "@/redux/features/profile/profileSlice";
 
 export default function ProfilePage() {
+  const [selectedTab, setSelectedTab] = useState<String>("Main Board");
+
   const dispatch = useDispatch();
 
   const pathname = usePathname().split("/").pop();
@@ -22,7 +24,9 @@ export default function ProfilePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const getUser = await fetchFromServer(`/user/${pathname}`);
+        const getUser = await fetchFromServer(`/user/${pathname}`, {
+          credentials: "include",
+        });
         const userData = await getUser.json();
         console.log(userData);
 
@@ -34,6 +38,11 @@ export default function ProfilePage() {
             lastName: userData.lastName,
             nickname: userData.nickname,
             private: userData.private,
+            followInfo: {
+              meToYou: userData.followInfo.meToYou,
+              meToYouPending: userData.followInfo.meToYouPending,
+              youToMePending: userData.followInfo.youToMePending,
+            },
           })
         );
       } catch (error) {
@@ -43,8 +52,6 @@ export default function ProfilePage() {
 
     fetchData();
   }, [pathname, dispatch]);
-
-  const [selectedTab, setSelectedTab] = useState<String>("Main Board");
 
   const renderContent = () => {
     switch (selectedTab) {

@@ -1,7 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-type InitialState = {
-  value: ProfileState;
+type FollowInfo = {
+  meToYou: boolean;
+  meToYouPending: boolean;
+  youToMePending: boolean;
 };
 
 type ProfileState = {
@@ -11,6 +13,11 @@ type ProfileState = {
   lastName: string;
   nickname: string;
   private: boolean;
+  followInfo: FollowInfo;
+};
+
+type InitialState = {
+  value: ProfileState;
 };
 
 const initialState: InitialState = {
@@ -21,6 +28,11 @@ const initialState: InitialState = {
     lastName: "",
     nickname: "",
     private: false,
+    followInfo: {
+      meToYou: false,
+      meToYouPending: false,
+      youToMePending: false,
+    },
   },
 };
 
@@ -28,7 +40,7 @@ const getProfile = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    putProfile: (state, action) => {
+    putProfile: (state, action: PayloadAction<ProfileState>) => {
       state.value = {
         ...action.payload,
       };

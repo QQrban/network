@@ -38,6 +38,10 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if post.Status == "" {
+		post.Status = "public"
+	}
+
 	if post.Status == "manual" {
 		if post.AllowedUsers == nil {
 			log.Println("Tried to insert a post with privacy \"MANUAL\", but with no allowedUsers array defined")

@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"encoding/json"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -19,12 +18,54 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		AllowedUsers []int64 `json:"allowedUsers"`
 	}{}
 
-	err := json.NewDecoder(r.Body).Decode(&post)
+	maxBytesSize := int64((60 << 20) + 1024)              // 60.1 MB = 3 * 20MB + text
+	r.Body = http.MaxBytesReader(w, r.Body, maxBytesSize) // Limit total size of request body
+	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
 		log.Println(err)
 		writeStatusError(w, http.StatusBadRequest)
 		return
 	}
+
+	Content := r.FormValue("content")
+	GroupID := r.FormValue("groupID")
+	AboutID := r.FormValue("aboutID")
+	Status := r.FormValue("status")
+
+	if GroupID != "" && GroupID != "null" {
+		groupID, err := strconv.ParseInt(GroupID, 10, 64)
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+		post.GroupID = &groupID
+	}
+	if AboutID != "" && AboutID != "null" {
+		aboutID, err := strconv.ParseInt(AboutID, 10, 64)
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+		post.AboutID = &aboutID
+	}
+	if Status == "" {
+		post.Status = "public"
+	} else {
+		post.Status = Status
+	}
+	post.Content = Content
+	/*fmt.Println("formData:", formData)
+	if formData != nil {
+		log.Println("formData:", formData)
+	}
+	err := json.NewDecoder(r.Body).Decode(&post)
+	if err != nil {
+		log.Println(err)
+		writeStatusError(w, http.StatusBadRequest)
+		return
+	}*/
 
 	// If it's a group post, check that I have access
 	if post.GroupID != nil {
@@ -38,9 +79,9 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if post.Status == "" {
+	/*if post.Status == "" {
 		post.Status = "public"
-	}
+	}*/
 
 	if post.Status == "manual" {
 		if post.AllowedUsers == nil {

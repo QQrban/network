@@ -39,7 +39,7 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/posts/following", api.EnsureAuth(api.GetMyFollowingPosts))
 	rtr.Get("/posts/groups", api.EnsureAuth(api.GetMyGroupPosts))
 	rtr.Get("/posts", api.OptionalAuth(api.GetAllPosts))
-	rtr.Put("/post", api.EnsureAuth(api.CreatePost))
+	rtr.Post("/post", api.EnsureAuth(api.CreatePost))
 
 	/*rtr.Get("/file/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", api.FileDownload)
 	rtr.Post("/file", api.FileUpload)*/

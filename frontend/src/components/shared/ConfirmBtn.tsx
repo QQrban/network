@@ -3,7 +3,7 @@ import { SuccessBtn } from "./styles";
 interface ConfirmBtnProps {
   text: string;
   backgroundImage: string;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   type?: "button" | "submit" | undefined;
 }
 

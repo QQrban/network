@@ -1,13 +1,11 @@
 "use client";
 
 import { Box, SpeedDial, SpeedDialAction, Typography } from "@mui/material";
-import { FollowersProps } from "../Profile/ContactsContent/mock";
 import { Item } from "./Item";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Image from "next/image";
 import noPhoto from "../../../public/icons/profile.svg";
 import mail from "../../../public/icons/mail.svg";
-import star from "../../../public/icons/star.svg";
 import personAdd from "../../../public/icons/personAdd.svg";
 import personRemove from "../../../public/icons/personRemove.svg";
 import successBtn from "../../../public/icons/successBtn.svg";
@@ -28,104 +26,169 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [peopleList, setPeopleList] = useState<ContactsProps[]>([]);
   const [followerName, setFollowerName] = useState<string>("");
+  const [userToUnfollow, setUserToUnfollow] = useState<number | null>(null);
 
   useEffect(() => {
     const getFollowers = async () => {
       if (profileId) {
-        if (activeTab === "Followers") {
-          const response = await fetchFromServer(
-            `/user/${profileId}/followers`
-          );
-          const data = await response.json();
-          console.log(data);
-
-          setPeopleList(data);
-        } else if (activeTab === "Following") {
-          const response = await fetchFromServer(
-            `/user/${profileId}/following`
-          );
-          const data = await response.json();
-          setPeopleList(data);
-        }
+        const endpoint = activeTab === "Followers" ? "followers" : "following";
+        const response = await fetchFromServer(
+          `/user/${profileId}/${endpoint}`,
+          {
+            credentials: "include",
+          }
+        );
+        const data = await response.json();
+        console.log(data);
+        setPeopleList(data);
       }
     };
     getFollowers();
   }, [profileId, activeTab]);
 
-  const unfollowHandler = (name: string) => {
+  const unfollowHandler = async (
+    event: React.MouseEvent,
+    name: string,
+    userID: number
+  ) => {
+    event.preventDefault();
     setOpen(true);
     setFollowerName(name);
+    setUserToUnfollow(userID);
+  };
+
+  const confirmUnfollow = async () => {
+    if (profileId && userToUnfollow !== null) {
+      try {
+        const response = await fetchFromServer(
+          `/user/${userToUnfollow}/unfollow`,
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
+        console.log(response);
+        if (response.ok) {
+          setPeopleList((prevList) =>
+            prevList.map((person) =>
+              person.ID === userToUnfollow
+                ? {
+                    ...person,
+                    followInfo: {
+                      ...person.followInfo,
+                      meToYou: false,
+                    },
+                  }
+                : person
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Error unfollowing user:", error);
+      }
+      setOpen(false);
+      setFollowerName("");
+      setUserToUnfollow(null);
+    }
+  };
+
+  const follow = async (userID: number) => {
+    try {
+      const response = await fetchFromServer(`/user/${userID}/follow`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) {
+        setPeopleList((prevList) =>
+          prevList.map((person) =>
+            person.ID === userID
+              ? {
+                  ...person,
+                  followInfo: {
+                    ...person.followInfo,
+                    meToYou: true,
+                  },
+                }
+              : person
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
   };
 
   return (
     <>
       {peopleList?.length ? (
         peopleList.map((follower, index) => (
-          <Link href={`/profile/${follower.ID}`} key={index}>
-            <Item
+          <Item
+            key={index}
+            sx={{
+              width: "225px",
+              p: "12px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              alignItems: "center",
+              justifyContent: "space-between",
+              position: "relative",
+            }}
+            radius="12px"
+          >
+            <SpeedDial
               sx={{
-                width: "225px",
-                p: "12px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "12px",
-                alignItems: "center",
-                justifyContent: "space-between",
-                position: "relative",
+                position: "absolute",
+                top: "6px",
+                right: "-2px",
               }}
-              radius="12px"
-            >
-              <SpeedDial
-                sx={{
-                  position: "absolute",
-                  top: "6px",
-                  right: "-2px",
-                }}
-                ariaLabel="SpeedDial openIcon example"
-                icon={<MoreVertIcon sx={{ color: "grey" }} />}
-                direction="down"
-                FabProps={{
-                  sx: {
-                    backgroundColor: "white",
-                    width: "36px",
-                    height: "32px",
-                    boxShadow: "none",
-                    "&:hover": {
-                      backgroundColor: "#00000014",
-                    },
-                    "&:active": {
-                      backgroundColor: "transparent",
-                      boxShadow: "none",
-                    },
-                    "&:focus": {
-                      outline: "none",
-                    },
+              ariaLabel="SpeedDial openIcon example"
+              icon={<MoreVertIcon sx={{ color: "grey" }} />}
+              direction="down"
+              FabProps={{
+                sx: {
+                  backgroundColor: "white",
+                  width: "36px",
+                  height: "32px",
+                  boxShadow: "none",
+                  "&:hover": {
+                    backgroundColor: "#00000014",
                   },
-                }}
-              >
-                <SpeedDialAction
-                  icon={
-                    <Image
-                      style={{ width: "25px", height: "25px" }}
-                      src={mail}
-                      alt="mail"
-                    />
-                  }
-                  tooltipTitle={
-                    <Typography
-                      sx={{
-                        fontFamily: "SchoolBell !important",
-                        fontSize: "18",
-                      }}
-                    >
-                      Send Email
-                    </Typography>
-                  }
-                />
+                  "&:active": {
+                    backgroundColor: "transparent",
+                    boxShadow: "none",
+                  },
+                  "&:focus": {
+                    outline: "none",
+                  },
+                },
+              }}
+            >
+              <SpeedDialAction
+                icon={
+                  <Image
+                    style={{ width: "25px", height: "25px" }}
+                    src={mail}
+                    alt="mail"
+                  />
+                }
+                tooltipTitle={
+                  <Typography
+                    sx={{
+                      fontFamily: "SchoolBell !important",
+                      fontSize: "18px",
+                    }}
+                  >
+                    Send Email
+                  </Typography>
+                }
+              />
 
-                {/* {follower.following ? (
+              {follower.followInfo.meToYou ? (
                 <SpeedDialAction
-                  onClick={() => unfollowHandler(follower.name)}
+                  onClick={(event) =>
+                    unfollowHandler(event, follower.firstName, follower.ID)
+                  }
                   icon={
                     <Image
                       style={{ width: "25px", height: "25px" }}
@@ -146,6 +209,7 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                 />
               ) : (
                 <SpeedDialAction
+                  onClick={() => follow(follower.ID)}
                   icon={
                     <Image
                       style={{ width: "25px", height: "25px" }}
@@ -157,15 +221,16 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                     <Typography
                       sx={{
                         fontFamily: "SchoolBell !important",
-                        fontSize: "18",
+                        fontSize: "18px",
                       }}
                     >
                       Follow
                     </Typography>
                   }
                 />
-              )} */}
-              </SpeedDial>
+              )}
+            </SpeedDial>
+            <Link href={`/profile/${follower.ID}`}>
               <Box
                 sx={{
                   width: "90px",
@@ -175,26 +240,34 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                 <Image
                   src={follower.image ? follower.image : noPhoto}
                   alt={follower.firstName}
+                  width={90}
+                  height={90}
                 />
               </Box>
-              <Box sx={{ textAlign: "center" }}>
-                <Typography
-                  sx={{ fontWeight: 600, color: "#2a2a2a", fontSize: "20px" }}
-                >
-                  {follower.firstName} {follower.lastName}
-                </Typography>
-              </Box>
-              {/* {follower.following ? (
+            </Link>
+            <Box sx={{ textAlign: "center" }}>
+              <Typography
+                sx={{ fontWeight: 600, color: "#2a2a2a", fontSize: "20px" }}
+              >
+                {follower.firstName} {follower.lastName}
+              </Typography>
+            </Box>
+            {follower.followInfo.meToYou ? (
               <ConfirmBtn
-                onClick={() => unfollowHandler(follower.name)}
+                onClick={(event) =>
+                  unfollowHandler(event, follower.firstName, follower.ID)
+                }
                 backgroundImage={errorBtn.src}
                 text="Unfollow"
               />
             ) : (
-              <ConfirmBtn backgroundImage={successBtn.src} text="Follow" />
-            )} */}
-            </Item>
-          </Link>
+              <ConfirmBtn
+                onClick={() => follow(follower.ID)}
+                backgroundImage={successBtn.src}
+                text="Follow"
+              />
+            )}
+          </Item>
         ))
       ) : (
         <Typography sx={{ fontSize: "30px" }}>No {activeTab} Yet!</Typography>
@@ -204,6 +277,7 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         dialogText="Are you sure you want to unfollow?"
         open={open}
         setOpen={setOpen}
+        onConfirm={confirmUnfollow}
       />
     </>
   );

@@ -4,6 +4,11 @@ export interface ContactsProps {
   lastName: string;
   nickname: string;
   image: string | null;
+  followInfo: {
+    meToYou: boolean;
+    meToYouPending: boolean;
+    youToMePending: boolean;
+  };
 }
 
 export interface GroupProps {

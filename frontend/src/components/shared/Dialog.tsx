@@ -10,9 +10,10 @@ import { Box } from "@mui/material";
 
 interface AlertDialogProps {
   open: boolean;
-  setOpen: React.Dispatch<boolean>;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   dialogText: string;
   title: string;
+  onConfirm: () => void; // Updated prop type
 }
 
 export default function AlertDialog({
@@ -20,6 +21,7 @@ export default function AlertDialog({
   setOpen,
   dialogText,
   title,
+  onConfirm,
 }: AlertDialogProps) {
   const handleClose = () => {
     setOpen(false);
@@ -62,7 +64,7 @@ export default function AlertDialog({
           <ConfirmBtn
             backgroundImage={confirmBtn.src}
             text="Confirm"
-            onClick={handleClose}
+            onClick={onConfirm}
           />
         </Box>
       </DialogActions>

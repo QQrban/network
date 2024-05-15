@@ -276,10 +276,10 @@ func (model *UserModel) FollowReject(myID, targetID int64) error {
 	return nil
 }
 
-func (model *UserModel) ListFollowers(userID int64) ([]*UserLimited, error) {
+func (model *UserModel) ListFollowers(myID, userID int64) ([]*UserLimited, error) {
 	stmt := model.queries.Prepare("listFollowers")
 
-	rows, err := stmt.Query(userID)
+	rows, err := stmt.Query(myID, userID)
 	if err != nil {
 		return nil, fmt.Errorf("User/ListFollowers1: %w", err)
 	}
@@ -290,7 +290,10 @@ func (model *UserModel) ListFollowers(userID int64) ([]*UserLimited, error) {
 	for rows.Next() {
 		user := &User{}
 
-		err = rows.Scan(user.pointerSlice()...)
+		followInfo := &FollowInfo{}
+		user.FollowInfo = followInfo
+
+		err = rows.Scan(append(user.pointerSlice(), &followInfo.MeToYou, &followInfo.MeToYouPending, &followInfo.YouToMePending)...)
 		if err != nil {
 			return nil, fmt.Errorf("User/ListFollowers2: %w", err)
 		}
@@ -301,10 +304,10 @@ func (model *UserModel) ListFollowers(userID int64) ([]*UserLimited, error) {
 	return users, nil
 }
 
-func (model *UserModel) ListFollowing(userID int64) ([]*UserLimited, error) {
+func (model *UserModel) ListFollowing(myID, userID int64) ([]*UserLimited, error) {
 	stmt := model.queries.Prepare("listFollowing")
 
-	rows, err := stmt.Query(userID)
+	rows, err := stmt.Query(myID, userID)
 	if err != nil {
 		return nil, fmt.Errorf("User/ListFollowing1: %w", err)
 	}
@@ -315,7 +318,10 @@ func (model *UserModel) ListFollowing(userID int64) ([]*UserLimited, error) {
 	for rows.Next() {
 		user := &User{}
 
-		err = rows.Scan(user.pointerSlice()...)
+		followInfo := &FollowInfo{}
+		user.FollowInfo = followInfo
+
+		err = rows.Scan(append(user.pointerSlice(), &followInfo.MeToYou, &followInfo.MeToYouPending, &followInfo.YouToMePending)...)
 		if err != nil {
 			return nil, fmt.Errorf("User/ListFollowing2: %w", err)
 		}

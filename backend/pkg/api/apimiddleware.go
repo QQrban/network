@@ -41,6 +41,7 @@ func ExtendSession(next http.Handler) http.Handler {
 func IsAuth(yes http.HandlerFunc, no http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("sonesess")
+
 		if err != nil {
 			no.ServeHTTP(w, r)
 			return

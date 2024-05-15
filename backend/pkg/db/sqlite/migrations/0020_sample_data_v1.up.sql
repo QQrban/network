@@ -40,8 +40,8 @@ INSERT INTO groupMember
 (groupID, userID, memberID, type, presented, responded, response)
 VALUES
 (1, 1, 1, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
-(1, 2, 1, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept');
-/*(1, 3, 1, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(1, 2, 1, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(1, 3, 1, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
 (3, 4, 4, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
 (3, 5, 4, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
 (3, 6, 5, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
@@ -54,7 +54,6 @@ VALUES
 (6, 21, 21, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
 (6, 22, 21, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
 (7, 23, 23, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept');
-*/
 
 INSERT INTO follow 
 (followerID, followeeID, created, responded, response)
@@ -63,7 +62,21 @@ VALUES
 (1, 3, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "pending"),
 (2, 1, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
 (2, 3, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
-(3, 2, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept");
+(3, 2, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(3, 1, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(4, 5, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(5, 4, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(6, 5, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(7, 6, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(8, 9, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(9, 8, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(10, 1, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(16, 17, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(17, 16, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(18, 16, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(21, 22, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(22, 21, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept"),
+(23, 2, datetime(CURRENT_TIMESTAMP, "-2 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), "accept");
 
 INSERT INTO userMessage
 (senderID, receiverID, content, created)

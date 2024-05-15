@@ -202,10 +202,11 @@ func UserUnfollow(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserFollowers(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
 	slug := router.GetSlug(r, 0)
 	targetID, _ := strconv.ParseInt(slug, 10, 64)
 
-	users, err := Database.User.ListFollowers(targetID)
+	users, err := Database.User.ListFollowers(session.UserID, targetID)
 	if err != nil {
 		panic(err)
 	}
@@ -214,10 +215,11 @@ func UserFollowers(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserFollowing(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
 	slug := router.GetSlug(r, 0)
 	targetID, _ := strconv.ParseInt(slug, 10, 64)
 
-	users, err := Database.User.ListFollowing(targetID)
+	users, err := Database.User.ListFollowing(session.UserID, targetID)
 	if err != nil {
 		panic(err)
 	}

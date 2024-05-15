@@ -1,2 +1,2 @@
-INSERT OR REPLACE INTO follow (followerID, followeeID)
-VALUES (?1, ?2)
+INSERT OR REPLACE INTO follow (followerID, followeeID, response)
+VALUES (?1, ?2, ?3)

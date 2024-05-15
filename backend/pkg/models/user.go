@@ -218,7 +218,7 @@ func (model *UserModel) IsFollowing(followerID, followingID int64) (bool, error)
 func (model *UserModel) Follow(myID, targetID int64) error {
 	stmt := model.queries.Prepare("follow")
 
-	_, err := stmt.Exec(myID, targetID)
+	_, err := stmt.Exec(myID, targetID, "accept")
 
 	if err != nil {
 		return fmt.Errorf("User/Follow: %w", err)
@@ -239,17 +239,17 @@ func (model *UserModel) Unfollow(myID, targetID int64) error {
 	return nil
 }
 
-/*func (model *UserModel) RequestFollow(myID, targetID int64) error {
-	stmt := model.queries.Prepare("requestFollow")
+func (model *UserModel) RequestFollow(myID, targetID int64) error {
+	stmt := model.queries.Prepare("follow")
 
-	_, err := stmt.Exec(myID, targetID)
+	_, err := stmt.Exec(myID, targetID, "pending")
 
 	if err != nil {
 		return fmt.Errorf("User/RequestFollow: %w", err)
 	}
 
 	return nil
-}*/
+}
 
 // TODO: Check if this should return an error if there was no request to accept
 func (model *UserModel) FollowAccept(myID, targetID int64) error {

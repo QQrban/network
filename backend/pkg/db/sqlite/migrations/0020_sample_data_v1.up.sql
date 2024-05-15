@@ -25,7 +25,36 @@ VALUES
 ('elisabeth@kood.ee', 'zaq12wsx', 'Elisabeth', 'Hasselbeck', 'elisabeth', NULL, 'TV Host', '1977-05-28T00:00:00Z', false, 'US'),
 ('paul@kood.ee', 'zaq12wsx', 'Paul', 'McCartney', 'paul', NULL, 'Musician', '1942-06-18T00:00:00Z', false, 'GB');
 
+INSERT INTO "group"
+(ownerID, title, description, created)
+VALUES
+(1, 'Developers', 'Developers group', datetime(CURRENT_TIMESTAMP, "-1 days")),
+(2, 'Climbers', 'Climbers group', datetime(CURRENT_TIMESTAMP, "-10 hours")),
+(3, 'Actors', 'Actors group', datetime(CURRENT_TIMESTAMP, "-8 hours")),
+(4, 'Musicians', 'Musicians group', datetime(CURRENT_TIMESTAMP, "-6 hours")),
+(5, 'Physicists', 'Physicists group', datetime(CURRENT_TIMESTAMP, "-4 hours")),
+(6, 'Saints', 'Saints group', datetime(CURRENT_TIMESTAMP, "-30 minutes")),
+(7, 'Politicians', 'Politicians group', datetime(CURRENT_TIMESTAMP, "-30 minutes"));
 
+INSERT INTO groupMember
+(groupID, userID, memberID, type, presented, responded, response)
+VALUES
+(1, 1, 1, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(1, 2, 1, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept');
+/*(1, 3, 1, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(3, 4, 4, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(3, 5, 4, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(3, 6, 5, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(2, 10, 10, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(4, 8, 8, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(4, 9, 8, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(5, 16, 16, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(5, 17, 16, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(5, 18, 16, 'request', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(6, 21, 21, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(6, 22, 21, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept'),
+(7, 23, 23, 'invite', datetime(CURRENT_TIMESTAMP, "-1 days"), datetime(CURRENT_TIMESTAMP, "-1 days"), 'accept');
+*/
 
 INSERT INTO follow 
 (followerID, followeeID, created, responded, response)

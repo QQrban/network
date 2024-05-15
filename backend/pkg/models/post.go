@@ -19,9 +19,10 @@ type Post struct {
 
 	Created time.Time `json:"created"`
 
-	Author   *UserLimited `json:"author,omitempty"`
-	Group    *Group       `json:"group,omitempty"`
-	Comments []Comment    `json:"comments,omitempty"`
+	Author   *UserLimited  `json:"author,omitempty"`
+	Group    *Group        `json:"group,omitempty"`
+	Comments []Comment     `json:"comments,omitempty"`
+	Likes    []UserLimited `json:"likes,omitempty"`
 }
 
 func (x *Post) pointerSlice() []interface{} {
@@ -107,7 +108,7 @@ func (model PostModel) GetByUser(myID, targetID, beforeID int64) ([]*Post, error
 
 func (model PostModel) GetAll(myID, beforeID int64) ([]*Post, error) {
 	stmt := model.queries.Prepare("getAll")
-	
+
 	rows, err := stmt.Query(myID, beforeID)
 	if err != nil {
 		return nil, fmt.Errorf("Post/GetAll: %w", err)

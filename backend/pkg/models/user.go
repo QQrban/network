@@ -43,7 +43,7 @@ type UserLimited struct {
 	LastName   string      `json:"lastName"`
 	Nickname   string      `json:"nickname"`
 	Image      *string     `json:"image"`
-	FollowInfo *FollowInfo `json:"followInfo,omitempty"`
+	FollowInfo *FollowInfo `json:"followInfo"` //,omitempty"`
 }
 
 type FollowInfo struct {

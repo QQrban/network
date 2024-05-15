@@ -12,7 +12,7 @@ CREATE TABLE groupMember
     FOREIGN KEY (userID)   REFERENCES `user`  (ID),
     FOREIGN KEY (memberID) REFERENCES `user`  (ID),
 
-    UNIQUE (groupID, userID)
+    UNIQUE (groupID, userID) ON CONFLICT REPLACE
 );
 
 CREATE INDEX groupMember_reverse

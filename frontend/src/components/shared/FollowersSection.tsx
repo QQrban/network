@@ -122,25 +122,7 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                     </Typography>
                   }
                 />
-                <SpeedDialAction
-                  icon={
-                    <Image
-                      style={{ width: "25px", height: "25px" }}
-                      src={star}
-                      alt="favorite"
-                    />
-                  }
-                  tooltipTitle={
-                    <Typography
-                      sx={{
-                        fontFamily: "SchoolBell !important",
-                        fontSize: "18",
-                      }}
-                    >
-                      Favorite
-                    </Typography>
-                  }
-                />
+
                 {/* {follower.following ? (
                 <SpeedDialAction
                   onClick={() => unfollowHandler(follower.name)}

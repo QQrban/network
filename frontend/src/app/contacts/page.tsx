@@ -32,7 +32,6 @@ export default function Followers() {
       >
         <StyledTab label="Followers" value="Followers" />
         <StyledTab label="Followings" value="Following" />
-        <StyledTab label="Favorite Contacts" value="Favorite Contacts" />
       </Tabs>
       <Typography
         component="h2"

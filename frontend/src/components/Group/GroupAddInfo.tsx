@@ -40,7 +40,9 @@ export default function GroupAddInfo({
         radius="8px"
       >
         <StyledTypography>About</StyledTypography>
-        <Typography sx={{ mt: "9px" }}>{description}</Typography>
+        <Typography sx={{ mt: "9px", wordBreak: "break-word" }}>
+          {description}
+        </Typography>
       </Item>
       <Item
         sx={{

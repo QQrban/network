@@ -8,7 +8,7 @@ import (
 )
 
 type Post struct {
-	PostID   int64  `json:"postID"`
+	ID       int64  `json:"postID"`
 	AuthorID int64  `json:"authorID"`
 	GroupID  *int64 `json:"groupID"`
 
@@ -19,15 +19,15 @@ type Post struct {
 
 	Created time.Time `json:"created"`
 
-	Author   *UserLimited  `json:"author,omitempty"`
-	Group    *Group        `json:"group,omitempty"`
-	Comments []Comment     `json:"comments,omitempty"`
-	Likes    []UserLimited `json:"likes,omitempty"`
+	Author   *UserLimited   `json:"author,omitempty"`
+	Group    *Group         `json:"group,omitempty"`
+	Comments []Comment      `json:"comments,omitempty"`
+	LikedBy  []*UserLimited `json:"likes,omitempty"`
 }
 
 func (x *Post) pointerSlice() []interface{} {
 	return []interface{}{
-		&x.PostID,
+		&x.ID,
 		&x.AuthorID,
 		&x.GroupID,
 		&x.Content,
@@ -70,13 +70,45 @@ func (model PostModel) GetByID(postID int64) (*Post, error) {
 	post := &Post{}
 	author := &User{}
 	err := row.Scan(append(post.pointerSlice(), author.pointerSlice()...)...)
+	if err != nil {
+		return nil, fmt.Errorf("Post/GetByID1: %w", err)
+	}
 	post.Author = author.Limited()
 
+	likedBy, err := model.GetLikedBy(postID)
 	if err != nil {
-		return nil, fmt.Errorf("Post/GetByID: %w", err)
+		return nil, fmt.Errorf("Post/GetByID2: %w", err)
 	}
 
+	post.LikedBy = likedBy
+
 	return post, nil
+}
+
+func (model PostModel) GetLikedBy(postID int64) ([]*UserLimited, error) {
+	stmt := model.queries.Prepare("likedBy")
+
+	rows, err := stmt.Query(postID)
+
+	if err != nil {
+		return nil, fmt.Errorf("Post/GetLikedBy1: %w", err)
+	}
+	defer rows.Close()
+
+	likedBy := make([]*UserLimited, 0)
+
+	for rows.Next() {
+		user := &User{}
+		err = rows.Scan(user.pointerSlice()...)
+
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetLikedBy2: %w", err)
+		}
+
+		likedBy = append(likedBy, user.Limited())
+	}
+
+	return likedBy, nil
 }
 
 func (model PostModel) GetByUser(myID, targetID, beforeID int64) ([]*Post, error) {
@@ -84,7 +116,7 @@ func (model PostModel) GetByUser(myID, targetID, beforeID int64) ([]*Post, error
 
 	rows, err := stmt.Query(myID, targetID, beforeID)
 	if err != nil {
-		return nil, fmt.Errorf("Post/GetByUser: %w", err)
+		return nil, fmt.Errorf("Post/GetByUser1: %w", err)
 	}
 	defer rows.Close()
 
@@ -97,8 +129,15 @@ func (model PostModel) GetByUser(myID, targetID, beforeID int64) ([]*Post, error
 		post.Author = author.Limited()
 
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetByUser: %w", err)
+			return nil, fmt.Errorf("Post/GetByUser2: %w", err)
 		}
+
+		likedBy, err := model.GetLikedBy(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetByUser3: %w", err)
+		}
+
+		post.LikedBy = likedBy
 
 		posts = append(posts, post)
 	}
@@ -127,6 +166,13 @@ func (model PostModel) GetAll(myID, beforeID int64) ([]*Post, error) {
 			return nil, fmt.Errorf("Post/GetAll: %w", err)
 		}
 
+		likedBy, err := model.GetLikedBy(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetAll: %w", err)
+		}
+
+		post.LikedBy = likedBy
+
 		posts = append(posts, post)
 	}
 
@@ -154,6 +200,13 @@ func (model PostModel) GetByFollowing(myID, beforeID int64) ([]*Post, error) {
 			return nil, fmt.Errorf("Post/GetByFollowing: %w", err)
 		}
 
+		likedBy, err := model.GetLikedBy(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetByFollowing: %w", err)
+		}
+
+		post.LikedBy = likedBy
+
 		posts = append(posts, post)
 	}
 
@@ -180,6 +233,13 @@ func (model PostModel) GetByGroup(groupID, beforeID int64) ([]*Post, error) {
 		if err != nil {
 			return nil, fmt.Errorf("Post/GetByGroup: %w", err)
 		}
+
+		likedBy, err := model.GetLikedBy(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetByGroup: %w", err)
+		}
+
+		post.LikedBy = likedBy
 
 		posts = append(posts, post)
 	}
@@ -211,6 +271,13 @@ func (model PostModel) GetByMyGroups(myID, beforeID int64) ([]*Post, error) {
 		if err != nil {
 			return nil, fmt.Errorf("Post/GetByMyGroups: %w", err)
 		}
+
+		likedBy, err := model.GetLikedBy(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetByMyGroups: %w", err)
+		}
+
+		post.LikedBy = likedBy
 
 		posts = append(posts, post)
 	}

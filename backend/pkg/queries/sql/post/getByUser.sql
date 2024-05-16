@@ -1,6 +1,6 @@
 SELECT p.*, u.*
 FROM post p
-         JOIN user u on u.ID = p.authorID
+  JOIN user u on u.ID = p.authorID
 WHERE (?3 < 1 OR p.ID < ?3)
   AND groupID IS NULL
   AND aboutID IS NULL

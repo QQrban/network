@@ -129,7 +129,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	post.PostID = id
+	post.ID = id
 	post.Created = time.Now()
 
 	writeJSON(w, post.Post)

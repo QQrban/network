@@ -9,8 +9,6 @@ import (
 	"social-network/pkg/router"
 	"strconv"
 	"time"
-
-	"github.com/mattn/go-sqlite3"
 )
 
 func GetAllGroups(w http.ResponseWriter, r *http.Request) {
@@ -65,25 +63,15 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 	group.OwnerID = session.UserID
 
 	id, err := Database.Group.Insert(group)
-	panicUnlessError(err, sqlite3.ErrConstraintUnique)
+	//panicUnlessError(err, sqlite3.ErrConstraintUnique)
 	if err != nil {
-		log.Println(err)
-		writeStatusError(w, http.StatusBadRequest)
+		log.Println(err.Error())
+		writeStatusError(w, http.StatusNotModified)
 		return
 	}
 
 	group.ID = id
 	group.Created = time.Now()
-
-	// Join creator of the group as member
-	/*err = Database.Group.Request(group.ID, group.OwnerID, group.OwnerID)
-	if err != nil {
-		panic(err)
-	}
-	err = Database.Group.Join(group.ID, group.OwnerID, "accept")
-	if err != nil {
-		panic(err)
-	}*/
 
 	writeJSON(w, group)
 }

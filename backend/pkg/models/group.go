@@ -134,7 +134,7 @@ func (model GroupModel) Insert(group Group) (int64, error) {
 	)
 
 	if err != nil {
-		return 0, fmt.Errorf("Group/Insert: %w", err)
+		return 0, err //fmt.Errorf("Group/Insert: %w", err)
 	}
 
 	return res.LastInsertId()

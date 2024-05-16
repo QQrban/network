@@ -2,11 +2,11 @@ CREATE TABLE `group`
 (
     `ID` INTEGER PRIMARY KEY AUTOINCREMENT,
     `ownerID`     INTEGER NOT NULL,
-    `title`       TEXT    NOT NULL,
+    `title`       TEXT    NOT NULL UNIQUE,
     `description` TEXT    NOT NULL,
     `created`     DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ownerID) REFERENCES user (ID),
-    UNIQUE (ownerID, title)
+    UNIQUE (ownerID, title) 
 );
 
 -- When a group is created, insert the owner as a member

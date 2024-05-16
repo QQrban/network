@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"social-network/pkg/db"
+	database "social-network/pkg/db"
 	"social-network/pkg/models"
 	"social-network/pkg/notify"
 	"strconv"

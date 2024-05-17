@@ -1,0 +1,1 @@
+SELECT options FROM event WHERE ID=?1;

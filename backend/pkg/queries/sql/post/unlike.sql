@@ -1,0 +1,1 @@
+DELETE FROM "like" WHERE postID = ?1 AND userID = ?2;

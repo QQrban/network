@@ -10,11 +10,11 @@ import ImageIcon from "@mui/icons-material/Image";
 import { useState } from "react";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 
-interface CommentProps {
+interface AddCommentProps {
   inputRef: React.RefObject<HTMLTextAreaElement>;
 }
 
-export default function AddComment({ inputRef }: CommentProps) {
+export default function AddComment({ inputRef }: AddCommentProps) {
   const [commentText, setCommentText] = useState("");
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

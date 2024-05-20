@@ -22,6 +22,16 @@ export interface GroupProps {
   ownerName: string;
 }
 
+interface CommentProps {
+  ID: number;
+  aboutID: number;
+  authorID: number;
+  content: string;
+  images: string;
+  created: string;
+  author: ContactsProps;
+}
+
 export interface PostProps {
   aboutID: null;
   author: {
@@ -33,8 +43,11 @@ export interface PostProps {
     nickname: string;
   };
   authorID: number;
+  comments: CommentProps[];
   content: string;
   created: string;
+  group: null;
+  likes: ContactsProps[];
   groupID: number;
   images: string;
   postID: number;

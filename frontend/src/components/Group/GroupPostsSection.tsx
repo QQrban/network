@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import CreatePost from "../shared/CreatePost";
 import PostsSection from "../shared/PostsSection";
 import { fetchFromServer } from "@/lib/api";
-import { PostProps } from "@/types/types";
+import { PostProps, CommentProps } from "@/types/types";
 import { Box, Typography } from "@mui/material";
 import CreatePostModal from "./CreatePostModal";
 
@@ -27,14 +27,27 @@ export default function GroupPostsSection({
         credentials: "include",
       });
       const data = await response.json();
-      setPosts(data);
-      console.log(data);
+      const postsWithComments = data.map((post: PostProps) => ({
+        ...post,
+        comments: post.comments || [],
+      }));
+      setPosts(postsWithComments);
     };
     fetchPosts();
   }, [pathName]);
 
   const addNewPost = (newPost: PostProps) => {
     setPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
+  const addCommentToPost = (postID: number, comment: CommentProps) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postID === postID
+          ? { ...post, comments: [...post.comments, comment] }
+          : post
+      )
+    );
   };
 
   return (
@@ -48,7 +61,7 @@ export default function GroupPostsSection({
     >
       <CreatePost setOpenPostModal={setOpenPostModal} />
       {posts.length > 0 ? (
-        <PostsSection posts={posts} />
+        <PostsSection posts={posts} addCommentToPost={addCommentToPost} />
       ) : (
         <Typography
           sx={{

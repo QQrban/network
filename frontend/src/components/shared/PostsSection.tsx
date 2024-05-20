@@ -10,17 +10,19 @@ import mockBg from "../../../public/mockBG.png";
 import likeIcon from "../../../public/icons/like.svg";
 import commentIcon from "../../../public/icons/comment.svg";
 import AddComment from "../Profile/MainBoard/PostsSection/AddComment";
-import { createRef, useState, useRef } from "react";
+import { createRef, useRef } from "react";
 import { CommentProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
 
 interface PostsSectionProps {
   posts: PostProps[];
+  addCommentToPost: (postID: number, comment: CommentProps) => void;
 }
 
-export default function PostsSection({ posts }: PostsSectionProps) {
-  const [allPosts, setAllPosts] = useState<PostProps[]>(posts);
-
+export default function PostsSection({
+  posts,
+  addCommentToPost,
+}: PostsSectionProps) {
   const inputRefs = useRef<{
     [key: number]: React.RefObject<HTMLTextAreaElement>;
   }>({});
@@ -40,19 +42,9 @@ export default function PostsSection({ posts }: PostsSectionProps) {
     "Kersti Kaljulaid",
   ];
 
-  const addCommentToPost = (postID: number, comment: CommentProps) => {
-    setAllPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.postID === postID
-          ? { ...post, comments: [...post.comments, comment] }
-          : post
-      )
-    );
-  };
-
   return (
     <>
-      {allPosts?.map((post) => {
+      {posts?.map((post) => {
         if (!inputRefs.current[post.postID]) {
           inputRefs.current[post.postID] = createRef<HTMLTextAreaElement>();
         }
@@ -145,7 +137,7 @@ export default function PostsSection({ posts }: PostsSectionProps) {
                 }}
               ></Box>
             )}
-            {post.likes.length > 0 && (
+            {post.likes?.length > 0 && (
               <Box
                 sx={{
                   p: "10px 17px",

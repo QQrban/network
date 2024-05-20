@@ -37,14 +37,17 @@ export default function GroupPostsSection({
   }, [pathName]);
 
   const addNewPost = (newPost: PostProps) => {
-    setPosts((prevPosts) => [newPost, ...prevPosts]);
+    setPosts((prevPosts) => [
+      { ...newPost, comments: newPost.comments || [] },
+      ...prevPosts,
+    ]);
   };
 
   const addCommentToPost = (postID: number, comment: CommentProps) => {
     setPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.postID === postID
-          ? { ...post, comments: [...post.comments, comment] }
+          ? { ...post, comments: [...(post.comments || []), comment] }
           : post
       )
     );

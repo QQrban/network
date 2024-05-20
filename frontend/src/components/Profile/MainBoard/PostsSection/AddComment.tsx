@@ -34,13 +34,9 @@ export default function AddComment({
         body: JSON.stringify({ content: commentText, images: "" }),
       });
       if (response.ok) {
-        // const newComment: CommentProps = await response.json();
-        // console.log(newComment);
-        const data = await response.json();
-        console.log(data);
-
-        // addComment(postID, newComment);
-        // setCommentText("");
+        const newComment: CommentProps = await response.json();
+        addComment(postID, newComment);
+        setCommentText("");
       }
     } catch (error) {
       console.error(error);

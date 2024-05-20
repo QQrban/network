@@ -101,7 +101,7 @@ export default function CreatePostModal({
       content: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
       formData.append("content", values.content);
       formData.append("groupID", pathname);
@@ -119,7 +119,8 @@ export default function CreatePostModal({
       if (response.ok) {
         const newPost: PostProps = await response.json();
         console.log(newPost);
-
+        resetForm();
+        setSelectedImages([]);
         addNewPost(newPost);
         handleClose();
       } else {

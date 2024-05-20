@@ -70,18 +70,18 @@ func (model FileModel) Insert(file io.Reader, filename string) (string, error) {
 
 	out, err := os.Create(path.Join(UploadsPath, token+extension))
 	if err != nil {
-		return "", fmt.Errorf("File/Insert: %w", err)
+		return "", fmt.Errorf("File/Insert1: %w", err)
 	}
 	defer out.Close()
 
 	_, err = io.Copy(out, file)
 	if err != nil {
-		return "", fmt.Errorf("File/Insert: %w", err)
+		return "", fmt.Errorf("File/Insert2: %w", err)
 	}
 
 	_, err = stmt.Exec(token, filename, extension)
 	if err != nil {
-		return "", fmt.Errorf("File/Insert: %w", err)
+		return "", fmt.Errorf("File/Insert3: %w", err)
 	}
 
 	return token, err

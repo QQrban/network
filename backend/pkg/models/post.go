@@ -20,8 +20,8 @@ type Post struct {
 	Created time.Time `json:"created"`
 
 	Author   *UserLimited   `json:"author"`
-	Group    *Group         `json:"group",omitempty`
-	Comments []Comment      `json:"comments"`
+	Group    *Group         `json:"group"`
+	Comments []*Comment     `json:"comments"`
 	LikedBy  []*UserLimited `json:"likes"`
 }
 
@@ -75,14 +75,49 @@ func (model PostModel) GetByID(postID int64) (*Post, error) {
 	}
 	post.Author = author.Limited()
 
-	likedBy, err := model.GetLikedBy(postID)
+	comments, err := model.GetComments(postID)
 	if err != nil {
 		return nil, fmt.Errorf("Post/GetByID2: %w", err)
+	}
+	post.Comments = comments
+
+	likedBy, err := model.GetLikedBy(postID)
+	if err != nil {
+		return nil, fmt.Errorf("Post/GetByID3: %w", err)
 	}
 
 	post.LikedBy = likedBy
 
 	return post, nil
+}
+
+func (model PostModel) GetComments(postID int64) ([]*Comment, error) {
+	commModel := MakeCommentModel(model.db)
+	stmt := commModel.queries.Prepare("getByPost")
+
+	rows, err := stmt.Query(postID)
+	if err != nil {
+		return nil, fmt.Errorf("Post/GetComments1: %w", err)
+	}
+	defer rows.Close()
+
+	comments := make([]*Comment, 0)
+
+	for rows.Next() {
+		comment := &Comment{}
+		user := &User{}
+
+		err = rows.Scan(append(comment.pointerSlice(), user.pointerSlice()...)...)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetComments2: %w", err)
+		}
+
+		comment.Author = user.Limited()
+
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
 }
 
 func (model PostModel) GetLikedBy(postID int64) ([]*UserLimited, error) {
@@ -132,9 +167,15 @@ func (model PostModel) GetByUser(myID, targetID, beforeID int64) ([]*Post, error
 			return nil, fmt.Errorf("Post/GetByUser2: %w", err)
 		}
 
-		likedBy, err := model.GetLikedBy(post.ID)
+		comments, err := model.GetComments(post.ID)
 		if err != nil {
 			return nil, fmt.Errorf("Post/GetByUser3: %w", err)
+		}
+		post.Comments = comments
+
+		likedBy, err := model.GetLikedBy(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetByUser4: %w", err)
 		}
 
 		post.LikedBy = likedBy
@@ -150,7 +191,7 @@ func (model PostModel) GetAll(myID, beforeID int64) ([]*Post, error) {
 
 	rows, err := stmt.Query(myID, beforeID)
 	if err != nil {
-		return nil, fmt.Errorf("Post/GetAll: %w", err)
+		return nil, fmt.Errorf("Post/GetAll1: %w", err)
 	}
 	defer rows.Close()
 
@@ -163,12 +204,18 @@ func (model PostModel) GetAll(myID, beforeID int64) ([]*Post, error) {
 		post.Author = author.Limited()
 
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetAll: %w", err)
+			return nil, fmt.Errorf("Post/GetAll2: %w", err)
 		}
+
+		comments, err := model.GetComments(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetAll3: %w", err)
+		}
+		post.Comments = comments
 
 		likedBy, err := model.GetLikedBy(post.ID)
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetAll: %w", err)
+			return nil, fmt.Errorf("Post/GetAll4: %w", err)
 		}
 
 		post.LikedBy = likedBy
@@ -184,7 +231,7 @@ func (model PostModel) GetByFollowing(myID, beforeID int64) ([]*Post, error) {
 
 	rows, err := stmt.Query(myID, beforeID)
 	if err != nil {
-		return nil, fmt.Errorf("Post/GetByFollowing: %w", err)
+		return nil, fmt.Errorf("Post/GetByFollowing1: %w", err)
 	}
 	defer rows.Close()
 
@@ -197,12 +244,18 @@ func (model PostModel) GetByFollowing(myID, beforeID int64) ([]*Post, error) {
 		post.Author = author.Limited()
 
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetByFollowing: %w", err)
+			return nil, fmt.Errorf("Post/GetByFollowing2: %w", err)
 		}
+
+		comments, err := model.GetComments(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetByFollowing3: %w", err)
+		}
+		post.Comments = comments
 
 		likedBy, err := model.GetLikedBy(post.ID)
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetByFollowing: %w", err)
+			return nil, fmt.Errorf("Post/GetByFollowing4: %w", err)
 		}
 
 		post.LikedBy = likedBy
@@ -218,7 +271,7 @@ func (model PostModel) GetByGroup(groupID, beforeID int64) ([]*Post, error) {
 
 	rows, err := stmt.Query(groupID, beforeID)
 	if err != nil {
-		return nil, fmt.Errorf("Post/GetByGroup: %w", err)
+		return nil, fmt.Errorf("Post/GetByGroup1: %w", err)
 	}
 	defer rows.Close()
 
@@ -231,12 +284,18 @@ func (model PostModel) GetByGroup(groupID, beforeID int64) ([]*Post, error) {
 		post.Author = author.Limited()
 
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetByGroup: %w", err)
+			return nil, fmt.Errorf("Post/GetByGroup2: %w", err)
 		}
+
+		comments, err := model.GetComments(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetByGroup3: %w", err)
+		}
+		post.Comments = comments
 
 		likedBy, err := model.GetLikedBy(post.ID)
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetByGroup: %w", err)
+			return nil, fmt.Errorf("Post/GetByGroup4: %w", err)
 		}
 
 		post.LikedBy = likedBy
@@ -252,7 +311,7 @@ func (model PostModel) GetByMyGroups(myID, beforeID int64) ([]*Post, error) {
 
 	rows, err := stmt.Query(myID, beforeID)
 	if err != nil {
-		return nil, fmt.Errorf("Post/GetByMyGroups: %w", err)
+		return nil, fmt.Errorf("Post/GetByMyGroups1: %w", err)
 	}
 	defer rows.Close()
 
@@ -269,12 +328,18 @@ func (model PostModel) GetByMyGroups(myID, beforeID int64) ([]*Post, error) {
 		post.Group = group
 
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetByMyGroups: %w", err)
+			return nil, fmt.Errorf("Post/GetByMyGroups2: %w", err)
 		}
+
+		comments, err := model.GetComments(post.ID)
+		if err != nil {
+			return nil, fmt.Errorf("Post/GetByMyGroups3: %w", err)
+		}
+		post.Comments = comments
 
 		likedBy, err := model.GetLikedBy(post.ID)
 		if err != nil {
-			return nil, fmt.Errorf("Post/GetByMyGroups: %w", err)
+			return nil, fmt.Errorf("Post/GetByMyGroups4: %w", err)
 		}
 
 		post.LikedBy = likedBy

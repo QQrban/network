@@ -133,6 +133,8 @@ export default function CreatePostModal({
 
       if (response.ok) {
         const newPost: PostProps = await response.json();
+        console.log(newPost);
+
         addNewPost(newPost);
         handleClose();
       } else {

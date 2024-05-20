@@ -21,3 +21,22 @@ export interface GroupProps {
   pendingRequest: boolean;
   ownerName: string;
 }
+
+export interface PostProps {
+  aboutID: null;
+  author: {
+    ID: number;
+    firstName: string;
+    followInfo: null;
+    image: null;
+    lastName: string;
+    nickname: string;
+  };
+  authorID: number;
+  content: string;
+  created: string;
+  groupID: number;
+  images: string;
+  postID: number;
+  status: "public";
+}

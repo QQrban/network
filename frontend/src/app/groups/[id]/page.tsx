@@ -12,7 +12,8 @@ import GroupAddInfo from "@/components/Group/GroupAddInfo";
 import CreatePostModal from "@/components/Group/CreatePostModal";
 
 export default function GroupPage() {
-  const [openPostModal, setOpenPostModal] = useState(false);
+  const [openPostModal, setOpenPostModal] = useState<boolean>(false);
+  const [membersNumber, setMembersNumber] = useState<number>(0);
 
   const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
@@ -28,7 +29,6 @@ export default function GroupPage() {
         if (response.ok) {
           const data = await response.json();
           setMainInfo(data);
-          console.log(data);
         } else {
           throw new Error("Failed to fetch groups");
         }
@@ -37,6 +37,22 @@ export default function GroupPage() {
       }
     };
     fetchGroup();
+    const fetchMembers = async () => {
+      try {
+        const response = await fetchFromServer(`/group/${pathname}/members`, {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setMembersNumber(data.length);
+        } else {
+          throw new Error("Failed to fetch groups");
+        }
+      } catch (error) {
+        console.error("Failed to fetch groups:", error);
+      }
+    };
+    fetchMembers();
   }, [pathname]);
 
   return (
@@ -52,6 +68,7 @@ export default function GroupPage() {
       {mainInfo && (
         <>
           <GroupCard
+            members={membersNumber}
             setOpenPostModal={setOpenPostModal}
             groupTitle={mainInfo.title}
             activeTab={activeTab}

@@ -1,3 +1,5 @@
+"use client";
+
 import { Item } from "@/components/shared/Item";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import Image from "next/image";

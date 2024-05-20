@@ -1,7 +1,10 @@
+"use client";
+
 import { Box, Typography, styled } from "@mui/material";
 import { Item } from "../shared/Item";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -22,9 +25,12 @@ export default function GroupAddInfo({
   profileIcon,
   ownerName,
 }: GroupAddInfoProps) {
+  const [expandAbout, setExpandAbout] = useState<boolean>(false);
+
   return (
     <Box
       sx={{
+        width: "550px",
         position: "sticky",
         top: "90px",
         alignSelf: "flex-start",
@@ -35,14 +41,87 @@ export default function GroupAddInfo({
     >
       <Item
         sx={{
+          position: "sticky",
+          top: "90px",
+          alignSelf: "flex-start",
+          width: "100%",
+          p: "14px",
+        }}
+        radius="8px"
+      >
+        <StyledTypography>Top Group Members</StyledTypography>
+        {[0, 1, 2].map((_, index) => (
+          <Link key={index} href="#">
+            <Box
+              sx={{
+                mt: "12px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "4px",
+                "&:hover": {
+                  backgroundColor: "#cacaca49",
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  width: "45px",
+                  height: "45px",
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  border: "2px solid #cacacac9",
+                }}
+              >
+                <Image src={profileIcon} alt="profile" />
+              </Box>
+              <Box>
+                <Typography
+                  sx={{
+                    fontFamily: "Schoolbell !important",
+                    fontWeight: 600,
+                    fontSize: "17px",
+                  }}
+                >
+                  Albert Einstein
+                </Typography>
+              </Box>
+            </Box>
+          </Link>
+        ))}
+      </Item>
+      <Item
+        sx={{
           p: "14px",
         }}
         radius="8px"
       >
         <StyledTypography>About</StyledTypography>
-        <Typography sx={{ mt: "9px", wordBreak: "break-word" }}>
-          {description}
-        </Typography>
+        <Box sx={{ mt: "9px", wordBreak: "break-word" }}>
+          {description.length > 150 ? (
+            <Box>
+              <Typography component="span">
+                {!expandAbout ? description.slice(0, 150) : description}
+              </Typography>
+              <Typography
+                sx={{
+                  color: "dodgerblue",
+                  cursor: "pointer",
+                  "&:hover": {
+                    filter: "brightness(86%)",
+                  },
+                }}
+                onClick={() => setExpandAbout(!expandAbout)}
+                component="span"
+              >
+                {" "}
+                {!expandAbout ? "...Read More" : "Show Less"}
+              </Typography>
+            </Box>
+          ) : (
+            description
+          )}
+        </Box>
       </Item>
       <Item
         sx={{
@@ -88,57 +167,6 @@ export default function GroupAddInfo({
             </Box>
           </Box>
         </Link>
-      </Item>
-      <Item
-        sx={{
-          position: "sticky",
-          top: "90px",
-          alignSelf: "flex-start",
-          width: "100%",
-          p: "14px",
-        }}
-        radius="8px"
-      >
-        <StyledTypography>Top Group Members</StyledTypography>
-        {[0, 1, 2, 3, 4].map((_, index) => (
-          <Link key={index} href="#">
-            <Box
-              sx={{
-                mt: "12px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "4px",
-                "&:hover": {
-                  backgroundColor: "#cacaca49",
-                },
-              }}
-            >
-              <Box
-                sx={{
-                  width: "45px",
-                  height: "45px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "2px solid #cacacac9",
-                }}
-              >
-                <Image src={profileIcon} alt="profile" />
-              </Box>
-              <Box>
-                <Typography
-                  sx={{
-                    fontFamily: "Schoolbell !important",
-                    fontWeight: 600,
-                    fontSize: "17px",
-                  }}
-                >
-                  Albert Einstein
-                </Typography>
-              </Box>
-            </Box>
-          </Link>
-        ))}
       </Item>
     </Box>
   );

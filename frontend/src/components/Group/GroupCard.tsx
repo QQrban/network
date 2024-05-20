@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   SpeedDial,
@@ -17,9 +19,10 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Image from "next/image";
 import copyIcon from "../../../public/icons/copy.svg";
 import CreatePost from "../shared/CreatePost";
-import PostsSection from "../shared/PostsSection";
 import EventSection from "../Events/EventSection";
 import { yourEvents } from "../Events/mock";
+import { useEffect } from "react";
+import GroupPostsSection from "./GroupPostsSection";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -37,6 +40,7 @@ interface GroupCardProps {
   activeTab: string;
   setActiveTab: React.Dispatch<string>;
   setOpenPostModal: React.Dispatch<boolean>;
+  members: number;
 }
 
 export default function GroupCard({
@@ -44,6 +48,7 @@ export default function GroupCard({
   activeTab,
   setActiveTab,
   setOpenPostModal,
+  members,
 }: GroupCardProps) {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue);
@@ -72,7 +77,9 @@ export default function GroupCard({
           }}
         >
           <StyledTypography>{groupTitle}</StyledTypography>
-          <Typography sx={{ color: "#979797" }}>98327 members</Typography>
+          <Typography sx={{ color: "#979797" }}>
+            {members} {`member${members > 1 ? "s" : ""}`}
+          </Typography>
           <Box
             sx={{
               display: "flex",
@@ -165,11 +172,7 @@ export default function GroupCard({
               gap: "23px",
             }}
           >
-            <CreatePost setOpenPostModal={setOpenPostModal} />
-            <PostsSection />
-            <PostsSection />
-            <PostsSection />
-            <PostsSection />
+            <GroupPostsSection setOpenPostModal={setOpenPostModal} />
           </Box>
         </Box>
       ) : (

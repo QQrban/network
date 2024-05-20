@@ -41,6 +41,7 @@ func FileUpload(w http.ResponseWriter, r *http.Request, field string) (string, e
 		}
 	}
 
+	fmt.Println("File uploaded successfully: ", tokens)
 	return tokens, nil
 }
 

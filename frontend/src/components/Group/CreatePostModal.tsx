@@ -5,10 +5,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ThemeProvider, Typography, createTheme, styled } from "@mui/material";
 import { StyledTextArea } from "../Login/styles";
 import mediaIcon from "../../../public/icons/media.svg";
@@ -21,7 +17,6 @@ import ConfirmBtn from "../shared/ConfirmBtn";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { usePathname } from "next/navigation";
-import path from "path";
 import { fetchFromServer } from "@/lib/api";
 import { PostProps } from "@/types/types";
 
@@ -30,11 +25,6 @@ interface CreatePostModalProps {
   setOpenPostModal: React.Dispatch<boolean>;
   addNewPost: (newPost: PostProps) => void;
 }
-
-const StyledMenuItem = styled(MenuItem)`
-  font-family: Schoolbell !important;
-  font-size: 23px;
-`;
 
 const theme = createTheme({
   components: {
@@ -74,7 +64,7 @@ const theme = createTheme({
 const validationSchema = Yup.object({
   content: Yup.string()
     .required("Content is Required")
-    .min(50, "Content must be at least 50 characters")
+    .min(3, "Content must be at least 3 characters")
     .max(600, "Content must be at most 600 characters"),
 });
 
@@ -118,11 +108,6 @@ export default function CreatePostModal({
       selectedImages.forEach((image) => {
         formData.append("images", image);
       });
-
-      // @ts-ignore
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
 
       const response = await fetchFromServer("/post", {
         method: "POST",

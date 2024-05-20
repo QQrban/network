@@ -5,9 +5,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
-import { ThemeProvider, Typography, createTheme, styled } from "@mui/material";
+import { Typography, createTheme } from "@mui/material";
 import { StyledTextArea } from "../Login/styles";
-import mediaIcon from "../../../public/icons/media.svg";
 import deleteIcon from "../../../public/icons/delete.svg";
 import Image from "next/image";
 import IconButton from "@mui/material/IconButton";
@@ -25,41 +24,6 @@ interface CreatePostModalProps {
   setOpenPostModal: React.Dispatch<boolean>;
   addNewPost: (newPost: PostProps) => void;
 }
-
-const theme = createTheme({
-  components: {
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: "2px solid black",
-          },
-          "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "black",
-          },
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "black",
-          },
-        },
-      },
-    },
-    MuiInputLabel: {
-      styleOverrides: {
-        root: {
-          fontFamily: "Schoolbell, cursive",
-          fontSize: "19px",
-          color: "black",
-          "&.Mui-focused": {
-            color: "black",
-          },
-        },
-        shrink: {
-          transform: "translate(10px, -22px) scale(0.75)",
-        },
-      },
-    },
-  },
-});
 
 const validationSchema = Yup.object({
   content: Yup.string()

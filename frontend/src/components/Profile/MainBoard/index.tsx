@@ -7,17 +7,27 @@ import { useRouter } from "next/navigation";
 import { Item } from "@/components/shared/Item";
 import PhotosContent from "../PhotosContent";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import CreatePostModal from "@/components/Group/CreatePostModal";
+import { PostProps } from "@/types/types";
+import { fetchFromServer } from "@/lib/api";
 
 interface Props {
+  posts: PostProps[];
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
 }
 
-export default function MainBoard({ setSelectedTab }: Props) {
+export default function MainBoard({ setSelectedTab, posts }: Props) {
+  const [openPostModal, setOpenPostModal] = useState<boolean>(false);
+
   const profile = useSelector((state: any) => state.profileReducer.value);
 
-  const posts = ["post", "post"];
   const router = useRouter();
   let id: number = 10561654311;
+
+  const da = () => {
+    console.log(123);
+  };
 
   return (
     <Box
@@ -33,7 +43,7 @@ export default function MainBoard({ setSelectedTab }: Props) {
           width: "600px",
         }}
       >
-        <CreatePost />
+        <CreatePost setOpenPostModal={setOpenPostModal} />
         <Box
           sx={{
             display: "flex",
@@ -42,8 +52,10 @@ export default function MainBoard({ setSelectedTab }: Props) {
             mt: "13px",
           }}
         >
-          <Typography fontSize={22}>Posts</Typography>
-          {posts?.length >= 2 && (
+          <Typography fontSize={22} sx={{ mb: "23px" }}>
+            Posts
+          </Typography>
+          {posts?.length > 2 && (
             <Button
               onClick={() => router.push(`/profile/${id}/all-posts`)}
               sx={{
@@ -56,17 +68,15 @@ export default function MainBoard({ setSelectedTab }: Props) {
             </Button>
           )}
         </Box>
-        {posts?.length >= 1 ? (
-          posts.slice(0, 1).map((post) => <PostsSection key={post} />)
-        ) : (
+        <PostsSection addCommentToPost={da} posts={posts} />
+        {posts?.length === 0 && (
           <Typography
-            fontSize={40}
             sx={{
-              mt: "23px",
-              height: "100px",
+              fontFamily: "Gloria Hallelujah !important",
+              fontSize: "46px",
             }}
           >
-            No Posts Yet
+            No Posts Yet!
           </Typography>
         )}
       </Box>
@@ -104,6 +114,11 @@ export default function MainBoard({ setSelectedTab }: Props) {
         </Item>
         <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={true} />
       </Box>
+      <CreatePostModal
+        openPostModal={openPostModal}
+        setOpenPostModal={setOpenPostModal}
+        addNewPost={da}
+      />
     </Box>
   );
 }

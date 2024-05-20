@@ -13,8 +13,11 @@ import { fetchFromServer } from "@/lib/api";
 import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { putProfile } from "@/redux/features/profile/profileSlice";
+import { PostProps } from "@/types/types";
 
 export default function ProfilePage() {
+  const [posts, setPosts] = useState<PostProps[]>([]);
+
   const [selectedTab, setSelectedTab] = useState<String>("Main Board");
 
   const dispatch = useDispatch();
@@ -22,13 +25,13 @@ export default function ProfilePage() {
   const pathname = usePathname().split("/").pop();
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       try {
+        // Fetch user data
         const getUser = await fetchFromServer(`/user/${pathname}`, {
           credentials: "include",
         });
         const userData = await getUser.json();
-        console.log(userData);
 
         dispatch(
           putProfile({
@@ -45,10 +48,17 @@ export default function ProfilePage() {
             },
           })
         );
+
+        // Fetch posts data after user data is fetched
+        const response = await fetchFromServer(`/user/${pathname}/posts`, {
+          credentials: "include",
+        });
+        const postsData = await response.json();
+        setPosts(postsData);
       } catch (error) {
-        console.error("Failed to fetch user data:", error);
+        console.error("Failed to fetch data:", error);
       }
-    }
+    };
 
     fetchData();
   }, [pathname, dispatch]);
@@ -56,7 +66,7 @@ export default function ProfilePage() {
   const renderContent = () => {
     switch (selectedTab) {
       case "Main Board":
-        return <MainBoard setSelectedTab={setSelectedTab} />;
+        return <MainBoard posts={posts} setSelectedTab={setSelectedTab} />;
       case "Contacts":
         return <ContactsContent />;
       case "Photos":
@@ -64,7 +74,7 @@ export default function ProfilePage() {
           <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={false} />
         );
       default:
-        return <MainBoard setSelectedTab={setSelectedTab} />;
+        return <MainBoard posts={posts} setSelectedTab={setSelectedTab} />;
     }
   };
 

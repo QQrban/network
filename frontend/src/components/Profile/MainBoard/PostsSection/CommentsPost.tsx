@@ -63,6 +63,7 @@ export default function CommentsPost({ comments }: CommentPostProps) {
             <Typography
               sx={{
                 fontSize: "15px",
+                wordBreak: "break-all",
               }}
             >
               {comment.content}

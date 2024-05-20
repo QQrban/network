@@ -68,6 +68,7 @@ export default function GroupPage() {
       {mainInfo && (
         <>
           <GroupCard
+            openPostModal={openPostModal}
             members={membersNumber}
             setOpenPostModal={setOpenPostModal}
             groupTitle={mainInfo.title}
@@ -83,10 +84,6 @@ export default function GroupPage() {
           />
         </>
       )}
-      <CreatePostModal
-        openPostModal={openPostModal}
-        setOpenPostModal={setOpenPostModal}
-      />
     </Box>
   );
 }

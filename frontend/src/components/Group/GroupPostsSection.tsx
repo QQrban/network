@@ -6,13 +6,16 @@ import PostsSection from "../shared/PostsSection";
 import { fetchFromServer } from "@/lib/api";
 import { PostProps } from "@/types/types";
 import { Box, Typography } from "@mui/material";
+import CreatePostModal from "./CreatePostModal";
 
 interface GroupPostsSectionProps {
+  openPostModal: boolean;
   setOpenPostModal: React.Dispatch<boolean>;
   pathName: string | undefined;
 }
 
 export default function GroupPostsSection({
+  openPostModal,
   setOpenPostModal,
   pathName,
 }: GroupPostsSectionProps) {
@@ -29,6 +32,10 @@ export default function GroupPostsSection({
     };
     fetchPosts();
   }, [pathName]);
+
+  const addNewPost = (newPost: PostProps) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
 
   return (
     <Box
@@ -53,6 +60,11 @@ export default function GroupPostsSection({
           This group has no posts yet!
         </Typography>
       )}
+      <CreatePostModal
+        addNewPost={addNewPost}
+        openPostModal={openPostModal}
+        setOpenPostModal={setOpenPostModal}
+      />
     </Box>
   );
 }

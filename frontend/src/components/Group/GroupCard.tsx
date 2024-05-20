@@ -21,6 +21,7 @@ import copyIcon from "../../../public/icons/copy.svg";
 import EventSection from "../Events/EventSection";
 import { yourEvents } from "../Events/mock";
 import GroupPostsSection from "./GroupPostsSection";
+import CreatePostModal from "./CreatePostModal";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -34,6 +35,7 @@ const StyledTab = styled(Tab)`
 `;
 
 interface GroupCardProps {
+  openPostModal: boolean;
   groupTitle: string;
   activeTab: string;
   setActiveTab: React.Dispatch<string>;
@@ -43,6 +45,7 @@ interface GroupCardProps {
 }
 
 export default function GroupCard({
+  openPostModal,
   groupTitle,
   activeTab,
   setActiveTab,
@@ -173,6 +176,7 @@ export default function GroupCard({
             }}
           >
             <GroupPostsSection
+              openPostModal={openPostModal}
               pathName={pathName}
               setOpenPostModal={setOpenPostModal}
             />

@@ -22,12 +22,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { usePathname } from "next/navigation";
 import path from "path";
-import { json } from "stream/consumers";
 import { fetchFromServer } from "@/lib/api";
+import { PostProps } from "@/types/types";
 
 interface CreatePostModalProps {
   openPostModal: boolean;
   setOpenPostModal: React.Dispatch<boolean>;
+  addNewPost: (newPost: PostProps) => void;
 }
 
 const StyledMenuItem = styled(MenuItem)`
@@ -80,6 +81,7 @@ const validationSchema = Yup.object({
 export default function CreatePostModal({
   openPostModal,
   setOpenPostModal,
+  addNewPost,
 }: CreatePostModalProps) {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -130,7 +132,9 @@ export default function CreatePostModal({
       });
 
       if (response.ok) {
-        console.log(response);
+        const newPost: PostProps = await response.json();
+        addNewPost(newPost);
+        handleClose();
       } else {
         console.log(response);
       }

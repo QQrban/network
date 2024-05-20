@@ -51,7 +51,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 		post.AboutID = &aboutID
 	}
-	
+
 	if Status == "" {
 		post.Status = "public"
 	} else {
@@ -105,6 +105,18 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Save images
+
+	//err = saveImages(r, "images", cid)
+	if len(r.MultipartForm.File["images"]) > 0 {
+		// Enforce the limit on the number of files.
+		if len(r.MultipartForm.File["images"]) > 3 {
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+		//tokensFileUpload()
+	}
+
 	/*for _, img := range strings.Split(post.Images, ",") {
 		if img == "" {
 			continue
@@ -136,6 +148,67 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, post.Post)
 }
+
+/*func saveImages(r *http.Request, iName string, comment_id int64) error {
+	// Enforce the limit on the number of files.
+	if len(r.MultipartForm.File[iName]) > 3 {
+		return errors.New("too many files uploaded")
+	}
+	uploadPath := "./ui/static/images/uploads"
+	if _, err := os.Stat(uploadPath); os.IsNotExist(err) {
+		os.Mkdir(uploadPath, os.ModePerm)
+	}
+
+	files := r.MultipartForm.File[iName]
+	for _, fileHeader := range files {
+		src, err := fileHeader.Open()
+		if err != nil {
+			return err
+		}
+		defer src.Close()
+
+		// Check file type using the mime package. // Not working!!
+		//fileType, err := getFileType(src)
+		//fmt.Println("fileType:", fileType, err)
+		//if err != nil || (fileType != "image/png" && fileType != "image/gif" && fileType != "image/jpeg") {
+		//	return errors.New("invalid file type: " + fileType)
+		//}
+
+		// Check file size.
+		maxFileSize := int64(20 << 20) // 20MB
+		if fileHeader.Size > maxFileSize {
+			return fmt.Errorf("file %s is too big", fileHeader.Filename)
+		}
+
+		// Create a temporary file to store the uploaded file contents.
+		suffix := filepath.Ext(fileHeader.Filename)
+		dst, err := os.CreateTemp(uploadPath, "*"+suffix)
+		if err != nil {
+			return err
+		}
+		defer dst.Close()
+
+		if _, err = io.Copy(dst, src); err != nil {
+			return err
+		}
+
+		// Add image name to database
+		// tmpName := filepath.Base(dst.Name())
+		img := &Image{
+			Comment_Id: comment_id,
+			FileName:   fileHeader.Filename,
+			TmpName:    dst.Name(), //tmpName,
+		}
+
+		_, err = img.Create()
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("File %s successfully saved\n", fileHeader.Filename)
+	}
+	return nil
+}*/
 
 func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 	myID := getPossibleUserID(r)

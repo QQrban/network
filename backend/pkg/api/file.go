@@ -11,34 +11,40 @@ import (
 	"social-network/pkg/router"
 )
 
-const maxUploadSize = 1024 * 1024 // 1MB
+const maxUploadSize = 1024 * 1024 * 3 // 3MB
 
-func FileUpload(w http.ResponseWriter, r *http.Request) {
+func FileUpload(w http.ResponseWriter, r *http.Request, field string) {
 	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
 	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
 		log.Println("The uploaded file was too big.")
-		http.Error(w, "The uploaded file is too big. Please choose an file that's less than 1MB in size", http.StatusBadRequest)
+		http.Error(w, "The uploaded file is too big. Please choose a file that's less than 1MB in size", http.StatusBadRequest)
 		return
 	}
 
 	// The argument to FormFile must match the name attribute of the file input on the frontend
-	file, fileHeader, err := r.FormFile("file")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	files := r.MultipartForm.File[field]
+	tokens := make([]string, len(files))
+	for _, fileHeader := range files {
+		file, err := fileHeader.Open()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
-	defer file.Close()
+		defer file.Close()
 
-	token, err := Database.File.Insert(file, fileHeader.Filename)
-	if err != nil {
-		panic(err)
+		token, err := Database.File.Insert(file, fileHeader.Filename)
+		if err != nil {
+			panic(err)
+		}
+
+		tokens = append(tokens, token)
 	}
 
 	response := struct {
-		Token string `json:"token"`
+		Tokens []string `json:"tokens"`
 	}{
-		token,
+		tokens,
 	}
 	writeJSON(w, response)
 }

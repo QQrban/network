@@ -1,75 +1,101 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import noPhoto from "../../../../../public/icons/profile.svg";
+import { CommentProps } from "@/types/types";
+import dayjs from "dayjs";
 
-export default function CommentsPost() {
+interface CommentPostProps {
+  comments: CommentProps[];
+}
+
+export default function CommentsPost({ comments }: CommentPostProps) {
   return (
-    <Box
-      sx={{
-        p: "10px 17px",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: "5px",
-        }}
-      >
+    <>
+      {comments?.map((comment) => (
         <Box
+          key={comment.ID}
           sx={{
-            width: "36px",
-            height: "36px",
-            border: "2px solid #4a4a4a",
-            borderRadius: "50%",
-            overflow: "hidden",
+            p: "10px 17px",
           }}
         >
-          <Image src={noPhoto} alt="profile pic" />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "2px",
-          }}
-        >
-          <Typography
+          <Box
             sx={{
-              fontSize: "16px",
-              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
             }}
           >
-            Denzel Washington
-          </Typography>
+            <Box
+              sx={{
+                width: "36px",
+                height: "36px",
+                border: "2px solid #4a4a4a",
+                borderRadius: "50%",
+                overflow: "hidden",
+              }}
+            >
+              <Image src={noPhoto} alt="profile pic" />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "2px",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "16px",
+                  fontWeight: 700,
+                }}
+              >
+                {comment.author
+                  ? `${comment.author.firstName} ${comment.author.lastName}`
+                  : "Unknown Author"}
+              </Typography>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              m: "0 0 0 42px",
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "15px",
+              }}
+            >
+              {comment.content}
+            </Typography>
+            <Box
+              sx={{
+                mt: "9px",
+                display: "flex",
+                color: "#A9A9A9",
+                fontSize: "11px",
+                gap: "10px",
+              }}
+            >
+              <Typography fontSize={16}>
+                {dayjs(comment.created).format("MMM D, YYYY")}
+              </Typography>
+              <Typography
+                sx={{
+                  color: "#4499df",
+                  cursor: "pointer",
+                  "&:hover": {
+                    borderRadius: "50%",
+                    backgroundColor: "#bad7ef3c",
+                  },
+                }}
+                fontSize={16}
+              >
+                Like
+              </Typography>
+            </Box>
+          </Box>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          m: "0 0 0 42px",
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: "15px",
-          }}
-        >
-          Good luck, Kurban! You&apos;re doing the right thing! If I manage to
-          finish my tasks, I&apos;ll definitely join you too!
-        </Typography>
-        <Box
-          sx={{
-            mt: "9px",
-            display: "flex",
-            color: "#A9A9A9",
-            fontSize: "11px",
-            gap: "10px",
-          }}
-        >
-          <Typography fontSize={16}>5d</Typography>
-          <Typography fontSize={16}>Like</Typography>
-        </Box>
-      </Box>
-    </Box>
+      ))}
+    </>
   );
 }

@@ -1,24 +1,50 @@
-"use client";
-
 import { Box, IconButton, styled } from "@mui/material";
 import Image from "next/image";
 import noPhoto from "../../../../../public/icons/profile.svg";
 import confirmBtn from "../../../../../public/icons/confirmButton.svg";
 import picture from "../../../../../public/icons/picture.svg";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-import ImageIcon from "@mui/icons-material/Image";
 import { useState } from "react";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
+import { fetchFromServer } from "@/lib/api";
+import { CommentProps } from "@/types/types";
 
 interface AddCommentProps {
   inputRef: React.RefObject<HTMLTextAreaElement>;
+  postID: number;
+  addComment: (postID: number, comment: CommentProps) => void;
 }
 
-export default function AddComment({ inputRef }: AddCommentProps) {
-  const [commentText, setCommentText] = useState("");
+export default function AddComment({
+  inputRef,
+  postID,
+  addComment,
+}: AddCommentProps) {
+  const [commentText, setCommentText] = useState<string>("");
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentText(e.target.value);
+  };
+
+  const handleAddComment = async () => {
+    try {
+      const response = await fetchFromServer(`/post/${postID}/comment`, {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify({ content: commentText, images: "" }),
+      });
+      if (response.ok) {
+        // const newComment: CommentProps = await response.json();
+        // console.log(newComment);
+        const data = await response.json();
+        console.log(data);
+
+        // addComment(postID, newComment);
+        // setCommentText("");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -80,7 +106,11 @@ export default function AddComment({ inputRef }: AddCommentProps) {
             width: "180px",
           }}
         >
-          <ConfirmBtn backgroundImage={confirmBtn.src} text="Comment" />
+          <ConfirmBtn
+            onClick={handleAddComment}
+            backgroundImage={confirmBtn.src}
+            text="Comment"
+          />
         </Box>
       )}
     </Box>

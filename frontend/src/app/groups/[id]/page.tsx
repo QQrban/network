@@ -73,6 +73,7 @@ export default function GroupPage() {
             groupTitle={mainInfo.title}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            pathName={pathname}
           />
           <GroupAddInfo
             description={mainInfo.description}

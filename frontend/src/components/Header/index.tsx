@@ -10,7 +10,7 @@ export default function Header() {
       sx={{
         position: "sticky",
         top: "0",
-        zIndex: "2",
+        zIndex: "1051",
         border: "none",
         borderBottom: "3px solid #b0b0b0",
         boxShadow: "none",

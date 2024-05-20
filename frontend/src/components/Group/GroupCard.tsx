@@ -18,10 +18,8 @@ import successBtn from "../../../public/icons/successBtn.svg";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Image from "next/image";
 import copyIcon from "../../../public/icons/copy.svg";
-import CreatePost from "../shared/CreatePost";
 import EventSection from "../Events/EventSection";
 import { yourEvents } from "../Events/mock";
-import { useEffect } from "react";
 import GroupPostsSection from "./GroupPostsSection";
 
 const StyledTypography = styled(Typography)`
@@ -41,6 +39,7 @@ interface GroupCardProps {
   setActiveTab: React.Dispatch<string>;
   setOpenPostModal: React.Dispatch<boolean>;
   members: number;
+  pathName: string | undefined;
 }
 
 export default function GroupCard({
@@ -49,6 +48,7 @@ export default function GroupCard({
   setActiveTab,
   setOpenPostModal,
   members,
+  pathName,
 }: GroupCardProps) {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue);
@@ -172,7 +172,10 @@ export default function GroupCard({
               gap: "23px",
             }}
           >
-            <GroupPostsSection setOpenPostModal={setOpenPostModal} />
+            <GroupPostsSection
+              pathName={pathName}
+              setOpenPostModal={setOpenPostModal}
+            />
           </Box>
         </Box>
       ) : (

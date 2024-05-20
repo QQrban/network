@@ -22,7 +22,7 @@ export interface GroupProps {
   ownerName: string;
 }
 
-interface CommentProps {
+export interface CommentProps {
   ID: number;
   aboutID: number;
   authorID: number;

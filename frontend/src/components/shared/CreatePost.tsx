@@ -13,7 +13,6 @@ export default function CreatePost({ setOpenPostModal }: CreatePostProps) {
   const userData = useSelector((state: any) => state.authReducer.value);
 
   const openModal = () => {
-    console.log(123);
     setOpenPostModal(true);
   };
 

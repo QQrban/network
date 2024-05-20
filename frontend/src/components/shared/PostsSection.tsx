@@ -1,5 +1,3 @@
-"use client";
-
 import { Item } from "@/components/shared/Item";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import Image from "next/image";
@@ -12,8 +10,8 @@ import mockBg from "../../../public/mockBG.png";
 import likeIcon from "../../../public/icons/like.svg";
 import commentIcon from "../../../public/icons/comment.svg";
 import AddComment from "../Profile/MainBoard/PostsSection/AddComment";
-import { createRef, useRef } from "react";
-import { PostProps } from "@/types/types";
+import { createRef, useState, useRef } from "react";
+import { CommentProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
 
 interface PostsSectionProps {
@@ -21,6 +19,8 @@ interface PostsSectionProps {
 }
 
 export default function PostsSection({ posts }: PostsSectionProps) {
+  const [allPosts, setAllPosts] = useState<PostProps[]>(posts);
+
   const inputRefs = useRef<{
     [key: number]: React.RefObject<HTMLTextAreaElement>;
   }>({});
@@ -40,9 +40,19 @@ export default function PostsSection({ posts }: PostsSectionProps) {
     "Kersti Kaljulaid",
   ];
 
+  const addCommentToPost = (postID: number, comment: CommentProps) => {
+    setAllPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postID === postID
+          ? { ...post, comments: [...post.comments, comment] }
+          : post
+      )
+    );
+  };
+
   return (
     <>
-      {posts?.map((post) => {
+      {allPosts?.map((post) => {
         if (!inputRefs.current[post.postID]) {
           inputRefs.current[post.postID] = createRef<HTMLTextAreaElement>();
         }
@@ -191,8 +201,12 @@ export default function PostsSection({ posts }: PostsSectionProps) {
               />
             </Box>
             <Divider />
-            <CommentsPost />
-            <AddComment inputRef={inputRefs.current[post.postID]} />
+            <CommentsPost comments={post.comments} />
+            <AddComment
+              postID={post.postID}
+              inputRef={inputRefs.current[post.postID]}
+              addComment={addCommentToPost}
+            />
           </Item>
         );
       })}

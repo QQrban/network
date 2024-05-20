@@ -19,10 +19,10 @@ type Post struct {
 
 	Created time.Time `json:"created"`
 
-	Author   *UserLimited   `json:"author,omitempty"`
-	Group    *Group         `json:"group,omitempty"`
-	Comments []Comment      `json:"comments,omitempty"`
-	LikedBy  []*UserLimited `json:"likes,omitempty"`
+	Author   *UserLimited   `json:"author"`
+	Group    *Group         `json:"group",omitempty`
+	Comments []Comment      `json:"comments"`
+	LikedBy  []*UserLimited `json:"likes"`
 }
 
 func (x *Post) pointerSlice() []interface{} {

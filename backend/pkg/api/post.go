@@ -41,6 +41,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 		post.GroupID = &groupID
 	}
+
 	if AboutID != "" && AboutID != "null" {
 		aboutID, err := strconv.ParseInt(AboutID, 10, 64)
 		if err != nil {
@@ -50,6 +51,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 		post.AboutID = &aboutID
 	}
+	
 	if Status == "" {
 		post.Status = "public"
 	} else {

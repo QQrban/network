@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path"
@@ -13,12 +12,16 @@ import (
 
 const maxUploadSize = 1024 * 1024 * 3 // 3MB
 
-func FileUpload(w http.ResponseWriter, r *http.Request, field string) {
+type FileToken struct {
+	Tokens []string `json:"tokens"`
+}
+
+func FileUpload(w http.ResponseWriter, r *http.Request, field string) (FileToken, error) {
 	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
 	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
-		log.Println("The uploaded file was too big.")
-		http.Error(w, "The uploaded file is too big. Please choose a file that's less than 1MB in size", http.StatusBadRequest)
-		return
+		//log.Println("The uploaded file was too big.")
+		//http.Error(w, "The uploaded file is too big. Please choose a file that's less than 1MB in size", http.StatusBadRequest)
+		return FileToken{}, fmt.Errorf("file too big")
 	}
 
 	// The argument to FormFile must match the name attribute of the file input on the frontend
@@ -27,8 +30,8 @@ func FileUpload(w http.ResponseWriter, r *http.Request, field string) {
 	for _, fileHeader := range files {
 		file, err := fileHeader.Open()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			//http.Error(w, err.Error(), http.StatusBadRequest)
+			return FileToken{}, err
 		}
 
 		defer file.Close()
@@ -41,12 +44,11 @@ func FileUpload(w http.ResponseWriter, r *http.Request, field string) {
 		tokens = append(tokens, token)
 	}
 
-	response := struct {
-		Tokens []string `json:"tokens"`
-	}{
+	response := FileToken{
 		tokens,
 	}
-	writeJSON(w, response)
+	return response, nil
+	//writeJSON(w, response)
 }
 
 func FileDownload(w http.ResponseWriter, r *http.Request) {

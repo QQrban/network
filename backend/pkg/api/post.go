@@ -114,7 +114,14 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			writeStatusError(w, http.StatusBadRequest)
 			return
 		}
-		//tokensFileUpload()
+
+		//tokens, err := FileUpload(w, r, "images")
+
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
 	}
 
 	/*for _, img := range strings.Split(post.Images, ",") {
@@ -142,6 +149,11 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			panicIfErr(err)
 		}
 	}
+
+	user, err := Database.User.GetByID(session.UserID)
+	panicIfErr(err)
+
+	post.Author = user.Limited()
 
 	post.ID = id
 	post.Created = time.Now()

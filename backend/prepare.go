@@ -41,8 +41,8 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/posts", api.OptionalAuth(api.GetAllPosts))
 	rtr.Post("/post", api.EnsureAuth(api.CreatePost))
 
-	/*rtr.Get("/file/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", api.FileDownload)
-	rtr.Post("/file", api.FileUpload)*/
+	rtr.Get("/file/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", api.FileDownload)
+	/*rtr.Post("/file", api.FileUpload)*/
 
 	rtr.Put("/group", api.EnsureAuth(api.CreateGroup))
 	rtr.Get("/groups", api.OptionalAuth(api.GetAllGroups))

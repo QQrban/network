@@ -53,7 +53,7 @@ func MakePostModel(db *sql.DB) PostModel {
 func (model PostModel) Insert(post Post) (int64, error) {
 	stmt := model.queries.Prepare("insert")
 
-	res, err := stmt.Exec(post.pointerSlice()[:5]...) // 6 with images
+	res, err := stmt.Exec(post.pointerSlice()[:6]...) // 6 with images
 
 	if err != nil {
 		return 0, fmt.Errorf("Post/Insert: %w", err)
@@ -87,6 +87,21 @@ func (model PostModel) GetByID(postID int64) (*Post, error) {
 	}
 
 	post.LikedBy = likedBy
+
+	/*for _, img := range strings.Split(post.Images, ",") {
+		if img == "" {
+			continue
+		}
+
+		_, err = Database.File.Get(img)
+		if err != nil {
+			log.Printf("Could not find file with token %v\n", img)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}*/
+
+
 
 	return post, nil
 }

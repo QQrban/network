@@ -49,13 +49,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			writeStatusError(w, http.StatusBadRequest)
 			return
 		}
-		post.AboutID = &aboutID
+		post.Post.AboutID = &aboutID
 	}
 
 	if Status == "" {
-		post.Status = "public"
+		post.Post.Status = "public"
 	} else {
-		post.Status = Status
+		post.Post.Status = Status
 	}
 	post.Content = Content
 	/*fmt.Println("formData:", formData)
@@ -71,9 +71,9 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	// If it's a group post, check that I have access
 	if post.GroupID != nil {
-		post.Status = "public"
+		post.Post.Status = "public"
 
-		access, err := Database.Group.IncludesUser(*post.GroupID, session.UserID)
+		access, err := Database.Group.IncludesUser(*post.Post.GroupID, session.UserID)
 		panicIfErr(err)
 		if !access {
 			writeStatusError(w, http.StatusForbidden)
@@ -85,7 +85,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		post.Status = "public"
 	}*/
 
-	if post.Status == "manual" {
+	if post.Post.Status == "manual" {
 		if post.AllowedUsers == nil {
 			log.Println("Tried to insert a post with privacy \"MANUAL\", but with no allowedUsers array defined")
 			writeStatusError(w, http.StatusBadRequest)
@@ -106,8 +106,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Save images
-
-	//err = saveImages(r, "images", cid)
 	if len(r.MultipartForm.File["images"]) > 0 {
 		// Enforce the limit on the number of files.
 		if len(r.MultipartForm.File["images"]) > 3 {
@@ -116,7 +114,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 
 		tokens, err := FileUpload(w, r, "images")
-		post.Images = tokens
+		post.Post.Images = tokens
 
 		if err != nil {
 			log.Println(err)
@@ -125,26 +123,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	/*for _, img := range strings.Split(post.Images, ",") {
-		if img == "" {
-			continue
-		}
-
-		_, err = Database.File.Get(img)
-		if err != nil {
-			log.Printf("Could not find file with token %v\n", img)
-			writeStatusError(w, http.StatusBadRequest)
-			return
-		}
-	}*/
-
-	post.AuthorID = session.UserID
+	post.Post.AuthorID = session.UserID
 	id, err := Database.Post.Insert(post.Post)
 	if err != nil {
 		panic(err)
 	}
 
-	if post.Status == "manual" {
+	if post.Post.Status == "manual" {
 		for _, userID := range post.AllowedUsers {
 			err = Database.Post.InsertAllowedUser(id, userID)
 			panicIfErr(err)
@@ -154,74 +139,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	user, err := Database.User.GetByID(session.UserID)
 	panicIfErr(err)
 
-	post.Author = user.Limited()
+	post.Post.Author = user.Limited()
 
-	post.ID = id
-	post.Created = time.Now()
+	post.Post.ID = id
+	post.Post.Created = time.Now()
 
 	writeJSON(w, post.Post)
 }
-
-/*func saveImages(r *http.Request, iName string, comment_id int64) error {
-	// Enforce the limit on the number of files.
-	if len(r.MultipartForm.File[iName]) > 3 {
-		return errors.New("too many files uploaded")
-	}
-	uploadPath := "./ui/static/images/uploads"
-	if _, err := os.Stat(uploadPath); os.IsNotExist(err) {
-		os.Mkdir(uploadPath, os.ModePerm)
-	}
-
-	files := r.MultipartForm.File[iName]
-	for _, fileHeader := range files {
-		src, err := fileHeader.Open()
-		if err != nil {
-			return err
-		}
-		defer src.Close()
-
-		// Check file type using the mime package. // Not working!!
-		//fileType, err := getFileType(src)
-		//fmt.Println("fileType:", fileType, err)
-		//if err != nil || (fileType != "image/png" && fileType != "image/gif" && fileType != "image/jpeg") {
-		//	return errors.New("invalid file type: " + fileType)
-		//}
-
-		// Check file size.
-		maxFileSize := int64(20 << 20) // 20MB
-		if fileHeader.Size > maxFileSize {
-			return fmt.Errorf("file %s is too big", fileHeader.Filename)
-		}
-
-		// Create a temporary file to store the uploaded file contents.
-		suffix := filepath.Ext(fileHeader.Filename)
-		dst, err := os.CreateTemp(uploadPath, "*"+suffix)
-		if err != nil {
-			return err
-		}
-		defer dst.Close()
-
-		if _, err = io.Copy(dst, src); err != nil {
-			return err
-		}
-
-		// Add image name to database
-		// tmpName := filepath.Base(dst.Name())
-		img := &Image{
-			Comment_Id: comment_id,
-			FileName:   fileHeader.Filename,
-			TmpName:    dst.Name(), //tmpName,
-		}
-
-		_, err = img.Create()
-		if err != nil {
-			return err
-		}
-
-		fmt.Printf("File %s successfully saved\n", fileHeader.Filename)
-	}
-	return nil
-}*/
 
 func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 	myID := getPossibleUserID(r)
@@ -260,6 +184,21 @@ func GetPostByID(w http.ResponseWriter, r *http.Request) {
 
 	post, err := Database.Post.GetByID(postID)
 	panicIfErr(err)
+
+	/*for _, img := range strings.Split(post.Images, ",") {
+		if img == "" {
+			continue
+		}
+
+		_, err = Database.File.Get(img)
+		if err != nil {
+			log.Printf("Could not find file with token %v\n", img)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}*/
+
+
 
 	writeJSON(w, post)
 }

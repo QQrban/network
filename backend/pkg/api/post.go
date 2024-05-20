@@ -115,7 +115,8 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//tokens, err := FileUpload(w, r, "images")
+		tokens, err := FileUpload(w, r, "images")
+		post.Images = tokens
 
 		if err != nil {
 			log.Println(err)

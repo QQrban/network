@@ -18,7 +18,7 @@ export default function GroupPage() {
 
   const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
-  const [isMember, setIsMember] = useState<boolean | null>(null);
+  const [isMember, setIsMember] = useState<boolean>(false);
 
   const pathname = usePathname().split("/").pop();
 
@@ -36,30 +36,25 @@ export default function GroupPage() {
         } else {
           throw new Error("Failed to fetch groups");
         }
-      } catch (error) {
-        console.error("Failed to fetch groups:", error);
-      }
-    };
-    fetchGroup();
-    // if (isMember) {
-    const fetchMembers = async () => {
-      try {
-        const response = await fetchFromServer(`/group/${pathname}/members`, {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setMembersNumber(data.length);
-        } else {
-          throw new Error("Failed to fetch groups");
+
+        if (isMember) {
+          const groupMembers = await fetchFromServer(
+            `/group/${pathname}/members`,
+            {
+              credentials: "include",
+            }
+          );
+          if (groupMembers.ok) {
+            const membersData = await groupMembers.json();
+            setMembersNumber(membersData.length);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch groups:", error);
       }
     };
-    fetchMembers();
-    // }
-  }, [pathname]);
+    fetchGroup();
+  }, [pathname, isMember]);
 
   return (
     <Box

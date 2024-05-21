@@ -81,7 +81,13 @@ export default function SearchBar() {
         />
       </IconButton>
       <InputBase
-        sx={{ ml: 1, flex: 1, fontFamily: "Schoolbell", fontSize: "21px" }}
+        sx={{
+          ml: 1,
+          flex: 1,
+          fontFamily: "Schoolbell",
+          fontSize: "21px",
+          background: "white",
+        }}
         placeholder="Search for Groups"
         inputProps={{ "aria-label": "search groups" }}
         value={searchText}
@@ -98,7 +104,7 @@ export default function SearchBar() {
             overflowY: "scroll",
             border: "2px solid #4b4b4b",
             borderTop: "none",
-            top: 250,
+            top: 235,
             left: 144,
             padding: "10px",
             zIndex: 1,

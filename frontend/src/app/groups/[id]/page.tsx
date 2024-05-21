@@ -11,6 +11,8 @@ import { GroupProps } from "@/types/types";
 import GroupCard from "@/components/Group/GroupCard";
 import GroupAddInfo from "@/components/Group/GroupAddInfo";
 import CreatePostModal from "@/components/Group/CreatePostModal";
+import JoinGroupInfo from "@/components/Group/JoinGroupInfo";
+import JoinGroupCard from "@/components/Group/JoinGroupCard";
 
 export default function GroupPage() {
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
@@ -88,11 +90,13 @@ export default function GroupPage() {
             </>
           ) : (
             <>
-              <Box>
-                <h1>{mainInfo.title}</h1>
-                <h2>{mainInfo.ownerName}</h2>
-                <h3>{mainInfo.description}</h3>
-              </Box>
+              <JoinGroupCard groupTitle={mainInfo.title} />
+              <JoinGroupInfo
+                description={mainInfo.description}
+                ownerID={mainInfo.ownerID}
+                profileIcon={profileIcon}
+                ownerName={mainInfo.ownerName}
+              />
             </>
           )}
         </>

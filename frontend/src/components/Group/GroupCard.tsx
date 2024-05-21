@@ -21,6 +21,8 @@ import copyIcon from "../../../public/icons/copy.svg";
 import EventSection from "../Events/EventSection";
 import { yourEvents } from "../Events/mock";
 import GroupPostsSection from "./GroupPostsSection";
+import { useState } from "react";
+import CreateEventModal from "./CreateEventModal";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -52,6 +54,8 @@ export default function GroupCard({
   members,
   pathName,
 }: GroupCardProps) {
+  const [openEventModal, setOpenEventModal] = useState<boolean>(false);
+
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue);
   };
@@ -94,6 +98,7 @@ export default function GroupCard({
             </Box>
             <Box sx={{ width: "190px" }}>
               <ConfirmBtn
+                onClick={() => setOpenEventModal(true)}
                 backgroundImage={successBtn.src}
                 text="Create Event"
               />
@@ -193,6 +198,10 @@ export default function GroupCard({
           <EventSection events={yourEvents} />
         </Box>
       )}
+      <CreateEventModal
+        openEventModal={openEventModal}
+        setOpenEventModal={setOpenEventModal}
+      />
     </Box>
   );
 }

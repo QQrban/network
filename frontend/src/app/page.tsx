@@ -36,7 +36,7 @@ export default function Home() {
             }}
             variant="h5"
           >
-            Contacts
+            You might know them
           </Typography>
           <Box sx={{ mt: "8px" }}>
             <ContactsSection />

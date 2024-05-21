@@ -1,13 +1,10 @@
 "use client";
 
 import LeftColumnMainPage from "@/components/MainPage/LeftColumn";
-import PostsSection from "@/components/shared/PostsSection";
 import ContactsSection from "@/components/shared/ContactsSection";
 import { Box, Typography } from "@mui/material";
 
 export default function ShowAllPosts() {
-  const posts = ["post", "post", "post", "post"];
-
   return (
     <Box sx={{ mt: "13px" }}>
       <Typography
@@ -49,11 +46,7 @@ export default function ShowAllPosts() {
               flexDirection: "column",
               gap: "23px",
             }}
-          >
-            {posts
-              ? posts.map((post, index) => <PostsSection key={index} />)
-              : ""}
-          </Box>
+          ></Box>
         </Box>
         <Box
           sx={{

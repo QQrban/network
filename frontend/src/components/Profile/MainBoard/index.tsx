@@ -7,25 +7,46 @@ import { useRouter } from "next/navigation";
 import { Item } from "@/components/shared/Item";
 import PhotosContent from "../PhotosContent";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreatePostModal from "@/components/Group/CreatePostModal";
-import { PostProps } from "@/types/types";
+import { CommentProps, PostProps } from "@/types/types";
 
 interface Props {
+  isYourProfile: boolean;
+  pathname: string | undefined;
   posts: PostProps[];
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
 }
 
-export default function MainBoard({ setSelectedTab, posts }: Props) {
+export default function MainBoard({
+  setSelectedTab,
+  posts,
+  isYourProfile,
+}: Props) {
+  const [profilePosts, setProfilePosts] = useState<PostProps[]>([]);
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    setProfilePosts(posts);
+  }, [posts]);
 
   const profile = useSelector((state: any) => state.profileReducer.value);
 
-  const router = useRouter();
-  let id: number = 10561654311;
+  const addNewPost = (newPost: PostProps) => {
+    setProfilePosts((prevPosts) => [
+      { ...newPost, comments: newPost.comments || [] },
+      ...prevPosts,
+    ]);
+  };
 
-  const da = () => {
-    console.log(123);
+  const addCommentToPost = (postID: number, comment: CommentProps) => {
+    setProfilePosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postID === postID
+          ? { ...post, comments: [...(post.comments || []), comment] }
+          : post
+      )
+    );
   };
 
   return (
@@ -42,7 +63,7 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
           width: "600px",
         }}
       >
-        <CreatePost setOpenPostModal={setOpenPostModal} />
+        {isYourProfile && <CreatePost setOpenPostModal={setOpenPostModal} />}
         <Box
           sx={{
             display: "flex",
@@ -54,7 +75,7 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
           <Typography fontSize={22} sx={{ mb: "23px" }}>
             Posts
           </Typography>
-          {posts?.length > 2 && (
+          {/*           {posts?.length > 2 && (
             <Button
               onClick={() => router.push(`/profile/${id}/all-posts`)}
               sx={{
@@ -65,10 +86,15 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
             >
               View All Posts &#x2192;
             </Button>
-          )}
+          )} */}
         </Box>
-        <PostsSection addCommentToPost={da} posts={posts} />
-        {posts?.length === 0 && (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "23px" }}>
+          <PostsSection
+            addCommentToPost={addCommentToPost}
+            posts={profilePosts}
+          />
+        </Box>
+        {profilePosts?.length === 0 && (
           <Typography
             sx={{
               fontFamily: "Gloria Hallelujah !important",
@@ -114,9 +140,11 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
         <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={true} />
       </Box>
       <CreatePostModal
+        text="Create Post"
+        isProfile={true}
         openPostModal={openPostModal}
         setOpenPostModal={setOpenPostModal}
-        addNewPost={da}
+        addNewPost={addNewPost}
       />
     </Box>
   );

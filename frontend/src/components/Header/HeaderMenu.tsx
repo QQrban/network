@@ -4,6 +4,7 @@ import ProfileMenu from "./ProfileMenu";
 import mailIcon from "../../../public/icons/mail.svg";
 import notificationIcon from "../../../public/icons/bell.svg";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HeaderMenu() {
   return (
@@ -26,15 +27,17 @@ export default function HeaderMenu() {
         </IconButton>
       </TooltipStyled>
       <TooltipStyled title="Notifications">
-        <IconButton>
-          <Badge badgeContent={999} color="error">
-            <Image
-              style={{ width: "32px", height: "32px" }}
-              src={notificationIcon}
-              alt="Profile"
-            />
-          </Badge>
-        </IconButton>
+        <Link href={`/notifications/`}>
+          <IconButton>
+            <Badge badgeContent={999} color="error">
+              <Image
+                style={{ width: "32px", height: "32px" }}
+                src={notificationIcon}
+                alt="Profile"
+              />
+            </Badge>
+          </IconButton>
+        </Link>
       </TooltipStyled>
       <Box
         sx={{

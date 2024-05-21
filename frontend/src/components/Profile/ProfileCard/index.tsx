@@ -4,6 +4,10 @@ import { Box, Divider, Typography } from "@mui/material";
 import ProfileAvatar from "./ProfileAvatar";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import ConfirmBtn from "@/components/shared/ConfirmBtn";
+import successBtn from "../../../../public/icons/successBtn.svg";
+import errorBtn from "../../../../public/icons/errorBtn.svg";
+import { fetchFromServer } from "@/lib/api";
 
 const tabStyle = (isActive: boolean) => ({
   pb: "11px",
@@ -14,13 +18,23 @@ const tabStyle = (isActive: boolean) => ({
 });
 
 interface Props {
+  isYourProfile: boolean;
   selectedTab: String;
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
 }
 
-export default function ProfileCard({ setSelectedTab, selectedTab }: Props) {
+export default function ProfileCard({
+  setSelectedTab,
+  selectedTab,
+  isYourProfile,
+}: Props) {
   const [activeTab, setActiveTab] = useState<String>("Main Board");
+  const [buttonBg, setButtonBg] = useState<string>("");
+  const [followValue, setFollowValue] = useState<string>("");
+
   const profile = useSelector((state: any) => state.profileReducer.value);
+
+  const { meToYou, meToYouPending, youToMePending } = profile.followInfo;
 
   const handleTabClick = (tabName: String) => {
     setActiveTab(tabName);
@@ -31,7 +45,47 @@ export default function ProfileCard({ setSelectedTab, selectedTab }: Props) {
     setActiveTab(selectedTab);
   }, [selectedTab]);
 
+  useEffect(() => {
+    if (meToYou) {
+      setFollowValue("Unfollow");
+      setButtonBg(errorBtn.src);
+    } else if (meToYouPending) {
+      setFollowValue("Pending");
+    } else if (youToMePending) {
+      setFollowValue("Accept Follow");
+    } else {
+      setFollowValue("Follow");
+      setButtonBg(successBtn.src);
+    }
+  }, [meToYou, meToYouPending, youToMePending]);
+
   const tabs = ["Main Board", "Contacts", "Photos"];
+
+  const requestValue: { [key: string]: string } = {
+    Unfollow: "unfollow",
+    Follow: "follow",
+  };
+
+  const followHandler = async () => {
+    const action = requestValue[followValue];
+    if (action) {
+      const response = await fetchFromServer(`/user/${profile.id}/${action}`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) {
+        if (action === "follow") {
+          setFollowValue("Unfollow");
+          setButtonBg(errorBtn.src);
+        } else if (action === "unfollow") {
+          setFollowValue("Follow");
+          setButtonBg(successBtn.src);
+        }
+      }
+    } else {
+      console.error("Invalid follow action");
+    }
+  };
 
   return (
     <Box
@@ -72,6 +126,22 @@ export default function ProfileCard({ setSelectedTab, selectedTab }: Props) {
           </Typography>
         ))}
       </Box>
+      {!isYourProfile && (
+        <Box
+          sx={{
+            width: "130px",
+            position: "absolute",
+            left: "20px",
+            bottom: "60px",
+          }}
+        >
+          <ConfirmBtn
+            onClick={followHandler}
+            text={followValue}
+            backgroundImage={buttonBg}
+          />
+        </Box>
+      )}
     </Box>
   );
 }

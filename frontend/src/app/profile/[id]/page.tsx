@@ -27,7 +27,6 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch user data
         const getUser = await fetchFromServer(`/user/${pathname}`, {
           credentials: "include",
         });
@@ -49,7 +48,6 @@ export default function ProfilePage() {
           })
         );
 
-        // Fetch posts data after user data is fetched
         const response = await fetchFromServer(`/user/${pathname}/posts`, {
           credentials: "include",
         });

@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 import { Item } from "@/components/shared/Item";
 import PhotosContent from "../PhotosContent";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreatePostModal from "@/components/Group/CreatePostModal";
-import { PostProps } from "@/types/types";
+import { CommentProps, PostProps } from "@/types/types";
 
 interface Props {
   posts: PostProps[];
@@ -17,15 +17,33 @@ interface Props {
 }
 
 export default function MainBoard({ setSelectedTab, posts }: Props) {
+  const [profilePosts, setProfilePosts] = useState<PostProps[]>([]);
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    setProfilePosts(posts);
+  }, [posts]);
 
   const profile = useSelector((state: any) => state.profileReducer.value);
 
   const router = useRouter();
   let id: number = 10561654311;
 
-  const da = () => {
-    console.log(123);
+  const addNewPost = (newPost: PostProps) => {
+    setProfilePosts((prevPosts) => [
+      { ...newPost, comments: newPost.comments || [] },
+      ...prevPosts,
+    ]);
+  };
+
+  const addCommentToPost = (postID: number, comment: CommentProps) => {
+    setProfilePosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postID === postID
+          ? { ...post, comments: [...(post.comments || []), comment] }
+          : post
+      )
+    );
   };
 
   return (
@@ -67,7 +85,12 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
             </Button>
           )}
         </Box>
-        <PostsSection addCommentToPost={da} posts={posts} />
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "23px" }}>
+          <PostsSection
+            addCommentToPost={addCommentToPost}
+            posts={profilePosts}
+          />
+        </Box>
         {posts?.length === 0 && (
           <Typography
             sx={{
@@ -114,9 +137,10 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
         <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={true} />
       </Box>
       <CreatePostModal
+        isProfile={true}
         openPostModal={openPostModal}
         setOpenPostModal={setOpenPostModal}
-        addNewPost={da}
+        addNewPost={addNewPost}
       />
     </Box>
   );

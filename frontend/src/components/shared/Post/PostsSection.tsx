@@ -61,7 +61,6 @@ export default function PostsSection({
         }
 
         const postImages = post.images && post.images.split(",");
-        console.log(postImages);
 
         return (
           <Item

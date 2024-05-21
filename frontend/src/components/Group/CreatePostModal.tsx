@@ -20,6 +20,7 @@ import { fetchFromServer } from "@/lib/api";
 import { PostProps } from "@/types/types";
 
 interface CreatePostModalProps {
+  isProfile: boolean;
   openPostModal: boolean;
   setOpenPostModal: React.Dispatch<boolean>;
   addNewPost: (newPost: PostProps) => void;
@@ -33,6 +34,7 @@ const validationSchema = Yup.object({
 });
 
 export default function CreatePostModal({
+  isProfile,
   openPostModal,
   setOpenPostModal,
   addNewPost,
@@ -68,7 +70,7 @@ export default function CreatePostModal({
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
       formData.append("content", values.content);
-      formData.append("groupID", pathname);
+      !isProfile && formData.append("groupID", pathname);
       selectedImages.forEach((image) => {
         formData.append("images", image);
       });

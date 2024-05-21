@@ -164,7 +164,8 @@ func (model PostModel) GetByUser(myID, targetID, beforeID int64) ([]*Post, error
 	stmt := model.queries.Prepare("getByUser")
 
 	rows, err := stmt.Query(myID, targetID, beforeID)
-	if err != nil {
+
+	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("Post/GetByUser1: %w", err)
 	}
 	defer rows.Close()
@@ -250,7 +251,7 @@ func (model PostModel) GetByFollowing(myID, beforeID int64) ([]*Post, error) {
 	err := latest.Scan(append(post.pointerSlice(), author.pointerSlice()...)...)
 	post.Author = author.Limited()
 
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("Post/GetByFollowing2: %w", err)
 	}
 	comments, err := model.GetComments(post.ID)
@@ -267,7 +268,6 @@ func (model PostModel) GetByFollowing(myID, beforeID int64) ([]*Post, error) {
 	post.LikedBy = likedBy
 
 	posts = append(posts, post)
-
 
 	stmt = model.queries.Prepare("getByFollowing")
 

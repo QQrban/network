@@ -39,7 +39,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
           }
         );
         const data = await response.json();
-        console.log(data);
         setPeopleList(data);
       }
     };
@@ -67,7 +66,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
             credentials: "include",
           }
         );
-        console.log(response);
         if (response.ok) {
           setPeopleList((prevList) =>
             prevList.map((person) =>

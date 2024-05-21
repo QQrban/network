@@ -4,7 +4,7 @@ WITH following AS (
   WHERE followerID = ?1 OR followeeID = ?1
 )
 
-SELECT * FROM user u 
+SELECT DISTINCT * FROM user u 
 WHERE u.ID NOT IN following
 ORDER BY random()
 LIMIT 3

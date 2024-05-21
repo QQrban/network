@@ -48,6 +48,10 @@ func writeStatusError(w http.ResponseWriter, code int) {
 	http.Error(w, fmt.Sprintf(`%v %v`, code, http.StatusText(code)), code)
 }
 
+func writeStatus(w http.ResponseWriter, code int) {
+	w.WriteHeader(code)
+}
+
 // newSessionCookie makes a new cookie for a given session token
 func newSessionCookie(token string, expires time.Time) *http.Cookie {
 	return &http.Cookie{

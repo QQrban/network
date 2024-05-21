@@ -59,6 +59,8 @@ func FileDownload(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	defer file.Close()
+
 	var contentType string
 
 	switch fileData.Extension {

@@ -14,6 +14,7 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/users", api.EnsureAuth(api.GetAllUsers))
 	rtr.Post("/user", api.EnsureAuth(api.UpdateUser))
 	rtr.Get("/user", api.EnsureAuth(api.GetUserBySession))
+	rtr.Get("/suggestions", api.EnsureAuth(api.GetSuggestions))
 
 	rtr.Get("/user/([0-9]+)/followers", api.EnsureAuth(api.UserFollowers))
 	rtr.Get("/user/([0-9]+)/following", api.EnsureAuth(api.UserFollowing))
@@ -40,6 +41,7 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/posts/groups", api.EnsureAuth(api.GetMyGroupPosts))
 	rtr.Get("/posts", api.OptionalAuth(api.GetAllPosts))
 	rtr.Post("/post", api.EnsureAuth(api.CreatePost))
+	rtr.Delete("/post/([0-9]+)", api.EnsureAuth(api.DeletePost))
 
 	rtr.Get("/file/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", api.FileDownload)
 	/*rtr.Post("/file", api.FileUpload)*/

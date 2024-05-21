@@ -251,3 +251,11 @@ func GetFollowStats(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, stats)
 }
+
+func GetSuggestions(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+	suggestions, err := Database.User.Suggestions(session.UserID)
+	panicIfErr(err)
+
+	writeJSON(w, suggestions)
+}

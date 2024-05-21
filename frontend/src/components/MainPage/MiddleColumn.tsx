@@ -87,6 +87,7 @@ export default function MiddleColumn() {
         )}
       </Box>
       <CreatePostModal
+        text="Create Post"
         addNewPost={addNewPost}
         isProfile={true}
         openPostModal={openPostModal}

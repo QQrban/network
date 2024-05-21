@@ -27,7 +27,7 @@ export default function Home() {
         }}
       >
         <RightColumn />
-        {/*         <Box sx={{ mt: "23px" }}>
+        <Box sx={{ mt: "23px" }}>
           <Typography
             sx={{
               color: "#2a2a2a",
@@ -36,11 +36,12 @@ export default function Home() {
             }}
             variant="h5"
           >
-            Contacts
+            You might know them
           </Typography>
           <Box sx={{ mt: "8px" }}>
+            <ContactsSection />
           </Box>
-        </Box> */}
+        </Box>
       </Box>
     </Box>
   );

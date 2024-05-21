@@ -20,6 +20,7 @@ import { fetchFromServer } from "@/lib/api";
 import { PostProps } from "@/types/types";
 
 interface CreatePostModalProps {
+  text: string;
   isProfile: boolean;
   openPostModal: boolean;
   setOpenPostModal: React.Dispatch<boolean>;
@@ -34,6 +35,7 @@ const validationSchema = Yup.object({
 });
 
 export default function CreatePostModal({
+  text,
   isProfile,
   openPostModal,
   setOpenPostModal,
@@ -115,7 +117,7 @@ export default function CreatePostModal({
           fontSize: "29px",
         }}
       >
-        Create Group Post
+        {text}
       </DialogTitle>
       <DialogContent>
         <Box sx={{ position: "relative" }}>

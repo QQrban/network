@@ -77,6 +77,7 @@ export default function GroupPostsSection({
         </Typography>
       )}
       <CreatePostModal
+        text="Create Group Post"
         isProfile={false}
         addNewPost={addNewPost}
         openPostModal={openPostModal}

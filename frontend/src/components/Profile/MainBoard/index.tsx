@@ -140,6 +140,7 @@ export default function MainBoard({
         <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={true} />
       </Box>
       <CreatePostModal
+        text="Create Post"
         isProfile={true}
         openPostModal={openPostModal}
         setOpenPostModal={setOpenPostModal}

@@ -42,6 +42,12 @@ export default function MainScreen({ children }: { children: ReactNode }) {
                 country: data.country,
               })
             );
+
+            const getSuggestions = await fetchFromServer("/suggestions", {
+              credentials: "include",
+              mode: "cors",
+            });
+            console.log(getSuggestions);
           }
         }
       } catch (error) {

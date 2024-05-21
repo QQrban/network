@@ -1,3 +1,5 @@
-SELECT * FROM group g
-JOIN group_member gm ON g.id = gm.group_id
-WHERE gm.user_id != $1
+SELECT g.* FROM "group" g
+JOIN groupMember gm ON g.ID = gm.groupID
+WHERE gm.userID != $1
+ORDER BY random()
+LIMIT 3

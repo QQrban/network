@@ -3,6 +3,7 @@ import { Item } from "./Item";
 import addIcon from "../../../public/icons/add.svg";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 
 export default function SuggestionGroups() {
   const suggestionsGroups = useSelector(
@@ -38,42 +39,46 @@ export default function SuggestionGroups() {
             }}
           >
             {suggestionsGroups.map((suggestion: any) => (
-              <Box
-                key={suggestion.ID}
-                sx={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Box sx={{ display: "flex", gap: "9px" }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px",
-                    }}
-                  >
-                    <Typography
+              <Link href={`/groups/${suggestion.ID}`} key={suggestion.ID}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: "9px" }}>
+                    <Box
                       sx={{
-                        fontFamily: "Schoolbell, cursive",
-                        fontWeight: 600,
-                        color: "#2a2a2a",
-                        fontSize: "17px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "4px",
                       }}
                     >
-                      {suggestion.title}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "#a2a1a1",
-                        fontSize: "15px",
-                        fontFamily: "Comic Neue",
-                      }}
-                    >
-                      {suggestion.description.length > 20
-                        ? suggestion.description.slice(0, 22) + "..."
-                        : suggestion.description}
-                    </Typography>
+                      <Typography
+                        sx={{
+                          fontFamily: "Schoolbell, cursive",
+                          fontWeight: 600,
+                          color: "#2a2a2a",
+                          fontSize: "17px",
+                        }}
+                      >
+                        {suggestion.title}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: "#a2a1a1",
+                          fontSize: "15px",
+                          fontFamily: "Comic Neue",
+                        }}
+                      >
+                        {suggestion.description.length > 20
+                          ? suggestion.description.slice(0, 22) + "..."
+                          : suggestion.description}
+                      </Typography>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
+              </Link>
             ))}
           </Box>
         </Item>

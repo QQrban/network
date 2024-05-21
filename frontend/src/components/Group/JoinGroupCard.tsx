@@ -4,7 +4,7 @@ import { Box, Typography, styled } from "@mui/material";
 import { Item } from "../shared/Item";
 import ConfirmBtn from "../shared/ConfirmBtn";
 import cardBg from "../../../public/icons/cardBG.svg";
-
+import stopSign from "../../../public/icons/stop-sign.svg";
 import confirmBtn from "../../../public/icons/confirmButton.svg";
 import successBtn from "../../../public/icons/successBtn.svg";
 
@@ -89,6 +89,17 @@ export default function JoinGroupCard({
           </Box>
         </Box>
       </Item>
+      <Box
+        sx={{
+          mt: "46px",
+          backgroundImage: `url(${stopSign.src})`,
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "contain",
+          height: "400px",
+          width: "100%",
+        }}
+      ></Box>
     </Box>
   );
 }

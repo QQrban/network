@@ -7,24 +7,20 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import { StyledBadge } from "./StyledBadge";
 import Image from "next/image";
 import noPhoto from "../../../public/icons/profile.svg";
+import { useSelector } from "react-redux";
+import Link from "next/link";
 
 export default function ContactsSection() {
-  const friends: Array<string> = [
-    "Johnny Bravo",
-    "Albert Einstein",
-    "Toomas Vooglaid",
-    "Alexander Gustaffson",
-    "Alex Volkanovski",
-    "Kersti Kaljulaid",
-  ];
+  const suggestionsUsers = useSelector(
+    (state: any) => state.suggestionsReducer.Users
+  );
 
   return (
     <Item
       sx={{
         display: "flex",
         flexDirection: "column",
-        width: "290px",
-        height: "300px",
+        width: "100%",
         overflowY: "scroll",
         "&::-webkit-scrollbar": {
           width: "5px",
@@ -43,36 +39,38 @@ export default function ContactsSection() {
         dense
         sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
       >
-        {friends.map((friend, index) => {
-          const labelId = `checkbox-list-secondary-label-${index}`;
+        {suggestionsUsers.map((suggestion: any) => {
+          const labelId = `checkbox-list-secondary-label-${suggestion.ID}`;
           return (
-            <ListItem key={index} disablePadding>
-              <ListItemButton>
-                <ListItemAvatar>
-                  <StyledBadge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    variant="dot"
-                  >
-                    <Image
-                      style={{ width: "30px", height: "30px" }}
-                      src={noPhoto}
-                      alt="contacts"
-                    />
-                  </StyledBadge>
-                </ListItemAvatar>
-                <ListItemText
-                  sx={{
-                    ".MuiListItemText-primary": {
-                      fontFamily: "Schoolbell, cursive",
-                      fontSize: "19px",
-                    },
-                  }}
-                  id={labelId}
-                  primary={friend}
-                />
-              </ListItemButton>
-            </ListItem>
+            <Link href={`/profile/${suggestion.ID}`} key={suggestion.ID}>
+              <ListItem disablePadding>
+                <ListItemButton>
+                  <ListItemAvatar>
+                    <StyledBadge
+                      overlap="circular"
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      variant="dot"
+                    >
+                      <Image
+                        style={{ width: "30px", height: "30px" }}
+                        src={suggestion.image ? suggestion.image : noPhoto}
+                        alt="contacts"
+                      />
+                    </StyledBadge>
+                  </ListItemAvatar>
+                  <ListItemText
+                    sx={{
+                      ".MuiListItemText-primary": {
+                        fontFamily: "Schoolbell, cursive",
+                        fontSize: "19px",
+                      },
+                    }}
+                    id={labelId}
+                    primary={`${suggestion.firstName} ${suggestion.lastName}`}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
           );
         })}
       </List>

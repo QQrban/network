@@ -13,6 +13,8 @@ export default function MiddleColumn() {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
   const [showLoading, setShowLoading] = useState<boolean>(false);
 
+  console.log(mainPagePosts);
+
   useEffect(() => {
     const fetchFollowingPosts = async () => {
       const response = await fetchFromServer("/posts/following", {

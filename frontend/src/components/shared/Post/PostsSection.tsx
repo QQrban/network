@@ -62,190 +62,192 @@ export default function PostsSection({
 
         const postImages = post.images && post.images.split(",");
 
-        return (
-          <Item
-            key={post.postID}
-            sx={{
-              overflow: "hidden",
-              width: "600px",
-            }}
-            radius="8px"
-          >
-            <Box
+        if (post.postID !== 0) {
+          return (
+            <Item
+              key={post.postID}
               sx={{
-                p: "5px 17px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
+                overflow: "hidden",
+                width: "600px",
               }}
+              radius="8px"
             >
               <Box
                 sx={{
+                  p: "5px 17px",
                   display: "flex",
                   alignItems: "center",
-                  gap: "8px",
+                  justifyContent: "space-between",
                 }}
               >
                 <Box
                   sx={{
-                    width: "36px",
-                    height: "36px",
-                    overflow: "hidden",
-                    border: "2px solid #4a4a4a",
-                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
                   }}
                 >
-                  <Image src={noPhoto} alt="" />
-                </Box>
-                <Box>
-                  <Typography
-                    sx={{
-                      fontSize: "18px",
-                      color: "#2a2a2a",
-                      fontFamily: "Gloria Hallelujah !important",
-                    }}
-                  >
-                    {post.author.firstName} {post.author.lastName}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: "#BEBEBE",
-                      fontSize: "14px",
-                    }}
-                  >
-                    {dayjs(post.created).format("MMM D, YYYY")}
-                  </Typography>
-                </Box>
-              </Box>
-              <IconButton
-                sx={{
-                  cursor: "pointer",
-                }}
-              >
-                <MoreHorizIcon
-                  sx={{
-                    color: "#8F8F8F",
-                    fontSize: "35px",
-                  }}
-                />
-              </IconButton>
-            </Box>
-            <Box
-              sx={{
-                p: "5px 17px",
-              }}
-            >
-              <Typography>{post.content}</Typography>
-            </Box>
-            {postImages && postImages.length > 0 && (
-              <Box sx={{ display: "flex" }}>
-                <Box sx={{ overflow: "hidden" }}>
-                  <PostImage
-                    onClick={() => handleClickOpen(postImages[0])}
-                    height="300px"
-                    width={postImages.length === 1 ? "600px" : "400px"}
-                    image={postImages[0]}
-                  />
-                </Box>
-                {postImages.length > 1 && (
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
+                      width: "36px",
+                      height: "36px",
                       overflow: "hidden",
+                      border: "2px solid #4a4a4a",
+                      borderRadius: "50%",
                     }}
                   >
+                    <Image src={noPhoto} alt="" />
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontSize: "18px",
+                        color: "#2a2a2a",
+                        fontFamily: "Gloria Hallelujah !important",
+                      }}
+                    >
+                      {post.author.firstName} {post.author.lastName}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "#BEBEBE",
+                        fontSize: "14px",
+                      }}
+                    >
+                      {dayjs(post.created).format("MMM D, YYYY")}
+                    </Typography>
+                  </Box>
+                </Box>
+                <IconButton
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                >
+                  <MoreHorizIcon
+                    sx={{
+                      color: "#8F8F8F",
+                      fontSize: "35px",
+                    }}
+                  />
+                </IconButton>
+              </Box>
+              <Box
+                sx={{
+                  p: "5px 17px",
+                }}
+              >
+                <Typography>{post.content}</Typography>
+              </Box>
+              {postImages && postImages.length > 0 && (
+                <Box sx={{ display: "flex" }}>
+                  <Box sx={{ overflow: "hidden" }}>
+                    <PostImage
+                      onClick={() => handleClickOpen(postImages[0])}
+                      height="300px"
+                      width={postImages.length === 1 ? "600px" : "400px"}
+                      image={postImages[0]}
+                    />
+                  </Box>
+                  {postImages.length > 1 && (
                     <Box
                       sx={{
-                        height: postImages.length === 2 ? "300px" : "150px",
+                        display: "flex",
+                        flexDirection: "column",
                         overflow: "hidden",
                       }}
                     >
-                      <PostImage
-                        onClick={() => handleClickOpen(postImages[1])}
-                        height="100%"
-                        width="200px"
-                        image={postImages[1]}
-                      />
-                    </Box>
-                    {postImages.length > 2 && (
-                      <Box sx={{ height: "150px", overflow: "hidden" }}>
+                      <Box
+                        sx={{
+                          height: postImages.length === 2 ? "300px" : "150px",
+                          overflow: "hidden",
+                        }}
+                      >
                         <PostImage
-                          onClick={() => handleClickOpen(postImages[2])}
+                          onClick={() => handleClickOpen(postImages[1])}
                           height="100%"
                           width="200px"
-                          image={postImages[2]}
+                          image={postImages[1]}
                         />
                       </Box>
-                    )}
+                      {postImages.length > 2 && (
+                        <Box sx={{ height: "150px", overflow: "hidden" }}>
+                          <PostImage
+                            onClick={() => handleClickOpen(postImages[2])}
+                            height="100%"
+                            width="200px"
+                            image={postImages[2]}
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                  )}
+                </Box>
+              )}
+              {post.likes?.length > 0 && (
+                <Box
+                  sx={{
+                    p: "10px 17px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      bgcolor: "#6495ED",
+                      padding: "3px",
+                      borderRadius: "50%",
+                      width: "19px",
+                      height: "19px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ThumbUpIcon sx={{ color: "#fff", fontSize: "14px" }} />
                   </Box>
-                )}
-              </Box>
-            )}
-            {post.likes?.length > 0 && (
+                  <Typography
+                    sx={{
+                      color: "#8F8F8F",
+                      fontSize: "16px",
+                      fontFamily: "Schoolbell !important",
+                    }}
+                  >
+                    {`${reactions[0]} and ${reactions.length} others`}
+                  </Typography>
+                </Box>
+              )}
+              <Divider />
               <Box
                 sx={{
                   p: "10px 17px",
+                  width: "100%",
                   display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
+                  justifyContent: "center",
+                  gap: "40px",
                 }}
               >
-                <Box
-                  sx={{
-                    bgcolor: "#6495ED",
-                    padding: "3px",
-                    borderRadius: "50%",
-                    width: "19px",
-                    height: "19px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ThumbUpIcon sx={{ color: "#fff", fontSize: "14px" }} />
-                </Box>
-                <Typography
-                  sx={{
-                    color: "#8F8F8F",
-                    fontSize: "16px",
-                    fontFamily: "Schoolbell !important",
-                  }}
-                >
-                  {`${reactions[0]} and ${reactions.length} others`}
-                </Typography>
+                <ReactionToPost
+                  icon={<Image src={likeIcon} alt="like" />}
+                  label="Like"
+                  onClick={() => console.log("Like")}
+                />
+                <ReactionToPost
+                  icon={<Image src={commentIcon} alt="comment" />}
+                  label="Comment"
+                  onClick={() => focusInput(post.postID)}
+                />
               </Box>
-            )}
-            <Divider />
-            <Box
-              sx={{
-                p: "10px 17px",
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                gap: "40px",
-              }}
-            >
-              <ReactionToPost
-                icon={<Image src={likeIcon} alt="like" />}
-                label="Like"
-                onClick={() => console.log("Like")}
+              <Divider />
+              <CommentsPost comments={post.comments} />
+              <AddComment
+                postID={post.postID}
+                inputRef={inputRefs.current[post.postID]}
+                addComment={addCommentToPost}
               />
-              <ReactionToPost
-                icon={<Image src={commentIcon} alt="comment" />}
-                label="Comment"
-                onClick={() => focusInput(post.postID)}
-              />
-            </Box>
-            <Divider />
-            <CommentsPost comments={post.comments} />
-            <AddComment
-              postID={post.postID}
-              inputRef={inputRefs.current[post.postID]}
-              addComment={addCommentToPost}
-            />
-          </Item>
-        );
+            </Item>
+          );
+        }
       })}
       <PostImageDialog
         selectedImage={selectedImage}

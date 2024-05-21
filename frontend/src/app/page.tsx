@@ -3,7 +3,7 @@
 import LeftColumn from "@/components/MainPage/LeftColumn";
 import MiddleColumn from "@/components/MainPage/MiddleColumn";
 import ContactsSection from "@/components/shared/ContactsSection";
-import RightColumn from "@/components/shared/SuggestionsGroups";
+import SuggestionGroups from "@/components/shared/SuggestionsGroups";
 import { Box, Typography } from "@mui/material";
 
 export default function Home() {
@@ -23,10 +23,11 @@ export default function Home() {
         sx={{
           position: "sticky",
           top: "90px",
+          width: "350px",
           height: "900px",
         }}
       >
-        <RightColumn />
+        <SuggestionGroups />
         <Box sx={{ mt: "23px" }}>
           <Typography
             sx={{

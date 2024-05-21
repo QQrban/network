@@ -12,6 +12,7 @@ import NavigationMenu from "@/components/NavigationMenu";
 import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
 import bgWall from "../../public/icons/wall.svg";
+import { setSuggestions } from "@/redux/features/suggestions/suggestionsSlice";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
   const [showLoading, setShowLoading] = useState(true);
@@ -42,12 +43,6 @@ export default function MainScreen({ children }: { children: ReactNode }) {
                 country: data.country,
               })
             );
-
-            const getSuggestions = await fetchFromServer("/suggestions", {
-              credentials: "include",
-              mode: "cors",
-            });
-            console.log(getSuggestions);
           }
         }
       } catch (error) {
@@ -61,6 +56,19 @@ export default function MainScreen({ children }: { children: ReactNode }) {
     }
     fetchData();
   }, [dispatch]);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (auth) {
+        const response = await fetchFromServer("/suggestions", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        dispatch(setSuggestions(data));
+      }
+    };
+    fetchSuggestions();
+  }, [auth, dispatch]);
 
   if (showLoading) {
     return <LoadingScreen />;

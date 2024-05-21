@@ -1,8 +1,6 @@
 persist*
 pkg/persist_old
 frontend/server
-frontend/svelte*
 frontend/*socket*
-frontend/vite*
 frontend/docker*
 docker-compose*

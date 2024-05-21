@@ -32,7 +32,6 @@ export default function SearchBar() {
         image: group.image || null,
       }));
       setAllGroups(groups);
-      console.log(groups);
     };
     fetchPeople();
   }, []);

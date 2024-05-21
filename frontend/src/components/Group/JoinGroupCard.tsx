@@ -9,6 +9,7 @@ import confirmBtn from "../../../public/icons/confirmButton.svg";
 import successBtn from "../../../public/icons/successBtn.svg";
 
 import { fetchFromServer } from "@/lib/api";
+import { useState } from "react";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -27,6 +28,8 @@ export default function JoinGroupCard({
   id,
   pendingRequest,
 }: GroupCardProps) {
+  const [requestStatus, setRequestStatus] = useState<boolean>(pendingRequest);
+
   const handleJoinGroup = async () => {
     try {
       const response = await fetchFromServer(`/group/${id}/join`, {
@@ -34,9 +37,8 @@ export default function JoinGroupCard({
         credentials: "include",
       });
 
-      console.log(response);
-
       if (response.ok) {
+        setRequestStatus(true);
       } else {
         throw new Error("Failed to send join request.");
       }
@@ -69,13 +71,13 @@ export default function JoinGroupCard({
         >
           <StyledTypography>{groupTitle}</StyledTypography>
           <Box sx={{ mt: "9px" }}>
-            {pendingRequest
+            {requestStatus
               ? `Pending join approval.`
               : `You are not part of this group. Click "Join Group" and an Admin will
               approve your request to join.`}
           </Box>
           <Box sx={{ width: "200px", alignSelf: "flex-end" }}>
-            {pendingRequest ? (
+            {requestStatus ? (
               <ConfirmBtn backgroundImage={successBtn.src} text="Pending" />
             ) : (
               <ConfirmBtn

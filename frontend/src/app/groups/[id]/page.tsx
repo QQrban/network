@@ -32,7 +32,6 @@ export default function GroupPage() {
         if (response.ok) {
           const data = await response.json();
           setMainInfo(data);
-          console.log(data);
 
           setIsMember(data.includesMe === true);
         } else {

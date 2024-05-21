@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { fetchFromServer } from "@/lib/api";
 import { GroupProps } from "@/types/types";
+
 import GroupCard from "@/components/Group/GroupCard";
 import GroupAddInfo from "@/components/Group/GroupAddInfo";
 import CreatePostModal from "@/components/Group/CreatePostModal";
@@ -17,6 +18,7 @@ export default function GroupPage() {
 
   const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
+  const [isMember, setIsMember] = useState<boolean | null>(null);
 
   const pathname = usePathname().split("/").pop();
 
@@ -28,7 +30,9 @@ export default function GroupPage() {
         });
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           setMainInfo(data);
+          setIsMember(data.includesMe === true);
         } else {
           throw new Error("Failed to fetch groups");
         }
@@ -37,6 +41,7 @@ export default function GroupPage() {
       }
     };
     fetchGroup();
+    // if (isMember) {
     const fetchMembers = async () => {
       try {
         const response = await fetchFromServer(`/group/${pathname}/members`, {
@@ -53,6 +58,7 @@ export default function GroupPage() {
       }
     };
     fetchMembers();
+    // }
   }, [pathname]);
 
   return (
@@ -67,21 +73,33 @@ export default function GroupPage() {
     >
       {mainInfo && (
         <>
-          <GroupCard
-            openPostModal={openPostModal}
-            members={membersNumber}
-            setOpenPostModal={setOpenPostModal}
-            groupTitle={mainInfo.title}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            pathName={pathname}
-          />
-          <GroupAddInfo
-            description={mainInfo.description}
-            ownerID={mainInfo.ownerID}
-            profileIcon={profileIcon}
-            ownerName={mainInfo.ownerName}
-          />
+          {isMember ? (
+            <>
+              <GroupCard
+                openPostModal={openPostModal}
+                members={membersNumber}
+                setOpenPostModal={setOpenPostModal}
+                groupTitle={mainInfo.title}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                pathName={pathname}
+              />
+              <GroupAddInfo
+                description={mainInfo.description}
+                ownerID={mainInfo.ownerID}
+                profileIcon={profileIcon}
+                ownerName={mainInfo.ownerName}
+              />
+            </>
+          ) : (
+            <>
+              <Box>
+                <h1>{mainInfo.title}</h1>
+                <h2>{mainInfo.ownerName}</h2>
+                <h3>{mainInfo.description}</h3>
+              </Box>
+            </>
+          )}
         </>
       )}
     </Box>

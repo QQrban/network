@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CreatePost from "../shared/CreatePost";
-import PostsSection from "../shared/PostsSection";
+import CreatePost from "../shared/Post/CreatePost";
+import PostsSection from "../shared/Post/PostsSection";
 import { fetchFromServer } from "@/lib/api";
 import { PostProps, CommentProps } from "@/types/types";
 import { Box, Typography } from "@mui/material";

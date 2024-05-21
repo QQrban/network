@@ -1,8 +1,7 @@
 import { Box, IconButton, styled } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../../../public/icons/profile.svg";
-import confirmBtn from "../../../../../public/icons/confirmButton.svg";
-import picture from "../../../../../public/icons/picture.svg";
+import noPhoto from "../../../../public/icons/profile.svg";
+import confirmBtn from "../../../../public/icons/confirmButton.svg";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { useState } from "react";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
@@ -75,24 +74,6 @@ export default function AddComment({
             value={commentText}
             onChange={handleTextChange}
           />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              position: "absolute",
-              right: "0",
-              gap: "10px",
-              bottom: "0",
-            }}
-          >
-            <IconButton>
-              <Image
-                style={{ width: "32px", height: "32px" }}
-                src={picture}
-                alt="picture"
-              />
-            </IconButton>
-          </Box>
         </Box>
       </Box>
       {commentText.trim() && (

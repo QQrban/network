@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../../../public/icons/profile.svg";
+import noPhoto from "../../../../public/icons/profile.svg";
 import { CommentProps } from "@/types/types";
 import dayjs from "dayjs";
 

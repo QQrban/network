@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import PostsSection from "../shared/PostsSection";
-import CreatePost from "../shared/CreatePost";
+import PostsSection from "../shared/Post/PostsSection";
+import CreatePost from "../shared/Post/CreatePost";
 
 export default function MiddleColumn() {
   return (

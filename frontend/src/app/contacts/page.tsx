@@ -11,6 +11,14 @@ const StyledTab = styled(Tab)`
   font-size: 18px;
 `;
 
+const StyledBox = styled(Box)`
+  padding: 30px 0 30px 120px;
+  display: flex;
+  gap: 29px;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
 export default function Followers() {
   const [activeTab, setActiveTab] = useState<string>("Followers");
   const profileId = useSelector((state: any) => state.authReducer.value.id);
@@ -43,17 +51,9 @@ export default function Followers() {
       >
         {activeTab}
       </Typography>
-      <Box
-        sx={{
-          padding: "30px 0 30px 120px",
-          display: "flex",
-          gap: "29px",
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
+      <StyledBox>
         <FollowersSection activeTab={activeTab} profileId={profileId} />
-      </Box>
+      </StyledBox>
     </Box>
   );
 }

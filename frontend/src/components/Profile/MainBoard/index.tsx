@@ -1,16 +1,15 @@
 "use client";
 
 import { Box, Button, Typography } from "@mui/material";
-import CreatePost from "../../shared/CreatePost";
-import PostsSection from "../../shared/PostsSection";
+import CreatePost from "../../shared/Post/CreatePost";
+import PostsSection from "../../shared/Post/PostsSection";
 import { useRouter } from "next/navigation";
 import { Item } from "@/components/shared/Item";
 import PhotosContent from "../PhotosContent";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreatePostModal from "@/components/Group/CreatePostModal";
 import { PostProps } from "@/types/types";
-import { fetchFromServer } from "@/lib/api";
 
 interface Props {
   posts: PostProps[];

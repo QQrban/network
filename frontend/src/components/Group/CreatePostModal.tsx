@@ -5,7 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
-import { Typography, createTheme } from "@mui/material";
+import { Typography } from "@mui/material";
 import { StyledTextArea } from "../Login/styles";
 import deleteIcon from "../../../public/icons/delete.svg";
 import Image from "next/image";

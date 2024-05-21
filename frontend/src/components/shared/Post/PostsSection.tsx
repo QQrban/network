@@ -1,18 +1,21 @@
+"use client";
+
 import { Item } from "@/components/shared/Item";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../public/icons/profile.svg";
+import noPhoto from "../../../../public/icons/profile.svg";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ReactionToPost from "../Profile/MainBoard/PostsSection/ReactionToPost";
+import ReactionToPost from "./ReactionToPost";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import CommentsPost from "../Profile/MainBoard/PostsSection/CommentsPost";
-import mockBg from "../../../public/mockBG.png";
-import likeIcon from "../../../public/icons/like.svg";
-import commentIcon from "../../../public/icons/comment.svg";
-import AddComment from "../Profile/MainBoard/PostsSection/AddComment";
-import { createRef, useRef } from "react";
+import CommentsPost from "./CommentsPost";
+import likeIcon from "../../../../public/icons/like.svg";
+import commentIcon from "../../../../public/icons/comment.svg";
+import AddComment from "./AddComment";
+import { createRef, useRef, useState } from "react";
 import { CommentProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
+import PostImage from "./PostImage";
+import PostImageDialog from "./PostImageDialog";
 
 interface PostsSectionProps {
   posts: PostProps[];
@@ -23,6 +26,9 @@ export default function PostsSection({
   posts,
   addCommentToPost,
 }: PostsSectionProps) {
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+
   const inputRefs = useRef<{
     [key: number]: React.RefObject<HTMLTextAreaElement>;
   }>({});
@@ -42,6 +48,11 @@ export default function PostsSection({
     "Kersti Kaljulaid",
   ];
 
+  const handleClickOpen = (image: string) => {
+    setSelectedImage(image);
+    setOpenDialog(true);
+  };
+
   return (
     <>
       {posts?.map((post) => {
@@ -49,10 +60,14 @@ export default function PostsSection({
           inputRefs.current[post.postID] = createRef<HTMLTextAreaElement>();
         }
 
+        const postImages = post.images && post.images.split(",");
+        console.log(postImages);
+
         return (
           <Item
             key={post.postID}
             sx={{
+              overflow: "hidden",
               width: "600px",
             }}
             radius="8px"
@@ -123,19 +138,50 @@ export default function PostsSection({
             >
               <Typography>{post.content}</Typography>
             </Box>
-            {post.images && (
-              <Box
-                sx={{
-                  width: "100%",
-                  height: "200px",
-                  border: "1px solid grey",
-                  m: "0 auto",
-                  background: `url(${mockBg.src})`,
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                }}
-              ></Box>
+            {postImages && postImages.length > 0 && (
+              <Box sx={{ display: "flex" }}>
+                <Box sx={{ overflow: "hidden" }}>
+                  <PostImage
+                    onClick={() => handleClickOpen(postImages[0])}
+                    height="300px"
+                    width={postImages.length === 1 ? "600px" : "400px"}
+                    image={postImages[0]}
+                  />
+                </Box>
+                {postImages.length > 1 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        height: postImages.length === 2 ? "300px" : "150px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <PostImage
+                        onClick={() => handleClickOpen(postImages[1])}
+                        height="100%"
+                        width="200px"
+                        image={postImages[1]}
+                      />
+                    </Box>
+                    {postImages.length > 2 && (
+                      <Box sx={{ height: "150px", overflow: "hidden" }}>
+                        <PostImage
+                          onClick={() => handleClickOpen(postImages[2])}
+                          height="100%"
+                          width="200px"
+                          image={postImages[2]}
+                        />
+                      </Box>
+                    )}
+                  </Box>
+                )}
+              </Box>
             )}
             {post.likes?.length > 0 && (
               <Box
@@ -202,6 +248,12 @@ export default function PostsSection({
           </Item>
         );
       })}
+      <PostImageDialog
+        selectedImage={selectedImage}
+        setSelectedImage={setSelectedImage}
+        setOpenDialog={setOpenDialog}
+        openDialog={openDialog}
+      />
     </>
   );
 }

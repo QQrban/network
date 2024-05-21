@@ -1,28 +1,14 @@
 "use client";
 
-import {
-  Box,
-  SpeedDial,
-  SpeedDialAction,
-  Tab,
-  Tabs,
-  Typography,
-  styled,
-} from "@mui/material";
+import { Box, Typography, styled } from "@mui/material";
 import { Item } from "../shared/Item";
 import ConfirmBtn from "../shared/ConfirmBtn";
 import cardBg from "../../../public/icons/cardBG.svg";
 
 import confirmBtn from "../../../public/icons/confirmButton.svg";
 import successBtn from "../../../public/icons/successBtn.svg";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import Image from "next/image";
-import copyIcon from "../../../public/icons/copy.svg";
-import EventSection from "../Events/EventSection";
-import { yourEvents } from "../Events/mock";
-import GroupPostsSection from "./GroupPostsSection";
-import { useState } from "react";
-import CreateEventModal from "./CreateEventModal";
+
+import { fetchFromServer } from "@/lib/api";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -30,16 +16,35 @@ const StyledTypography = styled(Typography)`
   font-size: 28px;
 `;
 
-const StyledTab = styled(Tab)`
-  font-family: Gloria Hallelujah, sans-serif;
-  font-size: 18px;
-`;
-
 interface GroupCardProps {
+  id: number;
   groupTitle: string;
+  pendingRequest: boolean;
 }
 
-export default function GroupCard({ groupTitle }: GroupCardProps) {
+export default function JoinGroupCard({
+  groupTitle,
+  id,
+  pendingRequest,
+}: GroupCardProps) {
+  const handleJoinGroup = async () => {
+    try {
+      const response = await fetchFromServer(`/group/${id}/join`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      console.log(response);
+
+      if (response.ok) {
+      } else {
+        throw new Error("Failed to send join request.");
+      }
+    } catch (error) {
+      console.error("Failed to join group:", error);
+    }
+  };
+
   return (
     <Box sx={{ width: "600px" }}>
       <Item
@@ -64,12 +69,21 @@ export default function GroupCard({ groupTitle }: GroupCardProps) {
         >
           <StyledTypography>{groupTitle}</StyledTypography>
           <Box sx={{ mt: "9px" }}>
-            You are not part of this group. Click "Join Group" and an Admin will
-            approve your request to join.
+            {pendingRequest
+              ? `Pending join approval.`
+              : `You are not part of this group. Click "Join Group" and an Admin will
+              approve your request to join.`}
           </Box>
-
           <Box sx={{ width: "200px", alignSelf: "flex-end" }}>
-            <ConfirmBtn backgroundImage={confirmBtn.src} text="Join Group" />
+            {pendingRequest ? (
+              <ConfirmBtn backgroundImage={successBtn.src} text="Pending" />
+            ) : (
+              <ConfirmBtn
+                onClick={handleJoinGroup}
+                backgroundImage={confirmBtn.src}
+                text="Join Group"
+              />
+            )}
           </Box>
         </Box>
       </Item>

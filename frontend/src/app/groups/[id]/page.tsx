@@ -10,7 +10,8 @@ import { GroupProps } from "@/types/types";
 
 import GroupCard from "@/components/Group/GroupCard";
 import GroupAddInfo from "@/components/Group/GroupAddInfo";
-import CreatePostModal from "@/components/Group/CreatePostModal";
+import JoinGroupInfo from "@/components/Group/JoinGroupInfo";
+import JoinGroupCard from "@/components/Group/JoinGroupCard";
 
 export default function GroupPage() {
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
@@ -19,7 +20,7 @@ export default function GroupPage() {
   const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
   const [isMember, setIsMember] = useState<boolean>(false);
-
+  // /group/([0-9]+)/(join|accept|reject)
   const pathname = usePathname().split("/").pop();
 
   useEffect(() => {
@@ -30,8 +31,9 @@ export default function GroupPage() {
         });
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           setMainInfo(data);
+          console.log(data);
+
           setIsMember(data.includesMe === true);
         } else {
           throw new Error("Failed to fetch groups");
@@ -88,11 +90,17 @@ export default function GroupPage() {
             </>
           ) : (
             <>
-              <Box>
-                <h1>{mainInfo.title}</h1>
-                <h2>{mainInfo.ownerName}</h2>
-                <h3>{mainInfo.description}</h3>
-              </Box>
+              <JoinGroupCard
+                groupTitle={mainInfo.title}
+                id={mainInfo.ID}
+                pendingRequest={mainInfo.pendingRequest}
+              />
+              <JoinGroupInfo
+                description={mainInfo.description}
+                ownerID={mainInfo.ownerID}
+                profileIcon={profileIcon}
+                ownerName={mainInfo.ownerName}
+              />
             </>
           )}
         </>

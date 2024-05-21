@@ -13,6 +13,7 @@ import leaveIcon from "../../../public/icons/leave.svg";
 import noPhoto from "../../../public/icons/profile.svg";
 import { MouseEventHandler, useState } from "react";
 import AlertDialog from "../shared/Dialog";
+import { fetchFromServer } from "@/lib/api";
 
 interface GroupItemProps {
   title: string;
@@ -20,7 +21,7 @@ interface GroupItemProps {
   groupId: number;
 }
 
-export default function GroupItem({ title, members, groupId }: GroupItemProps) {
+export default function GroupItem({ title, groupId }: GroupItemProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   const leaveGroup: MouseEventHandler<HTMLElement> = async (event) => {
@@ -108,6 +109,9 @@ export default function GroupItem({ title, members, groupId }: GroupItemProps) {
         setOpen={setOpen}
         title={title}
         dialogText="Are you sure that you want to leave this group?"
+        onConfirm={function (): void {
+          throw new Error("Function not implemented.");
+        }}
       />
     </>
   );

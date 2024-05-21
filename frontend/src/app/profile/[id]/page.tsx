@@ -11,18 +11,20 @@ import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { fetchFromServer } from "@/lib/api";
 import { usePathname } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { putProfile } from "@/redux/features/profile/profileSlice";
 import { PostProps } from "@/types/types";
 
 export default function ProfilePage() {
   const [posts, setPosts] = useState<PostProps[]>([]);
-
   const [selectedTab, setSelectedTab] = useState<String>("Main Board");
 
   const dispatch = useDispatch();
 
+  const id = useSelector((state: any) => state.authReducer.value.id);
   const pathname = usePathname().split("/").pop();
+
+  const isYourProfile = id.toString() === pathname;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,7 +66,14 @@ export default function ProfilePage() {
   const renderContent = () => {
     switch (selectedTab) {
       case "Main Board":
-        return <MainBoard posts={posts} setSelectedTab={setSelectedTab} />;
+        return (
+          <MainBoard
+            isYourProfile={isYourProfile}
+            pathname={pathname}
+            posts={posts}
+            setSelectedTab={setSelectedTab}
+          />
+        );
       case "Contacts":
         return <ContactsContent />;
       case "Photos":
@@ -72,7 +81,14 @@ export default function ProfilePage() {
           <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={false} />
         );
       default:
-        return <MainBoard posts={posts} setSelectedTab={setSelectedTab} />;
+        return (
+          <MainBoard
+            isYourProfile={isYourProfile}
+            pathname={pathname}
+            posts={posts}
+            setSelectedTab={setSelectedTab}
+          />
+        );
     }
   };
 
@@ -95,6 +111,7 @@ export default function ProfilePage() {
           radius="8px"
         >
           <ProfileCard
+            isYourProfile={isYourProfile}
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
           />

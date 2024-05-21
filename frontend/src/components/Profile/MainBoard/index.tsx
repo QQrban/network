@@ -12,11 +12,17 @@ import CreatePostModal from "@/components/Group/CreatePostModal";
 import { CommentProps, PostProps } from "@/types/types";
 
 interface Props {
+  isYourProfile: boolean;
+  pathname: string | undefined;
   posts: PostProps[];
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
 }
 
-export default function MainBoard({ setSelectedTab, posts }: Props) {
+export default function MainBoard({
+  setSelectedTab,
+  posts,
+  isYourProfile,
+}: Props) {
   const [profilePosts, setProfilePosts] = useState<PostProps[]>([]);
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
 
@@ -25,9 +31,6 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
   }, [posts]);
 
   const profile = useSelector((state: any) => state.profileReducer.value);
-
-  const router = useRouter();
-  let id: number = 10561654311;
 
   const addNewPost = (newPost: PostProps) => {
     setProfilePosts((prevPosts) => [
@@ -60,7 +63,7 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
           width: "600px",
         }}
       >
-        <CreatePost setOpenPostModal={setOpenPostModal} />
+        {isYourProfile && <CreatePost setOpenPostModal={setOpenPostModal} />}
         <Box
           sx={{
             display: "flex",
@@ -72,7 +75,7 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
           <Typography fontSize={22} sx={{ mb: "23px" }}>
             Posts
           </Typography>
-          {posts?.length > 2 && (
+          {/*           {posts?.length > 2 && (
             <Button
               onClick={() => router.push(`/profile/${id}/all-posts`)}
               sx={{
@@ -83,7 +86,7 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
             >
               View All Posts &#x2192;
             </Button>
-          )}
+          )} */}
         </Box>
         <Box sx={{ display: "flex", flexDirection: "column", gap: "23px" }}>
           <PostsSection
@@ -91,7 +94,7 @@ export default function MainBoard({ setSelectedTab, posts }: Props) {
             posts={profilePosts}
           />
         </Box>
-        {posts?.length === 0 && (
+        {profilePosts?.length === 0 && (
           <Typography
             sx={{
               fontFamily: "Gloria Hallelujah !important",

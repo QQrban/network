@@ -1,6 +1,6 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import PostsSection from "../shared/Post/PostsSection";
 import CreatePost from "../shared/Post/CreatePost";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import CircularIndeterminate from "../shared/LoadingCircular";
 
 export default function MiddleColumn() {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
+  const [showLoading, setShowLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchFollowingPosts = async () => {
@@ -20,8 +21,10 @@ export default function MiddleColumn() {
       const data = await response.json();
       setMainPagePosts(data);
     };
+    setShowLoading(true);
     setTimeout(() => {
       fetchFollowingPosts();
+      setShowLoading(false);
     }, 500);
   }, []);
 
@@ -45,7 +48,7 @@ export default function MiddleColumn() {
   };
 
   return (
-    <Box>
+    <Box sx={{ width: "600px" }}>
       <Box sx={{ width: "100%" }}>
         <CreatePost setOpenPostModal={setOpenPostModal} />
       </Box>
@@ -63,6 +66,19 @@ export default function MiddleColumn() {
             addCommentToPost={addCommentToPost}
           />
         ) : (
+          !showLoading && (
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontFamily: "Gloria Hallelujah !important",
+                fontSize: "50px",
+              }}
+            >
+              Nothing to Show Yet
+            </Typography>
+          )
+        )}
+        {showLoading && (
           <Box
             sx={{ width: "600px", display: "flex", justifyContent: "center" }}
           >

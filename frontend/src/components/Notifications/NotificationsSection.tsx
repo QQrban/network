@@ -25,6 +25,7 @@ export default function NotificationsSection({
           key={notification.id}
           sx={{
             backgroundImage: `url(${eventBg.src})`,
+            width: "100%",
             backgroundPosition: "center",
             backgroundSize: "cover",
             overflow: "hidden",
@@ -67,6 +68,7 @@ export default function NotificationsSection({
                       fontSize: "22px",
                       fontWeight: 600,
                       fontFamily: "Schoolbell !important",
+                      textTransform: "capitalize",
                     }}
                   >
                     {notification.reaction}
@@ -76,7 +78,6 @@ export default function NotificationsSection({
             </Box>
             <Box
               sx={{
-                width: "800px",
                 fontSize: "16px",
               }}
             >

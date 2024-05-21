@@ -28,6 +28,7 @@ export default function Notifications() {
       }}
     >
       <Typography
+        component="h2"
         sx={{ fontFamily: "Gloria Hallelujah !important", fontSize: "50px" }}
       >
         Notifications
@@ -35,10 +36,11 @@ export default function Notifications() {
       {notifications.length > 0 ? (
         <Box
           sx={{
+            mt: "23px",
             display: "flex",
             flexDirection: "column",
             gap: "23px",
-            maxWidth: "700px",
+            width: "700px",
           }}
         >
           <NotificationsSection notifications={notifications} />

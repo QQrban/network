@@ -41,7 +41,7 @@ export const yourNotifications: Notification[] = [
     description: "Toomas liked your post",
   },
   {
-    id: 2,
+    id: 3,
     postId: 2,
     username: "Toomas",
     reaction: "New follow",

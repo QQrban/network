@@ -58,16 +58,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		post.Post.Status = Status
 	}
 	post.Content = Content
-	/*fmt.Println("formData:", formData)
-	if formData != nil {
-		log.Println("formData:", formData)
-	}
-	err := json.NewDecoder(r.Body).Decode(&post)
-	if err != nil {
-		log.Println(err)
-		writeStatusError(w, http.StatusBadRequest)
-		return
-	}*/
 
 	// If it's a group post, check that I have access
 	if post.GroupID != nil {
@@ -80,10 +70,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-
-	/*if post.Status == "" {
-		post.Status = "public"
-	}*/
 
 	if post.Post.Status == "manual" {
 		if post.AllowedUsers == nil {
@@ -284,4 +270,28 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	panicIfErr(err)
 
 	writeJSON(w, likes)
+}
+
+func DeletePost(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	slug := router.GetSlug(r, 0)
+	postID, _ := strconv.ParseInt(slug, 10, 64)
+
+	allowed, err := Database.Post.HasAccess(session.UserID, postID)
+	panicUnlessError(err, sql.ErrNoRows)
+	if err != nil {
+		log.Println(err)
+		writeStatusError(w, http.StatusNotFound)
+		return
+	}
+	if !allowed {
+		writeStatusError(w, http.StatusForbidden)
+		return
+	}
+
+	err = Database.Post.Delete(postID)
+	panicIfErr(err)
+
+	writeStatus(w, http.StatusOK)
 }

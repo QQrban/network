@@ -400,3 +400,70 @@ func (model *UserModel) FollowStats(myID int64) (map[string]int, error) {
 
 	return stats, nil
 }
+
+func (model *UserModel) Suggestions(myID int64) (interface{}, error) {
+	type suggestions struct {
+		Groups []*Group
+		Users  []*UserLimited
+	}
+	groups, err := model.getSuggestedGroups(myID)
+	if err != nil {
+		return nil, fmt.Errorf("User/Suggestions1: %w", err)
+	}
+	users, err := model.getSuggestedUsers(myID)
+	if err != nil {
+		return nil, fmt.Errorf("User/Suggestions2: %w", err)
+	}
+	return suggestions{Groups: groups, Users: users}, nil
+}
+
+func (model *UserModel) getSuggestedGroups(myID int64) ([]*Group, error) {
+	stmt := model.queries.Prepare("suggestedGroups")
+
+	rows, err := stmt.Query(myID)
+	if err != nil {
+		return nil, fmt.Errorf("User/SuggestedGroups1: %w", err)
+	}
+	defer rows.Close()
+
+	groups := make([]*Group, 0)
+
+	for rows.Next() {
+		group := &Group{}
+
+		err = rows.Scan(group.pointerSlice()...)
+		if err != nil {
+			return nil, fmt.Errorf("User/SuggestedGroups2: %w", err)
+		}
+
+		groups = append(groups, group)
+	}
+
+	return groups, nil
+}
+
+func (model *UserModel) getSuggestedUsers(myID int64) ([]*UserLimited, error) {
+	userModel := MakeUserModel(model.db)
+	stmt := userModel.queries.Prepare("suggestedUsers")
+
+	rows, err := stmt.Query(myID)
+	if err != nil {
+		return nil, fmt.Errorf("User/SuggestedUsers1: %w", err)
+	}
+	defer rows.Close()
+
+	users := make([]*UserLimited, 0)
+
+	for rows.Next() {
+		user := &User{}
+
+		err = rows.Scan(user.pointerSlice()...)
+		if err != nil {
+			return nil, fmt.Errorf("User/SuggestedUsers2: %w", err)
+		}
+
+		users = append(users, user.Limited())
+	}
+
+	return users, nil
+}

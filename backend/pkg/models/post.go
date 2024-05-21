@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"social-network/pkg/queries"
+	"strings"
 	"time"
 )
 
@@ -100,8 +101,6 @@ func (model PostModel) GetByID(postID int64) (*Post, error) {
 			return
 		}
 	}*/
-
-
 
 	return post, nil
 }
@@ -242,15 +241,41 @@ func (model PostModel) GetAll(myID, beforeID int64) ([]*Post, error) {
 }
 
 func (model PostModel) GetByFollowing(myID, beforeID int64) ([]*Post, error) {
-	stmt := model.queries.Prepare("getByFollowing")
+	stmt := model.queries.Prepare("getLatestPost")
+	latest := stmt.QueryRow(myID)
+
+	posts := make([]*Post, 0)
+	post := &Post{}
+	author := &User{}
+	err := latest.Scan(append(post.pointerSlice(), author.pointerSlice()...)...)
+	post.Author = author.Limited()
+
+	if err != nil {
+		return nil, fmt.Errorf("Post/GetByFollowing2: %w", err)
+	}
+	comments, err := model.GetComments(post.ID)
+	if err != nil {
+		return nil, fmt.Errorf("Post/GetByFollowing3: %w", err)
+	}
+	post.Comments = comments
+
+	likedBy, err := model.GetLikedBy(post.ID)
+	if err != nil {
+		return nil, fmt.Errorf("Post/GetByFollowing4: %w", err)
+	}
+
+	post.LikedBy = likedBy
+
+	posts = append(posts, post)
+
+
+	stmt = model.queries.Prepare("getByFollowing")
 
 	rows, err := stmt.Query(myID, beforeID)
 	if err != nil {
 		return nil, fmt.Errorf("Post/GetByFollowing1: %w", err)
 	}
 	defer rows.Close()
-
-	posts := make([]*Post, 0)
 
 	for rows.Next() {
 		post := &Post{}
@@ -430,4 +455,28 @@ func (model PostModel) Like(postID, userID int64) (int, error) {
 	}
 
 	return likes, nil
+}
+
+func (model PostModel) Delete(postID int64) error {
+	post, err := model.GetByID(postID)
+	if err != nil {
+		return fmt.Errorf("Post/Delete1: %w", err)
+	}
+	tokens := strings.Split(post.Images, ",")
+	fmt.Println("tokens:", tokens)
+	fileModel := MakeFileModel(model.db)
+	for _, token := range tokens {
+		_, err = fileModel.Delete(token)
+		if err != nil {
+			return fmt.Errorf("Post/Delete2: %w", err)
+		}
+	}
+
+	stmt := model.queries.Prepare("delete")
+	_, err = stmt.Exec(postID)
+	if err != nil {
+		return fmt.Errorf("Post/Delete3: %w", err)
+	}
+
+	return nil
 }

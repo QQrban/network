@@ -109,7 +109,9 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		writeStatusError(w, http.StatusBadRequest)
 		return
 	}
+	fmt.Println("1")
 	imageData, err := base64.StdEncoding.DecodeString(*incoming.Image)
+	fmt.Println("2")
 	if err != nil {
 		http.Error(w, "Invalid base64 image data", http.StatusBadRequest)
 		return

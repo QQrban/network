@@ -5,6 +5,7 @@ import noProfilePic from "../../../public/icons/profile.svg";
 import { styled } from "@mui/material";
 import Link from "next/link";
 import { useSelector } from "react-redux";
+import ProfileImage from "../shared/ProfileImage";
 
 const StatisticsItemText = styled(Typography)`
   width: 100px;
@@ -48,17 +49,7 @@ export default function LeftColumn() {
             p: "17px 50px",
           }}
         >
-          <Box
-            sx={{
-              width: "72px",
-              height: "72px",
-              border: "3px solid #6f6f6f",
-              borderRadius: "50%",
-              overflow: "hidden",
-            }}
-          >
-            <Image src={noProfilePic} alt="profile pic" />
-          </Box>
+          <ProfileImage width={72} height={72} image={userData.image} />
           <Box sx={{ textAlign: "center" }}>
             <Typography
               sx={{

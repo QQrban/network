@@ -7,6 +7,8 @@ import { useState } from "react";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import { fetchFromServer } from "@/lib/api";
 import { CommentProps } from "@/types/types";
+import { useSelector } from "react-redux";
+import ProfileImage from "../ProfileImage";
 
 interface AddCommentProps {
   inputRef: React.RefObject<HTMLTextAreaElement>;
@@ -20,6 +22,8 @@ export default function AddComment({
   addComment,
 }: AddCommentProps) {
   const [commentText, setCommentText] = useState<string>("");
+
+  const userImage = useSelector((state: any) => state.authReducer.value.image);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentText(e.target.value);
@@ -52,14 +56,7 @@ export default function AddComment({
           gap: "10px",
         }}
       >
-        <Box
-          sx={{
-            maxWidth: "36px",
-            height: "36px",
-          }}
-        >
-          <Image src={noPhoto} alt="profile pic" />
-        </Box>
+        <ProfileImage width={40} height={40} image={userImage} />
         <Box
           sx={{
             width: "100%",

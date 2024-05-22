@@ -33,6 +33,8 @@ export default function ProfilePage() {
           credentials: "include",
         });
         const userData = await getUser.json();
+        console.log(userData);
+
         dispatch(
           putProfile({
             id: userData.ID,
@@ -40,7 +42,7 @@ export default function ProfilePage() {
             firstName: userData.firstName,
             lastName: userData.lastName,
             nickname: userData.nickname,
-            private: userData.private,
+            private: !userData.access,
             image: userData.image,
             followInfo: {
               meToYou: userData.followInfo.meToYou,

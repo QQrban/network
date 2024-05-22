@@ -44,7 +44,6 @@ export default function ProfileCard({
   const [followValue, setFollowValue] = useState<string>("");
 
   const profile = useSelector((state: any) => state.profileReducer.value);
-  console.log(profile);
 
   const { meToYou, meToYouPending, youToMePending } = profile.followInfo;
 
@@ -112,8 +111,14 @@ export default function ProfileCard({
 
   const privacyHandler = async () => {
     try {
-      setPrivateProfile(!privateProfile);
-    } catch (error) {}
+      const response = await fetchFromServer(`/user/status`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) setPrivateProfile(!privateProfile);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -175,7 +180,7 @@ export default function ProfileCard({
           />
         </SpeedDial>
       )}
-      <ProfileAvatar avatar={profile.image} />
+      <ProfileAvatar isYourProfile={isYourProfile} avatar={profile.image} />
       <Typography
         sx={{
           fontSize: "42px",

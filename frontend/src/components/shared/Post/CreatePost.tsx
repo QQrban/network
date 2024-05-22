@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Item } from "@/components/shared/Item";
 import { useSelector } from "react-redux";
 import Link from "next/link";
+import ProfileImage from "../ProfileImage";
 
 interface CreatePostProps {
   setOpenPostModal: React.Dispatch<boolean>;
@@ -36,29 +37,7 @@ export default function CreatePost({ setOpenPostModal }: CreatePostProps) {
         }}
       >
         <Link href={`/profile/${userData.id}`}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "40px",
-              height: "40px",
-              border: "2px solid #4a4a4a",
-              borderRadius: "50%",
-              overflow: "hidden",
-            }}
-          >
-            <Image
-              width={40}
-              height={40}
-              src={
-                userData.image
-                  ? `http://localhost:8888/file/${userData.image}`
-                  : noPhoto
-              }
-              alt="no prof pic"
-            />
-          </Box>
+          <ProfileImage width={40} height={40} image={userData.image} />
         </Link>
         <Typography
           sx={{

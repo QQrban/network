@@ -17,6 +17,8 @@ import dayjs from "dayjs";
 import PostImage from "./PostImage";
 import PostImageDialog from "./PostImageDialog";
 import Link from "next/link";
+import ProfileImage from "../ProfileImage";
+import { useSelector } from "react-redux";
 
 interface PostsSectionProps {
   posts: PostProps[];
@@ -29,6 +31,8 @@ export default function PostsSection({
 }: PostsSectionProps) {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
+
+  const userData = useSelector((state: any) => state.authReducer.value);
 
   const inputRefs = useRef<{
     [key: number]: React.RefObject<HTMLTextAreaElement>;
@@ -89,17 +93,11 @@ export default function PostsSection({
                       gap: "8px",
                     }}
                   >
-                    <Box
-                      sx={{
-                        width: "36px",
-                        height: "36px",
-                        overflow: "hidden",
-                        border: "2px solid #4a4a4a",
-                        borderRadius: "50%",
-                      }}
-                    >
-                      <Image src={noPhoto} alt="" />
-                    </Box>
+                    <ProfileImage
+                      width={40}
+                      height={40}
+                      image={userData.image}
+                    />
                     <Box>
                       <Typography
                         sx={{

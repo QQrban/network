@@ -121,13 +121,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	firstName := r.FormValue("firstName")
 	lastName := r.FormValue("lastName")
-	birthday, _ := time.Parse("2006-01-02", r.FormValue("birthday"))
+	layout := "2006-01-02T15:04:05-07:00"
+	birthday, terr := time.Parse(layout, r.FormValue("birthday"))
 	nickname := r.FormValue("nickname")
 	about := r.FormValue("about")
 	private := r.FormValue("private") == "true"
 	country := r.FormValue("country")
 	var token string
-	fmt.Println("birthday0:", r.FormValue("birthday"))
+	fmt.Println("birthday0:", r.FormValue("birthday"), birthday, terr)
 
 	// Save images
 	if len(r.MultipartForm.File["avatar"]) > 0 {
@@ -147,7 +148,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	fmt.Printf("email: %s\npassword: %s\nfirstName: %s\nlastName: %s\nbirthday: %s\nnickname: %s\nabout: %s\nprivate: %v\ncountry: %s\ntoken %s\n",
+	fmt.Printf("email: %s\npassword: %s\nfirstName: %s\nlastName: %s\nbirthday: %v\nnickname: %s\nabout: %s\nprivate: %v\ncountry: %s\ntoken %s\n",
 		email, password, firstName, lastName, birthday, nickname, about, private, country, token)
 
 	incoming.Email = &email
@@ -161,6 +162,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	incoming.Country = &country
 	incoming.Image = &token
 
+	fmt.Println("incoming:", incoming)
 	id, err := Database.User.Insert(incoming)
 	if err != nil {
 		log.Println("api/Register2:", err)

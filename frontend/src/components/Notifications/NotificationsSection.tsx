@@ -36,11 +36,7 @@ export default function NotificationsSection({
           }}
           radius="12px"
         >
-          <Link
-            href={{
-              pathname: `post/${notification.postId}`,
-            }}
-          >
+          <Link href={`/post/${notification.postId}`}>
             <Box
               sx={{
                 display: "flex",

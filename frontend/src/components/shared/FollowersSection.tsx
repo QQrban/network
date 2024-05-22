@@ -58,7 +58,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
           setPeopleList(people);
         } else if (activeTab === "Requests") {
           console.log(data);
-
           const people = data.filter((item: any) => {
             return item.followInfo.youToMePending;
           });
@@ -156,32 +155,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
     }
   };
 
-  // const confirmFollowRequest = async (userID: number) => {
-  //   try {
-  //     const response = await fetchFromServer(`/user/${userID}/accept`, {
-  //       method: "POST",
-  //       credentials: "include",
-  //     });
-  //     if (response.ok) {
-  //       setFollowRequests((prevList) =>
-  //         prevList.map((person) =>
-  //           person.ID === userID
-  //             ? {
-  //                 ...person,
-  //                 followInfo: {
-  //                   ...person.followInfo,
-  //                   youToMePending: false,
-  //                 },
-  //               }
-  //             : person
-  //         )
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error accepting follow from user:", error);
-  //   }
-  // };
-
   const denyFollowRequest = async (userID: number) => {
     try {
       const response = await fetchFromServer(`/user/${userID}/reject`, {
@@ -197,32 +170,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
       console.error("Error rejecting follow from user:", error);
     }
   };
-
-  // const denyFollowRequest = async (userID: number) => {
-  //   try {
-  //     const response = await fetchFromServer(`/user/${userID}/reject`, {
-  //       method: "POST",
-  //       credentials: "include",
-  //     });
-  //     if (response.ok) {
-  //       setFollowRequests((prevList) =>
-  //         prevList.map((person) =>
-  //           person.ID === userID
-  //             ? {
-  //                 ...person,
-  //                 followInfo: {
-  //                   ...person.followInfo,
-  //                   youToMePending: false,
-  //                 },
-  //               }
-  //             : person
-  //         )
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error accepting follow from user:", error);
-  //   }
-  // };
 
   return (
     <>
@@ -520,7 +467,11 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                     }}
                   >
                     <Image
-                      src={follower.image ? follower.image : noPhoto}
+                      src={
+                        follower.image
+                          ? `http://localhost:8888/file/${follower.image}`
+                          : noPhoto
+                      }
                       alt={follower.firstName}
                       width={90}
                       height={90}

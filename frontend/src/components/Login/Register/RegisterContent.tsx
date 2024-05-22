@@ -101,6 +101,7 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
               nickname: data.nickname,
               birthday: data.birthday,
               country: data.country,
+              image: data.image,
             })
           );
         } else {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import TooltipStyled from "../shared/TooltipStyled";
 import { useState } from "react";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { fetchFromServer } from "@/lib/api";
 import profileSvg from "../../../public/icons/profile.svg";
 import Image from "next/image";
@@ -16,7 +16,8 @@ export default function ProfileMenu() {
     setAnchorEl(event.currentTarget);
   };
 
-  const id = useSelector((state: any) => state.authReducer.value.id);
+  const auth = useSelector((state: any) => state.authReducer.value);
+  const id = auth.id;
 
   const handleLogout = async () => {
     const response = await fetchFromServer("/logout", {
@@ -44,11 +45,26 @@ export default function ProfileMenu() {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <Image
-            style={{ width: "42px", height: "42px" }}
-            src={profileSvg}
-            alt="Profile"
-          />
+          <Box
+            sx={{
+              width: "42px",
+              height: "42px",
+              borderRadius: "50%",
+              overflow: "hidden",
+              outline: "2px solid #bebeed",
+            }}
+          >
+            <Image
+              width={42}
+              height={42}
+              src={
+                auth.image
+                  ? `http://localhost:8888/file/${auth.image}`
+                  : profileSvg
+              }
+              alt="Profile"
+            />
+          </Box>
         </IconButton>
       </TooltipStyled>
       <Menu

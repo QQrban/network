@@ -40,6 +40,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
                 lastName: data.lastName,
                 nickname: data.nickname,
                 birthday: data.birthday,
+                image: data.image,
                 country: data.country,
               })
             );

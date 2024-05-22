@@ -3,7 +3,13 @@ import noPhoto from "../../../../public/icons/profile.svg";
 import cameraIcon from "../../../../public/icons/photo.svg";
 import Image from "next/image";
 
-export default function ProfileAvatar() {
+interface ProfileAvatarProps {
+  avatar: string;
+}
+
+export default function ProfileAvatar({ avatar }: ProfileAvatarProps) {
+  console.log(avatar);
+
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       <Box
@@ -11,7 +17,9 @@ export default function ProfileAvatar() {
           width: "170px",
           height: "170px",
           borderRadius: "50%",
-          backgroundImage: `url(${noPhoto.src})`,
+          backgroundImage: avatar
+            ? `url(http://localhost:8888/file/${avatar})`
+            : `url(${noPhoto.src})`,
           backgroundSize: "cover",
           backgroundColor: "#fff",
           backgroundRepeat: "no-repeat",

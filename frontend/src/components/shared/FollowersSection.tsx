@@ -37,7 +37,10 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
   useEffect(() => {
     const getFollowers = async () => {
       if (profileId) {
-        const endpoint = activeTab === "Followers" ? "followers" : "following";
+        const endpoint =
+          activeTab === "Followers" || activeTab === "Requests"
+            ? "followers"
+            : "following";
         const response = await fetchFromServer(
           `/user/${profileId}/${endpoint}`,
           {
@@ -47,13 +50,18 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         const data = await response.json();
 
         if (activeTab === "Followers" || activeTab === "Following") {
-          setPeopleList(
-            data.filter((item: any) => !item.followInfo.youToMePending)
+          console.log(data);
+
+          const people = data.filter(
+            (item: any) => !item.followInfo.youToMePending
           );
+          setPeopleList(people);
         } else if (activeTab === "Requests") {
-          setFollowRequests(
-            data.filter((item: any) => item.followInfo.youToMePending)
-          );
+          console.log(data);
+          const people = data.filter((item: any) => {
+            return item.followInfo.youToMePending;
+          });
+          setFollowRequests(people);
         }
       }
     };
@@ -147,32 +155,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
     }
   };
 
-  // const confirmFollowRequest = async (userID: number) => {
-  //   try {
-  //     const response = await fetchFromServer(`/user/${userID}/accept`, {
-  //       method: "POST",
-  //       credentials: "include",
-  //     });
-  //     if (response.ok) {
-  //       setFollowRequests((prevList) =>
-  //         prevList.map((person) =>
-  //           person.ID === userID
-  //             ? {
-  //                 ...person,
-  //                 followInfo: {
-  //                   ...person.followInfo,
-  //                   youToMePending: false,
-  //                 },
-  //               }
-  //             : person
-  //         )
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error accepting follow from user:", error);
-  //   }
-  // };
-
   const denyFollowRequest = async (userID: number) => {
     try {
       const response = await fetchFromServer(`/user/${userID}/reject`, {
@@ -189,36 +171,10 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
     }
   };
 
-  // const denyFollowRequest = async (userID: number) => {
-  //   try {
-  //     const response = await fetchFromServer(`/user/${userID}/reject`, {
-  //       method: "POST",
-  //       credentials: "include",
-  //     });
-  //     if (response.ok) {
-  //       setFollowRequests((prevList) =>
-  //         prevList.map((person) =>
-  //           person.ID === userID
-  //             ? {
-  //                 ...person,
-  //                 followInfo: {
-  //                   ...person.followInfo,
-  //                   youToMePending: false,
-  //                 },
-  //               }
-  //             : person
-  //         )
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error accepting follow from user:", error);
-  //   }
-  // };
-
   return (
     <>
       {activeTab === "Requests" ? (
-        <Box>
+        <Box sx={{ display: "flex", gap: "23px", flexWrap: "wrap" }}>
           {followRequest.length > 0 ? (
             followRequest.map((request, index) => (
               <Item
@@ -337,10 +293,19 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                     sx={{
                       width: "90px",
                       height: "90px",
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
                     <Image
-                      src={request.image ? request.image : noPhoto}
+                      src={
+                        request.image
+                          ? `http://localhost:8888/file/${request.image}`
+                          : noPhoto
+                      }
                       alt={request.firstName}
                       width={90}
                       height={90}
@@ -499,10 +464,19 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                     sx={{
                       width: "90px",
                       height: "90px",
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
                     <Image
-                      src={follower.image ? follower.image : noPhoto}
+                      src={
+                        follower.image
+                          ? `http://localhost:8888/file/${follower.image}`
+                          : noPhoto
+                      }
                       alt={follower.firstName}
                       width={90}
                       height={90}

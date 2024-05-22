@@ -10,7 +10,7 @@ import CommentsPost from "./CommentsPost";
 import likeIcon from "../../../../public/icons/like.svg";
 import commentIcon from "../../../../public/icons/comment.svg";
 import AddComment from "./AddComment";
-import { createRef, useRef, useState, useEffect } from "react";
+import { createRef, useRef, useState } from "react";
 import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
 import PostImage from "./PostImage";
@@ -33,7 +33,7 @@ export default function PostsSection({
 }: PostsSectionProps) {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
-  const [likesAmount, setLikesAmount] = useState<number | null>(null);
+  const [likesAmount, setLikesAmount] = useState<{ [key: number]: number }>({});
 
   const userData = useSelector((state: any) => state.authReducer.value);
 
@@ -61,8 +61,10 @@ export default function PostsSection({
       if (response.ok) {
         const likes = await response.json();
         addLikeToPost(postID, likes);
-        setLikesAmount(likes);
-        console.log(likes);
+        setLikesAmount((prevLikes) => ({
+          ...prevLikes,
+          [postID]: likes,
+        }));
       }
     } catch (error) {
       console.error(error);
@@ -195,7 +197,7 @@ export default function PostsSection({
                   )}
                 </Box>
               )}
-              {post.likes?.length > 0 && likesAmount !== 0 && (
+              {post.likes?.length > 0 && likesAmount[post.postID] !== 0 && (
                 <Box
                   sx={{
                     p: "10px 17px",
@@ -225,7 +227,9 @@ export default function PostsSection({
                       fontFamily: "Schoolbell !important",
                     }}
                   >
-                    {!likesAmount ? post.likes.length : likesAmount}
+                    {likesAmount[post.postID] !== undefined
+                      ? likesAmount[post.postID]
+                      : post.likes.length}
                   </Typography>
                 </Box>
               )}

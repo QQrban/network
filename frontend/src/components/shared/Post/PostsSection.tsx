@@ -16,6 +16,7 @@ import { CommentProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
 import PostImage from "./PostImage";
 import PostImageDialog from "./PostImageDialog";
+import Link from "next/link";
 
 interface PostsSectionProps {
   posts: PostProps[];
@@ -80,44 +81,46 @@ export default function PostsSection({
                   justifyContent: "space-between",
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
+                <Link href={`/profile/${post.authorID}`}>
                   <Box
                     sx={{
-                      width: "36px",
-                      height: "36px",
-                      overflow: "hidden",
-                      border: "2px solid #4a4a4a",
-                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
                     }}
                   >
-                    <Image src={noPhoto} alt="" />
-                  </Box>
-                  <Box>
-                    <Typography
+                    <Box
                       sx={{
-                        fontSize: "18px",
-                        color: "#2a2a2a",
-                        fontFamily: "Gloria Hallelujah !important",
+                        width: "36px",
+                        height: "36px",
+                        overflow: "hidden",
+                        border: "2px solid #4a4a4a",
+                        borderRadius: "50%",
                       }}
                     >
-                      {post.author.firstName} {post.author.lastName}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "#BEBEBE",
-                        fontSize: "14px",
-                      }}
-                    >
-                      {dayjs(post.created).format("MMM D, YYYY")}
-                    </Typography>
+                      <Image src={noPhoto} alt="" />
+                    </Box>
+                    <Box>
+                      <Typography
+                        sx={{
+                          fontSize: "18px",
+                          color: "#2a2a2a",
+                          fontFamily: "Gloria Hallelujah !important",
+                        }}
+                      >
+                        {post.author.firstName} {post.author.lastName}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: "#BEBEBE",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {dayjs(post.created).format("MMM D, YYYY")}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
+                </Link>
                 <IconButton
                   sx={{
                     cursor: "pointer",

@@ -2,9 +2,7 @@ package api
 
 import (
 	"database/sql"
-	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -103,21 +101,42 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Create custom struct because the user struct doesn't include json tag for password
 	incoming := models.UserIncoming{}
-	err := json.NewDecoder(r.Body).Decode(&incoming)
+	/*err := json.NewDecoder(r.Body).Decode(&incoming)
+	if err != nil {
+		log.Println("api/Register1:", err)
+		writeStatusError(w, http.StatusBadRequest)
+		return
+	}*/
+
+	// Decode form data
+	err := r.ParseForm()
 	if err != nil {
 		log.Println("api/Register1:", err)
 		writeStatusError(w, http.StatusBadRequest)
 		return
 	}
-	fmt.Println("1")
-	imageData, err := base64.StdEncoding.DecodeString(*incoming.Image)
-	fmt.Println("2")
-	if err != nil {
-		http.Error(w, "Invalid base64 image data", http.StatusBadRequest)
-		return
-	}
 
-	fmt.Printf("Image size: %d bytes\n", len(imageData))
+	email := r.FormValue("email")
+	password := r.FormValue("password")
+	firstName := r.FormValue("firstName")
+	lastName := r.FormValue("lastName")
+	birthday, _ := time.Parse("2006-01-02", r.FormValue("birthday"))
+	nickname := r.FormValue("nickname")
+	about := r.FormValue("about")
+	private := r.FormValue("private") == "true"
+	country := r.FormValue("country")
+	token, _ := FileUpload(w, r, "avatar")
+
+	incoming.Email = &email
+	incoming.Password = &password
+	incoming.FirstName = &firstName
+	incoming.LastName = &lastName
+	incoming.Birthday = &birthday
+	incoming.Nickname = &nickname
+	incoming.About = &about
+	incoming.Private = private
+	incoming.Country = &country
+	incoming.Image = &token
 
 	id, err := Database.User.Insert(incoming)
 	if err != nil {

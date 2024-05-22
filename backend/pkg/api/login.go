@@ -102,12 +102,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Create custom struct because the user struct doesn't include json tag for password
 	incoming := models.UserIncoming{}
-	/*err := json.NewDecoder(r.Body).Decode(&incoming)
-	if err != nil {
-		log.Println("api/Register1:", err)
-		writeStatusError(w, http.StatusBadRequest)
-		return
-	}*/
 
 	// Get form values
 	err := r.ParseMultipartForm(32 << 10)
@@ -132,24 +126,18 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Save images
 	if len(r.MultipartForm.File["avatar"]) > 0 {
-		fmt.Println("img0")
 		// Enforce the limit on the number of files.
 		if len(r.MultipartForm.File["avatar"]) > 1 {
 			writeStatusError(w, http.StatusBadRequest)
 			return
 		}
-		fmt.Println("img1")
 		token, err = FileUpload(w, r, "avatar")
-		fmt.Println("img2")
 		if err != nil {
 			log.Println(err)
 			writeStatusError(w, http.StatusBadRequest)
 			return
 		}
 	}
-
-	fmt.Printf("email: %s\npassword: %s\nfirstName: %s\nlastName: %s\nbirthday: %v\nnickname: %s\nabout: %s\nprivate: %v\ncountry: %s\ntoken %s\n",
-		email, password, firstName, lastName, birthday, nickname, about, private, country, token)
 
 	incoming.Email = &email
 	incoming.Password = &password
@@ -162,7 +150,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	incoming.Country = &country
 	incoming.Image = &token
 
-	fmt.Println("incoming:", incoming)
 	id, err := Database.User.Insert(incoming)
 	if err != nil {
 		log.Println("api/Register2:", err)

@@ -36,7 +36,9 @@ export default function Groups() {
   };
 
   useEffect(() => {
-    fetchGroups();
+    setTimeout(() => {
+      fetchGroups();
+    }, 500);
   }, []);
 
   useEffect(() => {

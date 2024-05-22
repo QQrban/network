@@ -9,6 +9,7 @@ import Image from "next/image";
 import noPhoto from "../../../public/icons/profile.svg";
 import { useSelector } from "react-redux";
 import Link from "next/link";
+import ProfileImage from "./ProfileImage";
 
 export default function ContactsSection() {
   const suggestionsUsers = useSelector(
@@ -51,10 +52,10 @@ export default function ContactsSection() {
                       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                       variant="dot"
                     >
-                      <Image
-                        style={{ width: "30px", height: "30px" }}
-                        src={suggestion.image ? suggestion.image : noPhoto}
-                        alt="contacts"
+                      <ProfileImage
+                        width={30}
+                        height={30}
+                        image={suggestion.image}
                       />
                     </StyledBadge>
                   </ListItemAvatar>

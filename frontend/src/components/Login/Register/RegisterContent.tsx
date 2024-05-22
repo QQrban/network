@@ -3,6 +3,8 @@
 import {
   Autocomplete,
   Box,
+  Checkbox,
+  FormControlLabel,
   TextareaAutosize,
   Typography,
   styled,
@@ -34,6 +36,7 @@ interface FormValues {
   password: string;
   nickname: string;
   confirmPassword: string;
+  private: boolean;
   about: string;
   birthday: null;
   [key: string]: any;
@@ -47,6 +50,7 @@ const initialValues: FormValues = {
   email: "",
   password: "",
   confirmPassword: "",
+  private: false,
   about: "",
   birthday: null,
 };
@@ -86,7 +90,7 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
         const response = await fetchFromServer("/register", {
           method: "PUT",
           credentials: "include",
-          body: JSON.stringify(values),
+          body: formData,
         });
         if (response.ok) {
           resetForm();
@@ -364,6 +368,27 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
           </Box>
         </Box>
       </Box>
+      <FormControlLabel
+        control={
+          <Checkbox
+            name="private"
+            id="private"
+            onChange={formik.handleChange}
+            value={formik.values.private}
+          />
+        }
+        label={
+          <Typography
+            sx={{
+              fontFamily: "Gloria Hallelujah !important",
+              fontSize: "19px",
+              color: "#4a4a4a",
+            }}
+          >
+            Make Account Private
+          </Typography>
+        }
+      />
       <SuccessBtn sx={{ mt: "13px" }} type="submit">
         Sign Up
       </SuccessBtn>

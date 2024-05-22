@@ -11,17 +11,23 @@ import Image from "next/image";
 import Link from "next/link";
 import leaveIcon from "../../../public/icons/leave.svg";
 import noPhoto from "../../../public/icons/profile.svg";
+import pendingIcon from "../../../public/icons/pending.svg";
 import { MouseEventHandler, useState } from "react";
 import AlertDialog from "../shared/Dialog";
-import { fetchFromServer } from "@/lib/api";
+import TooltipStyled from "../shared/TooltipStyled";
 
 interface GroupItemProps {
   title: string;
   members?: number;
   groupId: number;
+  pendingRequest: boolean;
 }
 
-export default function GroupItem({ title, groupId }: GroupItemProps) {
+export default function GroupItem({
+  title,
+  groupId,
+  pendingRequest,
+}: GroupItemProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   const leaveGroup: MouseEventHandler<HTMLElement> = async (event) => {
@@ -65,43 +71,49 @@ export default function GroupItem({ title, groupId }: GroupItemProps) {
               }
             />
           </ListItem>
-          <SpeedDial
-            onClick={(e) => e.preventDefault()}
-            ariaLabel="SpeedDial tooltip example"
-            icon={<MoreVertIcon sx={{ color: "white" }} />}
-            direction="left"
-            FabProps={{
-              sx: {
-                backgroundColor: "#6495ED",
-                width: "36px",
-                height: "32px",
-                boxShadow: "none",
-                "&:hover": {},
-                "&:active": { boxShadow: "none" },
-                "&:focus": { outline: "none" },
-              },
-            }}
-          >
-            <SpeedDialAction
-              onClick={leaveGroup}
-              tooltipTitle={
-                <Typography
-                  sx={{
-                    fontFamily: "Schoolbell !important",
-                  }}
-                >
-                  Leave Group
-                </Typography>
-              }
-              icon={
-                <Image
-                  style={{ width: "25px", height: "25px" }}
-                  src={leaveIcon}
-                  alt="leave"
-                />
-              }
-            />
-          </SpeedDial>
+          {!pendingRequest ? (
+            <SpeedDial
+              onClick={(e) => e.preventDefault()}
+              ariaLabel="SpeedDial tooltip example"
+              icon={<MoreVertIcon sx={{ color: "white" }} />}
+              direction="left"
+              FabProps={{
+                sx: {
+                  backgroundColor: "#6495ED",
+                  width: "36px",
+                  height: "32px",
+                  boxShadow: "none",
+                  "&:hover": {},
+                  "&:active": { boxShadow: "none" },
+                  "&:focus": { outline: "none" },
+                },
+              }}
+            >
+              <SpeedDialAction
+                onClick={leaveGroup}
+                tooltipTitle={
+                  <Typography
+                    sx={{
+                      fontFamily: "Schoolbell !important",
+                    }}
+                  >
+                    Leave Group
+                  </Typography>
+                }
+                icon={
+                  <Image
+                    style={{ width: "25px", height: "25px" }}
+                    src={leaveIcon}
+                    alt="leave"
+                  />
+                }
+              />
+            </SpeedDial>
+          ) : (
+            <TooltipStyled title="Request Pending">
+              <Image width={40} height={40} src={pendingIcon} alt="pending" />
+            </TooltipStyled>
+          )}
         </List>
       </Link>
       <AlertDialog

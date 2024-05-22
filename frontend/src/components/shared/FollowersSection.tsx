@@ -16,6 +16,7 @@ import ConfirmBtn from "./ConfirmBtn";
 import { ContactsProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 interface Props {
   activeTab: string;
@@ -27,6 +28,9 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
   const [peopleList, setPeopleList] = useState<ContactsProps[]>([]);
   const [followerName, setFollowerName] = useState<string>("");
   const [userToUnfollow, setUserToUnfollow] = useState<number | null>(null);
+
+  const id = useSelector((state: any) => state.authReducer.value.id);
+  console.log(id);
 
   useEffect(() => {
     const getFollowers = async () => {
@@ -40,6 +44,7 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         );
         const data = await response.json();
         setPeopleList(data);
+        console.log(data);
       }
     };
     getFollowers();
@@ -134,100 +139,102 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
             }}
             radius="12px"
           >
-            <SpeedDial
-              sx={{
-                position: "absolute",
-                top: "6px",
-                right: "-2px",
-              }}
-              ariaLabel="SpeedDial openIcon example"
-              icon={<MoreVertIcon sx={{ color: "grey" }} />}
-              direction="down"
-              FabProps={{
-                sx: {
-                  backgroundColor: "white",
-                  width: "36px",
-                  height: "32px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    backgroundColor: "#00000014",
-                  },
-                  "&:active": {
-                    backgroundColor: "transparent",
+            {id !== follower.ID && (
+              <SpeedDial
+                sx={{
+                  position: "absolute",
+                  top: "6px",
+                  right: "-2px",
+                }}
+                ariaLabel="SpeedDial openIcon example"
+                icon={<MoreVertIcon sx={{ color: "grey" }} />}
+                direction="down"
+                FabProps={{
+                  sx: {
+                    backgroundColor: "white",
+                    width: "36px",
+                    height: "32px",
                     boxShadow: "none",
+                    "&:hover": {
+                      backgroundColor: "#00000014",
+                    },
+                    "&:active": {
+                      backgroundColor: "transparent",
+                      boxShadow: "none",
+                    },
+                    "&:focus": {
+                      outline: "none",
+                    },
                   },
-                  "&:focus": {
-                    outline: "none",
-                  },
-                },
-              }}
-            >
-              <SpeedDialAction
-                icon={
-                  <Image
-                    style={{ width: "25px", height: "25px" }}
-                    src={mail}
-                    alt="mail"
-                  />
-                }
-                tooltipTitle={
-                  <Typography
-                    sx={{
-                      fontFamily: "SchoolBell !important",
-                      fontSize: "18px",
-                    }}
-                  >
-                    Send Email
-                  </Typography>
-                }
-              />
+                }}
+              >
+                <SpeedDialAction
+                  icon={
+                    <Image
+                      style={{ width: "25px", height: "25px" }}
+                      src={mail}
+                      alt="mail"
+                    />
+                  }
+                  tooltipTitle={
+                    <Typography
+                      sx={{
+                        fontFamily: "SchoolBell !important",
+                        fontSize: "18px",
+                      }}
+                    >
+                      Send Email
+                    </Typography>
+                  }
+                />
 
-              {follower.followInfo.meToYou ? (
-                <SpeedDialAction
-                  onClick={(event) =>
-                    unfollowHandler(event, follower.firstName, follower.ID)
-                  }
-                  icon={
-                    <Image
-                      style={{ width: "25px", height: "25px" }}
-                      src={personRemove}
-                      alt="unfollow"
-                    />
-                  }
-                  tooltipTitle={
-                    <Typography
-                      sx={{
-                        fontFamily: "SchoolBell !important",
-                        fontSize: "18px",
-                      }}
-                    >
-                      Unfollow
-                    </Typography>
-                  }
-                />
-              ) : (
-                <SpeedDialAction
-                  onClick={() => follow(follower.ID)}
-                  icon={
-                    <Image
-                      style={{ width: "25px", height: "25px" }}
-                      src={personAdd}
-                      alt="follow"
-                    />
-                  }
-                  tooltipTitle={
-                    <Typography
-                      sx={{
-                        fontFamily: "SchoolBell !important",
-                        fontSize: "18px",
-                      }}
-                    >
-                      Follow
-                    </Typography>
-                  }
-                />
-              )}
-            </SpeedDial>
+                {follower.followInfo.meToYou ? (
+                  <SpeedDialAction
+                    onClick={(event) =>
+                      unfollowHandler(event, follower.firstName, follower.ID)
+                    }
+                    icon={
+                      <Image
+                        style={{ width: "25px", height: "25px" }}
+                        src={personRemove}
+                        alt="unfollow"
+                      />
+                    }
+                    tooltipTitle={
+                      <Typography
+                        sx={{
+                          fontFamily: "SchoolBell !important",
+                          fontSize: "18px",
+                        }}
+                      >
+                        Unfollow
+                      </Typography>
+                    }
+                  />
+                ) : (
+                  <SpeedDialAction
+                    onClick={() => follow(follower.ID)}
+                    icon={
+                      <Image
+                        style={{ width: "25px", height: "25px" }}
+                        src={personAdd}
+                        alt="follow"
+                      />
+                    }
+                    tooltipTitle={
+                      <Typography
+                        sx={{
+                          fontFamily: "SchoolBell !important",
+                          fontSize: "18px",
+                        }}
+                      >
+                        Follow
+                      </Typography>
+                    }
+                  />
+                )}
+              </SpeedDial>
+            )}
             <Link href={`/profile/${follower.ID}`}>
               <Box
                 sx={{
@@ -250,20 +257,32 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                 {follower.firstName} {follower.lastName}
               </Typography>
             </Box>
-            {follower.followInfo.meToYou ? (
-              <ConfirmBtn
-                onClick={(event) =>
-                  unfollowHandler(event, follower.firstName, follower.ID)
-                }
-                backgroundImage={errorBtn.src}
-                text="Unfollow"
-              />
+            {id !== follower.ID ? (
+              follower.followInfo.meToYou ? (
+                <ConfirmBtn
+                  onClick={(event) =>
+                    unfollowHandler(event, follower.firstName, follower.ID)
+                  }
+                  backgroundImage={errorBtn.src}
+                  text="Unfollow"
+                />
+              ) : (
+                <ConfirmBtn
+                  onClick={() => follow(follower.ID)}
+                  backgroundImage={successBtn.src}
+                  text="Follow"
+                />
+              )
             ) : (
-              <ConfirmBtn
-                onClick={() => follow(follower.ID)}
-                backgroundImage={successBtn.src}
-                text="Follow"
-              />
+              <Typography
+                sx={{
+                  fontSize: "25px",
+                  fontFamily: "SchoolBell !important",
+                  color: "crimson",
+                }}
+              >
+                {"( YOU )"}
+              </Typography>
             )}
           </Item>
         ))

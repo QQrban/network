@@ -3,13 +3,13 @@
 import { Box, Button, Typography } from "@mui/material";
 import CreatePost from "../../shared/Post/CreatePost";
 import PostsSection from "../../shared/Post/PostsSection";
-import { useRouter } from "next/navigation";
 import { Item } from "@/components/shared/Item";
 import PhotosContent from "../PhotosContent";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import CreatePostModal from "@/components/Group/CreatePostModal";
 import { CommentProps, PostProps } from "@/types/types";
+import { useRouter } from "next/navigation";
 
 interface Props {
   isYourProfile: boolean;
@@ -31,6 +31,8 @@ export default function MainBoard({
   }, [posts]);
 
   const profile = useSelector((state: any) => state.profileReducer.value);
+
+  const router = useRouter();
 
   const addNewPost = (newPost: PostProps) => {
     setProfilePosts((prevPosts) => [
@@ -69,29 +71,28 @@ export default function MainBoard({
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            mt: "13px",
+            m: "23px 0 13px 0",
           }}
         >
-          <Typography fontSize={22} sx={{ mb: "23px" }}>
-            Posts
-          </Typography>
-          {/*           {posts?.length > 2 && (
+          <Typography fontSize={22}>Posts</Typography>
+          {profilePosts?.length > 2 && (
             <Button
-              onClick={() => router.push(`/profile/${id}/all-posts`)}
+              onClick={() => router.push(`/profile/all-posts/${profile.id}`)}
               sx={{
-                mt: "20px",
                 fontFamily: "Gloria Hallelujah",
                 fontSize: "18px",
               }}
             >
               View All Posts &#x2192;
             </Button>
-          )} */}
+          )}
         </Box>
         <Box sx={{ display: "flex", flexDirection: "column", gap: "23px" }}>
           <PostsSection
             addCommentToPost={addCommentToPost}
-            posts={profilePosts}
+            posts={
+              profilePosts.length > 2 ? profilePosts.slice(0, 2) : profilePosts
+            }
           />
         </Box>
         {profilePosts?.length === 0 && (

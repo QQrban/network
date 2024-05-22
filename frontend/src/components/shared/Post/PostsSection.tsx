@@ -11,7 +11,7 @@ import likeIcon from "../../../../public/icons/like.svg";
 import commentIcon from "../../../../public/icons/comment.svg";
 import AddComment from "./AddComment";
 import { createRef, useRef, useState, useEffect } from "react";
-import { CommentProps, ContactsProps, PostProps } from "@/types/types";
+import { CommentProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
 import PostImage from "./PostImage";
 import PostImageDialog from "./PostImageDialog";

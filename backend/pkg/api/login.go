@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -108,8 +109,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}*/
 
-	// Decode form data
-	err := r.ParseForm()
+	// Get form values
+	err := r.ParseMultipartForm(32 << 10)
 	if err != nil {
 		log.Println("api/Register1:", err)
 		writeStatusError(w, http.StatusBadRequest)
@@ -125,7 +126,29 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	about := r.FormValue("about")
 	private := r.FormValue("private") == "true"
 	country := r.FormValue("country")
-	token, _ := FileUpload(w, r, "avatar")
+	var token string
+	fmt.Println("private0:", r.FormValue("private"))
+
+	// Save images
+	if len(r.MultipartForm.File["avatar"]) > 0 {
+		fmt.Println("img0")
+		// Enforce the limit on the number of files.
+		if len(r.MultipartForm.File["avatar"]) > 1 {
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+		fmt.Println("img1")
+		token, err = FileUpload(w, r, "avatar")
+		fmt.Println("img2")
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}
+
+	fmt.Printf("email: %s\npassword: %s\nfirstName: %s\nlastName: %s\nbirthday: %s\nnickname: %s\nabout: %s\nprivate: %v\ncountry: %s\ntoken %s\n",
+		email, password, firstName, lastName, birthday, nickname, about, private, country, token)
 
 	incoming.Email = &email
 	incoming.Password = &password

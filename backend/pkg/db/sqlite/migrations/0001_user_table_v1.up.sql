@@ -11,8 +11,8 @@ CREATE TABLE `user`
     `birthday`  DATE NOT NULL DEFAULT '',
     `private`   BOOLEAN NOT NULL DEFAULT FALSE, -- profile visibility
     `country`   TEXT NOT NULL DEFAULT '',
-    `created`   DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `created`   DATE NOT NULL DEFAULT CURRENT_TIMESTAMP
     --`updated`   DATE NOT NULL DEFAULT '',
 
-    FOREIGN KEY (`image`) REFERENCES "image" (token)
+    --FOREIGN KEY (`image`) REFERENCES "image" (token)
 );

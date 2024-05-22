@@ -2,9 +2,7 @@
 
 import { Box, Typography } from "@mui/material";
 import PostsSection from "../shared/Post/PostsSection";
-import CreatePost from "../shared/Post/CreatePost";
 import { useEffect, useState } from "react";
-import CreatePostModal from "../Group/CreatePostModal";
 import { CommentProps, PostProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
 import CircularIndeterminate from "../shared/LoadingCircular";

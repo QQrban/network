@@ -3,7 +3,6 @@
 import { Item } from "@/components/shared/Item";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../../public/icons/profile.svg";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ReactionToPost from "./ReactionToPost";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -11,26 +10,31 @@ import CommentsPost from "./CommentsPost";
 import likeIcon from "../../../../public/icons/like.svg";
 import commentIcon from "../../../../public/icons/comment.svg";
 import AddComment from "./AddComment";
-import { createRef, useRef, useState } from "react";
-import { CommentProps, PostProps } from "@/types/types";
+import { createRef, useRef, useState, useEffect } from "react";
+import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
 import PostImage from "./PostImage";
 import PostImageDialog from "./PostImageDialog";
 import Link from "next/link";
 import ProfileImage from "../ProfileImage";
 import { useSelector } from "react-redux";
+import { fetchFromServer } from "@/lib/api";
 
 interface PostsSectionProps {
   posts: PostProps[];
+  likes: ContactsProps[];
+
   addCommentToPost: (postID: number, comment: CommentProps) => void;
 }
 
 export default function PostsSection({
   posts,
+  likes,
   addCommentToPost,
 }: PostsSectionProps) {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
+  const [like, setLike] = useState<PostProps[]>(posts);
 
   const userData = useSelector((state: any) => state.authReducer.value);
 
@@ -44,6 +48,10 @@ export default function PostsSection({
     }
   };
 
+  useEffect(() => {
+    console.log(posts);
+  }, [like]);
+
   const reactions: Array<string> = [
     "Johnny Bravo",
     "Albert Einstein",
@@ -56,6 +64,27 @@ export default function PostsSection({
   const handleClickOpen = (image: string) => {
     setSelectedImage(image);
     setOpenDialog(true);
+  };
+
+  const giveLike = async (postID: number) => {
+    try {
+      const response = await fetchFromServer(`/post/${postID}/like`, {
+        method: "PUT",
+        credentials: "include",
+      });
+      if (response.ok) {
+        setLike((currentPosts) =>
+          currentPosts.map((post) =>
+            post.postID === postID
+              ? { ...post, likes: [...post.likes, userData.ID] }
+              : post
+          )
+        );
+        console.log("likes");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -231,7 +260,7 @@ export default function PostsSection({
                 <ReactionToPost
                   icon={<Image src={likeIcon} alt="like" />}
                   label="Like"
-                  onClick={() => console.log("Like")}
+                  onClick={() => giveLike(post.postID)}
                 />
                 <ReactionToPost
                   icon={<Image src={commentIcon} alt="comment" />}

@@ -79,7 +79,7 @@ func (n Notifier) notify(msg Notification) {
 		message.ReceiverID = t
 		_, err := n.database.Message.SendMessage(*message)
 		if err != nil {
-			log.Printf("could insert notification message for %v: %v\n", t, err)
+			log.Printf("could not insert notification message for %v: %v\n", t, err)
 		}
 	}
 

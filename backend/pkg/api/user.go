@@ -118,14 +118,14 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		/*go func() {
+		go func() {
 			me, err := Database.User.GetByID(session.UserID)
 			if err != nil {
 				log.Println(err)
 			}
 
 			Notify.FollowRequest(me, targetID)
-		}()*/
+		}()
 	} else {
 		// Following a public user*/
 		err = Database.User.Follow(session.UserID, target.ID)

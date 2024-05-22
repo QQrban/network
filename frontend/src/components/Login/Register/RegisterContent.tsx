@@ -17,7 +17,7 @@ import AvatarUpload from "../AvatarUpload";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 import { validationSchema } from "./validation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
@@ -56,20 +56,12 @@ const initialValues: FormValues = {
 };
 
 export default function RegisterContent({ setShowLoading }: RegisterProps) {
-  const [avatar, setAvatar] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<File | null>(null);
 
   const dispatch = useDispatch();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatar(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleAvatarChange = (file: File | null) => {
+    setAvatar(file);
   };
 
   const formik = useFormik({
@@ -84,7 +76,12 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
         }
 
         Object.entries(values).forEach(([key, value]) => {
-          formData.append(key, value.toString());
+          if (typeof value === "boolean") {
+            formData.append(key, value ? "true" : "false");
+          } else {
+            formData.append(key, value);
+          }
+          console.log(key, value);
         });
 
         const response = await fetchFromServer("/register", {
@@ -132,7 +129,7 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
       >
         Sign Up
       </Typography>
-      <AvatarUpload onChange={handleFileChange} />
+      <AvatarUpload onChange={handleAvatarChange} />
       <Box
         sx={{
           mt: "23px",

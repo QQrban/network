@@ -111,6 +111,7 @@ export default function Groups() {
                 key={group.ID}
                 groupId={group.ID}
                 title={group.title}
+                pendingRequest={group.pendingRequest}
               />
             ))
           ) : (

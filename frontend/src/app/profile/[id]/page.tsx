@@ -98,6 +98,8 @@ export default function ProfilePage() {
         sx={{
           position: "relative",
           p: "19px 28px",
+          width: "1250px",
+          m: "0 auto",
         }}
       >
         <Item
@@ -119,7 +121,6 @@ export default function ProfilePage() {
         <Box
           sx={{
             mt: "25px",
-            width: "1300px",
             m: "23px auto 0 auto",
           }}
         >

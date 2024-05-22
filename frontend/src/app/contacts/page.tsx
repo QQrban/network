@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Box, Tab, Tabs, Typography, styled } from "@mui/material";
 
-import FollowersSection from "@/components/shared/FollowersSection";
+import FollowersSection from "@/components/shared/SharedFollowers/FollowersSection";
 import { useSelector } from "react-redux";
 
 const StyledTab = styled(Tab)`

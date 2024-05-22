@@ -5,11 +5,13 @@ import Image from "next/image";
 
 interface ProfileAvatarProps {
   avatar: string;
+  isYourProfile: boolean;
 }
 
-export default function ProfileAvatar({ avatar }: ProfileAvatarProps) {
-  console.log(avatar);
-
+export default function ProfileAvatar({
+  avatar,
+  isYourProfile,
+}: ProfileAvatarProps) {
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       <Box
@@ -28,24 +30,26 @@ export default function ProfileAvatar({ avatar }: ProfileAvatarProps) {
           position: "relative",
         }}
       >
-        <Box
-          sx={{
-            position: "absolute",
-            bgcolor: "white",
-            p: "6px",
-            right: "5px",
-            bottom: "-5px",
-            border: "2px solid grey",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "45px",
-            height: "45px",
-          }}
-        >
-          <Image width={40} height={40} src={cameraIcon} alt="" />
-        </Box>
+        {isYourProfile && (
+          <Box
+            sx={{
+              position: "absolute",
+              bgcolor: "white",
+              p: "6px",
+              right: "5px",
+              bottom: "-5px",
+              border: "2px solid grey",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "45px",
+              height: "45px",
+            }}
+          >
+            <Image width={40} height={40} src={cameraIcon} alt="" />
+          </Box>
+        )}
       </Box>
     </Box>
   );

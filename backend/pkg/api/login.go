@@ -2,7 +2,9 @@ package api
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -107,6 +109,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		writeStatusError(w, http.StatusBadRequest)
 		return
 	}
+	imageData, err := base64.StdEncoding.DecodeString(*incoming.Image)
+	if err != nil {
+		http.Error(w, "Invalid base64 image data", http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("Image size: %d bytes\n", len(imageData))
 
 	id, err := Database.User.Insert(incoming)
 	if err != nil {

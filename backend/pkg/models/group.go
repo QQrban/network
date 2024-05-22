@@ -132,7 +132,7 @@ func (model GroupModel) GetAll(myID int64) ([]*GroupPlus, error) {
 	return groups, nil
 }
 
-func (model GroupModel) GetMyGroups(myID int64) ([]*Group, error) {
+func (model GroupModel) GetMyGroups(myID int64) ([]*GroupPlus, error) {
 	stmt := model.queries.Prepare("getMyGroups")
 
 	rows, err := stmt.Query(myID)
@@ -141,17 +141,19 @@ func (model GroupModel) GetMyGroups(myID int64) ([]*Group, error) {
 	}
 	defer rows.Close()
 
-	groups := make([]*Group, 0)
+	groups := make([]*GroupPlus, 0)
 
 	for rows.Next() {
 		group := &Group{}
+		groupPlus := &GroupPlus{Group: group}
 
-		err = rows.Scan(group.pointerSlice()...)
+		err = rows.Scan(append(group.pointerSlice(), &groupPlus.IncludesMe, &groupPlus.PendingRequest)...)
+		//err = rows.Scan(group.pointerSlice()...)
 		if err != nil {
 			return nil, fmt.Errorf("Group/GetMyGroups2: %w", err)
 		}
 
-		groups = append(groups, group)
+		groups = append(groups, groupPlus)
 	}
 
 	return groups, nil

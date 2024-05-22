@@ -44,6 +44,7 @@ export default function ProfileCard({
   const [followValue, setFollowValue] = useState<string>("");
 
   const profile = useSelector((state: any) => state.profileReducer.value);
+  console.log(profile);
 
   const { meToYou, meToYouPending, youToMePending } = profile.followInfo;
 
@@ -174,7 +175,7 @@ export default function ProfileCard({
           />
         </SpeedDial>
       )}
-      <ProfileAvatar />
+      <ProfileAvatar avatar={profile.image} />
       <Typography
         sx={{
           fontSize: "42px",

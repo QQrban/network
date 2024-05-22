@@ -41,14 +41,23 @@ export default function CreatePost({ setOpenPostModal }: CreatePostProps) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "30px",
-              height: "30px",
+              width: "40px",
+              height: "40px",
               border: "2px solid #4a4a4a",
               borderRadius: "50%",
               overflow: "hidden",
             }}
           >
-            <Image src={noPhoto} alt="no prof pic" />
+            <Image
+              width={40}
+              height={40}
+              src={
+                userData.image
+                  ? `http://localhost:8888/file/${userData.image}`
+                  : noPhoto
+              }
+              alt="no prof pic"
+            />
           </Box>
         </Link>
         <Typography

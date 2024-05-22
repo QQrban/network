@@ -11,7 +11,7 @@ import likeIcon from "../../../../public/icons/like.svg";
 import commentIcon from "../../../../public/icons/comment.svg";
 import AddComment from "./AddComment";
 import { createRef, useRef, useState, useEffect } from "react";
-import { CommentProps, PostProps } from "@/types/types";
+import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
 import PostImage from "./PostImage";
 import PostImageDialog from "./PostImageDialog";
@@ -23,15 +23,17 @@ import { fetchFromServer } from "@/lib/api";
 interface PostsSectionProps {
   posts: PostProps[];
   addCommentToPost: (postID: number, comment: CommentProps) => void;
+  addLikeToPost: (postID: number, like: ContactsProps) => void;
 }
 
 export default function PostsSection({
   posts,
   addCommentToPost,
+  addLikeToPost,
 }: PostsSectionProps) {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
-  const [like, setLike] = useState<PostProps[]>(posts);
+  const [likesAmount, setLikesAmount] = useState<number | null>(null);
 
   const userData = useSelector((state: any) => state.authReducer.value);
 
@@ -45,19 +47,6 @@ export default function PostsSection({
     }
   };
 
-  useEffect(() => {
-    console.log(posts);
-  }, [like]);
-
-  const reactions: Array<string> = [
-    "Johnny Bravo",
-    "Albert Einstein",
-    "Toomas Vooglaid",
-    "Alexander Gustaffson",
-    "Alex Volkanovski",
-    "Kersti Kaljulaid",
-  ];
-
   const handleClickOpen = (image: string) => {
     setSelectedImage(image);
     setOpenDialog(true);
@@ -70,14 +59,10 @@ export default function PostsSection({
         credentials: "include",
       });
       if (response.ok) {
-        setLike((currentPosts) =>
-          currentPosts.map((post) =>
-            post.postID === postID
-              ? { ...post, likes: [...post.likes, userData.ID] }
-              : post
-          )
-        );
-        console.log("likes");
+        const likes = await response.json();
+        addLikeToPost(postID, likes);
+        setLikesAmount(likes);
+        console.log(likes);
       }
     } catch (error) {
       console.error(error);
@@ -210,7 +195,7 @@ export default function PostsSection({
                   )}
                 </Box>
               )}
-              {post.likes?.length > 0 && (
+              {post.likes?.length > 0 && likesAmount !== 0 && (
                 <Box
                   sx={{
                     p: "10px 17px",
@@ -240,7 +225,7 @@ export default function PostsSection({
                       fontFamily: "Schoolbell !important",
                     }}
                   >
-                    {`${reactions[0]} and ${reactions.length} others`}
+                    {!likesAmount ? post.likes.length : likesAmount}
                   </Typography>
                 </Box>
               )}

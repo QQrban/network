@@ -5,15 +5,13 @@ import PostsSection from "../shared/Post/PostsSection";
 import CreatePost from "../shared/Post/CreatePost";
 import { useEffect, useState } from "react";
 import CreatePostModal from "../Group/CreatePostModal";
-import { CommentProps, PostProps } from "@/types/types";
+import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
 import CircularIndeterminate from "../shared/LoadingCircular";
 
 export default function MiddleColumn() {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
   const [showLoading, setShowLoading] = useState<boolean>(false);
-
-  console.log(mainPagePosts);
 
   useEffect(() => {
     const fetchFollowingPosts = async () => {
@@ -42,8 +40,16 @@ export default function MiddleColumn() {
   const addCommentToPost = (postID: number, comment: CommentProps) => {
     setMainPagePosts((prevPosts) =>
       prevPosts.map((post) =>
+        post.postID === postID ? { ...post, comments: [...[], comment] } : post
+      )
+    );
+  };
+
+  const addLikeToPost = (postID: number, like: ContactsProps) => {
+    setMainPagePosts((prevPosts) =>
+      prevPosts.map((post) =>
         post.postID === postID
-          ? { ...post, comments: [...(post.comments || []), comment] }
+          ? { ...post, likes: [...(post.likes || []), like] }
           : post
       )
     );
@@ -64,6 +70,7 @@ export default function MiddleColumn() {
       >
         {mainPagePosts.length > 0 ? (
           <PostsSection
+            addLikeToPost={addLikeToPost}
             posts={mainPagePosts}
             addCommentToPost={addCommentToPost}
           />

@@ -127,7 +127,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	private := r.FormValue("private") == "true"
 	country := r.FormValue("country")
 	var token string
-	fmt.Println("private0:", r.FormValue("private"))
+	fmt.Println("birthday0:", r.FormValue("birthday"))
 
 	// Save images
 	if len(r.MultipartForm.File["avatar"]) > 0 {

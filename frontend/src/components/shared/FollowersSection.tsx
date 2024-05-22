@@ -464,6 +464,11 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
                     sx={{
                       width: "90px",
                       height: "90px",
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
                     <Image

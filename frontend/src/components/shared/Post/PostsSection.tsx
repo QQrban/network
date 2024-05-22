@@ -22,14 +22,11 @@ import { fetchFromServer } from "@/lib/api";
 
 interface PostsSectionProps {
   posts: PostProps[];
-  likes: ContactsProps[];
-
   addCommentToPost: (postID: number, comment: CommentProps) => void;
 }
 
 export default function PostsSection({
   posts,
-  likes,
   addCommentToPost,
 }: PostsSectionProps) {
   const [openDialog, setOpenDialog] = useState<boolean>(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import OnlyMiddleColumn from "@/components/Post/OnlyMiddleColumn";
+import ShowPost from "@/components/Post/ShowPost";
 import { Box } from "@mui/material";
 import { usePathname } from "next/navigation";
 
@@ -17,7 +17,7 @@ export default function Post() {
       }}
       component="section"
     >
-      <OnlyMiddleColumn pathname={pathname} />
+      <ShowPost pathname={pathname} />
     </Box>
   );
 }

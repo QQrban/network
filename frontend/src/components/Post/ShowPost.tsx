@@ -13,7 +13,7 @@ interface Props {
   pathname: string | undefined;
 }
 
-export default function OnlyMiddleColumn({ pathname }: Props) {
+export default function ShowPost({ pathname }: Props) {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
   const [showLoading, setShowLoading] = useState<boolean>(false);
 
@@ -25,7 +25,7 @@ export default function OnlyMiddleColumn({ pathname }: Props) {
         credentials: "include",
       });
       const data = await response.json();
-      setMainPagePosts(data);
+      setMainPagePosts([data]);
     };
     setShowLoading(true);
     setTimeout(() => {

@@ -40,6 +40,7 @@ export default function Followers() {
       >
         <StyledTab label="Followers" value="Followers" />
         <StyledTab label="Followings" value="Following" />
+        <StyledTab label="Requests" value="Requests" />
       </Tabs>
       <Typography
         component="h2"

@@ -20,7 +20,7 @@ export default function GroupPage() {
   const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
   const [isMember, setIsMember] = useState<boolean>(false);
-  // /group/([0-9]+)/(join|accept|reject)
+  // /group/([0-9]+)/(join|accept|reject) - api to send join group request|accept|reject
   const pathname = usePathname().split("/").pop();
 
   useEffect(() => {

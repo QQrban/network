@@ -150,7 +150,7 @@ export default function PhotosContent({
         </Box>
       </Box>
       <AlertDialog
-        title="Are you sure you don't want to delete this photo?"
+        title="Are you sure you want to delete this photo?"
         dialogText=""
         open={open}
         setOpen={setOpen}

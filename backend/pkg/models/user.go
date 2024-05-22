@@ -467,3 +467,16 @@ func (model *UserModel) getSuggestedUsers(myID int64) ([]*UserLimited, error) {
 
 	return users, nil
 }
+
+func (model *UserModel) UpdateStatus(myID int64) (bool, error) {
+	stmt := model.queries.Prepare("updateStatus")
+
+	var status bool
+	res, err := stmt.Exec(myID)
+	if err != nil {
+		return false, fmt.Errorf("User/UpdateStatus: %w", err)
+	}
+
+	fmt.Println("res:", res)
+	return status, nil
+}

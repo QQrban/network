@@ -15,7 +15,7 @@ func prepare(rtr *router.Router) {
 	rtr.Post("/user", api.EnsureAuth(api.UpdateUser))
 	rtr.Get("/user", api.EnsureAuth(api.GetUserBySession))
 	rtr.Get("/suggestions", api.EnsureAuth(api.GetSuggestions))
-	rtr.Post("user/status", api.EnsureAuth(api.UpdateStatus))
+	rtr.Post("/user/status", api.EnsureAuth(api.UpdateStatus))
 
 	rtr.Get("/user/([0-9]+)/followers", api.EnsureAuth(api.UserFollowers))
 	rtr.Get("/user/([0-9]+)/following", api.EnsureAuth(api.UserFollowing))

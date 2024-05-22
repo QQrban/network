@@ -1,0 +1,1 @@
+SELECT private FROM user WHERE ID = ?1;

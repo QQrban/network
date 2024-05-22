@@ -471,12 +471,30 @@ func (model *UserModel) getSuggestedUsers(myID int64) ([]*UserLimited, error) {
 func (model *UserModel) UpdateStatus(myID int64) (bool, error) {
 	stmt := model.queries.Prepare("updateStatus")
 
-	var status bool
-	res, err := stmt.Exec(myID)
+	_, err := stmt.Exec(myID)
 	if err != nil {
 		return false, fmt.Errorf("User/UpdateStatus: %w", err)
 	}
 
-	fmt.Println("res:", res)
+	status, err := model.GetStatus(myID)
+	if err != nil {
+		return false, fmt.Errorf("User/UpdateStatus2: %w", err)
+	}
+
+	return status, nil
+}
+
+func (model *UserModel) GetStatus(myID int64) (bool, error) {
+	stmt := model.queries.Prepare("getStatus")
+
+	row := stmt.QueryRow(myID)
+
+	var status bool
+	err := row.Scan(&status)
+
+	if err != nil {
+		return false, fmt.Errorf("User/GetStatus: %w", err)
+	}
+
 	return status, nil
 }

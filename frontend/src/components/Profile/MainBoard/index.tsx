@@ -8,7 +8,7 @@ import PhotosContent from "../PhotosContent";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import CreatePostModal from "@/components/Group/CreatePostModal";
-import { CommentProps, PostProps } from "@/types/types";
+import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import { useRouter } from "next/navigation";
 import privacyIcon from "../../../../public/icons/private.svg";
 import Image from "next/image";
@@ -49,6 +49,16 @@ export default function MainBoard({
       prevPosts.map((post) =>
         post.postID === postID
           ? { ...post, comments: [...(post.comments || []), comment] }
+          : post
+      )
+    );
+  };
+
+  const addLikeToPost = (postID: number, like: ContactsProps) => {
+    setProfilePosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postID === postID
+          ? { ...post, likes: [...(post.likes || []), like] }
           : post
       )
     );
@@ -102,6 +112,7 @@ export default function MainBoard({
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "23px" }}>
               <PostsSection
+                addLikeToPost={addLikeToPost}
                 addCommentToPost={addCommentToPost}
                 posts={
                   profilePosts.length > 2

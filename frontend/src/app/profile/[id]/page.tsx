@@ -39,10 +39,11 @@ export default function ProfilePage() {
           putProfile({
             id: userData.ID,
             about: userData.about,
+            access: userData.access,
             firstName: userData.firstName,
             lastName: userData.lastName,
             nickname: userData.nickname,
-            private: !userData.access,
+            private: userData.private,
             image: userData.image,
             followInfo: {
               meToYou: userData.followInfo.meToYou,

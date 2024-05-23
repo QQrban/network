@@ -28,6 +28,7 @@ export default function MainBoard({
   const [profilePosts, setProfilePosts] = useState<PostProps[]>([]);
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
   const [privateProfile, setPrivateProfile] = useState<boolean | null>(null);
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
 
   useEffect(() => {
     setProfilePosts(posts);
@@ -66,11 +67,12 @@ export default function MainBoard({
 
   useEffect(() => {
     setPrivateProfile(profile.private);
-  }, [profile.private]);
+    setHasAccess(profile.access);
+  }, [profile.private, profile.access]);
 
   return (
     <>
-      {!privateProfile ? (
+      {!privateProfile || isYourProfile || profile.access ? (
         <Box
           sx={{
             display: "flex",

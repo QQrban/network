@@ -14,6 +14,7 @@ CREATE TABLE `post`
     FOREIGN KEY (authorID) REFERENCES user (ID)
     FOREIGN KEY (groupID) REFERENCES `group` (ID)
     FOREIGN KEY (aboutID) REFERENCES post (ID)
+    ON DELETE CASCADE
 );
 
 

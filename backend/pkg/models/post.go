@@ -463,12 +463,16 @@ func (model PostModel) Delete(postID int64) error {
 		return fmt.Errorf("Post/Delete1: %w", err)
 	}
 	tokens := strings.Split(post.Images, ",")
-	fmt.Println("tokens:", tokens)
-	fileModel := MakeFileModel(model.db)
-	for _, token := range tokens {
-		_, err = fileModel.Delete(token)
-		if err != nil {
-			return fmt.Errorf("Post/Delete2: %w", err)
+	if len(tokens) > 0 {
+		fileModel := MakeFileModel(model.db)
+		for _, token := range tokens {
+			if token == "" {
+				continue
+			}
+			_, err = fileModel.Delete(token)
+			if err != nil {
+				return fmt.Errorf("Post/Delete2: %w", err)
+			}
 		}
 	}
 

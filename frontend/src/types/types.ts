@@ -8,7 +8,7 @@ export interface ContactsProps {
     meToYou: boolean;
     meToYouPending: boolean;
     youToMePending: boolean;
-  };
+  } | null;
 }
 
 export interface GroupProps {

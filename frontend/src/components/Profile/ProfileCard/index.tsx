@@ -181,51 +181,65 @@ export default function ProfileCard({
         </SpeedDial>
       )}
       <ProfileAvatar isYourProfile={isYourProfile} avatar={profile.image} />
-      <Typography
-        sx={{
-          fontSize: "42px",
-          fontWeight: 600,
-          color: "#2A2A2A",
-          fontFamily: "Gloria Hallelujah",
-        }}
-        component="h2"
-      >
-        {profile.firstName} {profile.lastName}
-      </Typography>
-      <Divider sx={{ mt: "11px" }} />
       <Box
         sx={{
-          textAlign: "left",
-          p: "11px 20px 0 20px",
           display: "flex",
-          gap: "30px",
+          flexDirection: "column",
+          gap: "10px",
+          alignItems: "center",
+          mb: "23px",
         }}
       >
-        {tabs.map((tab) => (
-          <Typography
-            key={tab}
-            sx={tabStyle(tab === activeTab)}
-            onClick={() => handleTabClick(tab)}
-          >
-            {tab}
-          </Typography>
-        ))}
-      </Box>
-      {!isYourProfile && (
-        <Box
+        <Typography
           sx={{
-            width: "130px",
-            position: "absolute",
-            left: "20px",
-            bottom: "60px",
+            fontSize: "42px",
+            fontWeight: 600,
+            color: "#2A2A2A",
+            fontFamily: "Gloria Hallelujah",
           }}
+          component="h2"
         >
-          <ConfirmBtn
-            onClick={followHandler}
-            text={followValue}
-            backgroundImage={buttonBg}
-          />
-        </Box>
+          {profile.firstName} {profile.lastName}
+        </Typography>
+        {!isYourProfile && (
+          <Box
+            sx={{
+              width: "130px",
+            }}
+          >
+            <ConfirmBtn
+              onClick={followHandler}
+              text={followValue}
+              backgroundImage={buttonBg}
+            />
+          </Box>
+        )}
+      </Box>
+
+      {!privateProfile || isYourProfile ? (
+        <>
+          <Divider sx={{ mt: "11px" }} />
+          <Box
+            sx={{
+              textAlign: "left",
+              p: "11px 20px 0 20px",
+              display: "flex",
+              gap: "30px",
+            }}
+          >
+            {tabs.map((tab) => (
+              <Typography
+                key={tab}
+                sx={tabStyle(tab === activeTab)}
+                onClick={() => handleTabClick(tab)}
+              >
+                {tab}
+              </Typography>
+            ))}
+          </Box>
+        </>
+      ) : (
+        ""
       )}
     </Box>
   );

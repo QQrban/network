@@ -3,7 +3,6 @@
 import { Item } from "@/components/shared/Item";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import Image from "next/image";
-import noPhoto from "../../../../public/icons/profile.svg";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ReactionToPost from "./ReactionToPost";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -12,25 +11,29 @@ import likeIcon from "../../../../public/icons/like.svg";
 import commentIcon from "../../../../public/icons/comment.svg";
 import AddComment from "./AddComment";
 import { createRef, useRef, useState } from "react";
-import { CommentProps, PostProps } from "@/types/types";
+import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import dayjs from "dayjs";
 import PostImage from "./PostImage";
 import PostImageDialog from "./PostImageDialog";
 import Link from "next/link";
 import ProfileImage from "../ProfileImage";
 import { useSelector } from "react-redux";
+import { fetchFromServer } from "@/lib/api";
 
 interface PostsSectionProps {
   posts: PostProps[];
   addCommentToPost: (postID: number, comment: CommentProps) => void;
+  addLikeToPost: (postID: number, like: ContactsProps) => void;
 }
 
 export default function PostsSection({
   posts,
   addCommentToPost,
+  addLikeToPost,
 }: PostsSectionProps) {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
+  const [likesAmount, setLikesAmount] = useState<{ [key: number]: number }>({});
 
   const userData = useSelector((state: any) => state.authReducer.value);
 
@@ -44,18 +47,28 @@ export default function PostsSection({
     }
   };
 
-  const reactions: Array<string> = [
-    "Johnny Bravo",
-    "Albert Einstein",
-    "Toomas Vooglaid",
-    "Alexander Gustaffson",
-    "Alex Volkanovski",
-    "Kersti Kaljulaid",
-  ];
-
   const handleClickOpen = (image: string) => {
     setSelectedImage(image);
     setOpenDialog(true);
+  };
+
+  const giveLike = async (postID: number) => {
+    try {
+      const response = await fetchFromServer(`/post/${postID}/like`, {
+        method: "PUT",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const likes = await response.json();
+        addLikeToPost(postID, likes);
+        setLikesAmount((prevLikes) => ({
+          ...prevLikes,
+          [postID]: likes,
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -184,7 +197,7 @@ export default function PostsSection({
                   )}
                 </Box>
               )}
-              {post.likes?.length > 0 && (
+              {post.likes?.length > 0 && likesAmount[post.postID] !== 0 && (
                 <Box
                   sx={{
                     p: "10px 17px",
@@ -214,7 +227,9 @@ export default function PostsSection({
                       fontFamily: "Schoolbell !important",
                     }}
                   >
-                    {`${reactions[0]} and ${reactions.length} others`}
+                    {likesAmount[post.postID] !== undefined
+                      ? likesAmount[post.postID]
+                      : post.likes.length}
                   </Typography>
                 </Box>
               )}
@@ -231,7 +246,7 @@ export default function PostsSection({
                 <ReactionToPost
                   icon={<Image src={likeIcon} alt="like" />}
                   label="Like"
-                  onClick={() => console.log("Like")}
+                  onClick={() => giveLike(post.postID)}
                 />
                 <ReactionToPost
                   icon={<Image src={commentIcon} alt="comment" />}

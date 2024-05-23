@@ -3,12 +3,9 @@
 import { Item } from "../shared/Item";
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
-import giveLove from "../../../public/icons/give-love.svg";
-import mockBg from "../../../public/mockBG.png";
 import eventBg from "../../../public/eventBG.svg";
 import { Notification } from "./mock";
 import Link from "next/link";
-import { useState } from "react";
 
 interface NotificationSectionProps {
   notifications: Notification[];

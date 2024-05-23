@@ -43,7 +43,8 @@ type UserLimited struct {
 	LastName   string      `json:"lastName"`
 	Nickname   string      `json:"nickname"`
 	Image      *string     `json:"image"`
-	FollowInfo *FollowInfo `json:"followInfo"` //,omitempty"`
+	Private    bool        `json:"private"`
+	FollowInfo *FollowInfo `json:"followInfo"`
 }
 
 type FollowInfo struct {
@@ -76,6 +77,7 @@ func (x *User) Limited() *UserLimited {
 		LastName:   x.LastName,
 		Nickname:   x.Nickname,
 		Image:      x.Image,
+		Private:    x.Private,
 		FollowInfo: x.FollowInfo,
 	}
 }

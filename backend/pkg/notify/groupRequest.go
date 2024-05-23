@@ -18,17 +18,13 @@ func (n Notifier) Request(group *models.Group, requester *models.User) {
 	})
 }
 
-/*func (n Request) Source() int64 {
-	return n.requester.ID
-}*/
-
 func (n Request) Targets() []int64 {
 	return []int64{n.group.OwnerID}
 }
 
 func (n Request) Message() string {
 	return fmt.Sprintf(
-		"%v has requested to join your group <strong>%v</strong>",
+		"<strong>%v</strong> has requested to join your group <strong>%v</strong>",
 		html.EscapeString(userGetName(n.requester)),
 		html.EscapeString(n.group.Title),
 	)
@@ -43,12 +39,12 @@ func (n Request) Links() []Link {
 		},
 		{
 			name:   "Accept request",
-			url:    fmt.Sprintf("/submit/group/%v/accepted/%v", n.group.ID, n.requester.ID),
+			url:    fmt.Sprintf("/group/%v/accept/%v", n.group.ID, n.requester.ID),
 			method: "POST",
 		},
 		{
 			name:   "Reject request",
-			url:    fmt.Sprintf("/submit/group/%v/rejected/%v", n.group.ID, n.requester.ID),
+			url:    fmt.Sprintf("/group/%v/reject/%v", n.group.ID, n.requester.ID),
 			method: "POST",
 		},
 	}

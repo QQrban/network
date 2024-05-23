@@ -18,10 +18,6 @@ func (n Notifier) Invite(group *models.Group, target int64) {
 	})
 }
 
-/*func (n Invite) Source() int64 {
-	return n.group.OwnerID
-}*/
-
 func (n Invite) Targets() []int64 {
 	return []int64{n.target}
 }

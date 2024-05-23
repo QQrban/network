@@ -27,10 +27,6 @@ func (n Notifier) EventCreated(
 	})
 }
 
-/*func (n EventCreated) Source() int64 {
-	return n.creator.ID
-}*/
-
 func (n EventCreated) Targets() []int64 {
 	ids := make([]int64, 0, len(n.members)-1)
 	for _, member := range n.members {
@@ -43,7 +39,7 @@ func (n EventCreated) Targets() []int64 {
 
 func (n EventCreated) Message() string {
 	return fmt.Sprintf(
-		"Event <strong>%v</strong> has been created in %v by %v",
+		"Event <strong>%v</strong> has been created in <strong>%v</strong> by %v",
 		html.EscapeString(n.event.Title),
 		html.EscapeString(n.group.Title),
 		html.EscapeString(userGetName(n.creator)),

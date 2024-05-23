@@ -22,16 +22,12 @@ func (n Notifier) FollowRequest(requester *models.User, target int64) {
 	})
 }
 
-/*func (f FollowRequest) Source() int64 {
-	return f.requester.ID
-}*/
-
 func (f FollowRequest) Targets() []int64 {
 	return []int64{f.target}
 }
 
 func (f FollowRequest) Message() string {
-	return fmt.Sprintf("<strong>%v</strong> has sent you a follow request", html.EscapeString(userGetName(f.requester)))
+	return fmt.Sprintf("{'type':'Follow','action':'request','userName': '%v','userID':%v}", html.EscapeString(userGetName(f.requester)), f.requester.ID)
 }
 
 func (f FollowRequest) Links() []Link {

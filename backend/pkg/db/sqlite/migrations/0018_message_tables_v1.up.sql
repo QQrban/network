@@ -5,7 +5,7 @@ CREATE TABLE userMessage
     `receiverID` INTEGER NOT NULL,
     `content`    TEXT    NOT NULL,
     `created`    DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `edited`     DATE    NOT NULL DEFAULT '',
+    --`edited`     DATE    NOT NULL DEFAULT '',
     FOREIGN KEY (senderID) REFERENCES `user` (ID),
     FOREIGN KEY (receiverID) REFERENCES `user` (ID)
 );
@@ -23,7 +23,7 @@ CREATE TABLE groupMessage
     `groupID`   INTEGER NOT NULL,
     `content`   TEXT    NOT NULL,
     `created`   DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `edited`    DATE    NOT NULL DEFAULT '',
+    --`edited`    DATE    NOT NULL DEFAULT '',
     FOREIGN KEY (senderID) REFERENCES `user` (ID),
     FOREIGN KEY (groupID) REFERENCES `group` (ID)
 );

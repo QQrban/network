@@ -18,7 +18,6 @@ import (
 var frontend_host = getFrontendHost()
 
 type Notification interface {
-	//Source() int64
 	Targets() []int64
 	Message() string
 	Links() []Link
@@ -32,7 +31,8 @@ type Link struct {
 
 func (l Link) String() string {
 	return fmt.Sprintf(
-		"\n<button type=\"submit\" formmethod=\"%v\" formaction=\"%v\">%v</button>",
+		//"\n<button type=\"submit\" formmethod=\"%v\" formaction=\"%v\">%v</button>",
+		"%v;%v;%v",
 		html.EscapeString(l.method),
 		html.EscapeString(l.url),
 		html.EscapeString(l.name),
@@ -62,14 +62,14 @@ func NewNotifier(db *database.Database) *Notifier {
 
 func (n Notifier) notify(msg Notification) {
 	content := fmt.Sprintf("<span>%v</span>", msg.Message())
-	content += "\n<form style='display: flex; flex-direction: column; gap: 2px; margin-top: 3px'>"
+	//content += "\n<form style='display: flex; flex-direction: column; gap: 2px; margin-top: 3px'>"
 	for _, link := range msg.Links() {
-		content += link.String()
+		content += "|" + link.String()
 	}
-	content += "\n</form>"
+	//content += "\n</form>"
 
 	message := &models.Message{
-		SenderID:   0, //msg.Source(),
+		SenderID:   0,
 		ReceiverID: 0,
 		Content:    content,
 		Created:    time.Now(),

@@ -94,3 +94,38 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 
 	return messages, nil
 }
+
+func (model *MessageModel) GetNotifications(userID int64) ([]*Message, error) {
+	stmt := model.queries.Prepare("getNotifications")
+
+	rows, err := stmt.Query(userID)
+	if err != nil {
+		return nil, fmt.Errorf("Message/GetNotifications1: %w", err)
+	}
+	defer rows.Close()
+
+	messages := make([]*Message, 0)
+
+	for rows.Next() {
+		message := &Message{}
+		err = rows.Scan(message.pointerSlice()...)
+
+		if err != nil {
+			return nil, fmt.Errorf("Message/GetNotifications2: %w", err)
+		}
+
+		messages = append(messages, message)
+	}
+
+	if len(messages) > 0 {
+		latestID := messages[0].ID
+		userID := messages[0].ReceiverID
+		stmt = model.queries.Prepare("setLatestNotification")
+		_, err = stmt.Exec(userID, latestID)
+		if err != nil {
+			return nil, fmt.Errorf("Message/GetNotifications3: %w", err)
+		}
+	}
+
+	return messages, nil
+}

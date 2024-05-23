@@ -47,6 +47,7 @@ export default function PostsSection({
   const [selectedImage, setSelectedImage] = useState<string>("");
 
   const userData = useSelector((state: any) => state.authReducer.value);
+
   const inputRefs = useRef<{
     [key: number]: React.RefObject<HTMLTextAreaElement>;
   }>({});
@@ -61,11 +62,15 @@ export default function PostsSection({
   };
 
   const deletePost = async (postID: number) => {
+    console.log(postID);
+
     try {
       const response = await fetchFromServer(`/post/${postID}`, {
         method: "DELETE",
         credentials: "include",
       });
+      console.log(response);
+
       if (response.ok) {
         const data = await response.json();
         console.log(data);
@@ -196,27 +201,29 @@ export default function PostsSection({
                       </Typography>
                     }
                   />
-                  <SpeedDialAction
-                    onClick={() => deletePost(post.postID)}
-                    icon={
-                      <Image
-                        width={30}
-                        height={30}
-                        src={deleteIcon}
-                        alt="delete"
-                      />
-                    }
-                    tooltipTitle={
-                      <Typography
-                        sx={{
-                          fontFamily: "Schoolbell !important",
-                          fontSize: "20px",
-                        }}
-                      >
-                        Delete Post
-                      </Typography>
-                    }
-                  />
+                  {userData.id === post.author.ID && (
+                    <SpeedDialAction
+                      onClick={() => deletePost(post.postID)}
+                      icon={
+                        <Image
+                          width={30}
+                          height={30}
+                          src={deleteIcon}
+                          alt="delete"
+                        />
+                      }
+                      tooltipTitle={
+                        <Typography
+                          sx={{
+                            fontFamily: "Schoolbell !important",
+                            fontSize: "20px",
+                          }}
+                        >
+                          Delete Post
+                        </Typography>
+                      }
+                    />
+                  )}
                 </SpeedDial>
               </Box>
               <Box
@@ -292,7 +299,6 @@ export default function PostsSection({
           // deletePost(post.postID);
         }}
       />
-      ;
       <PostImageDialog
         selectedImage={selectedImage}
         setSelectedImage={setSelectedImage}

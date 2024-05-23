@@ -43,6 +43,7 @@ interface GroupCardProps {
   setOpenPostModal: React.Dispatch<boolean>;
   members: number;
   pathName: string | undefined;
+  groupID: number;
 }
 
 export default function GroupCard({
@@ -53,6 +54,7 @@ export default function GroupCard({
   setOpenPostModal,
   members,
   pathName,
+  groupID,
 }: GroupCardProps) {
   const [openEventModal, setOpenEventModal] = useState<boolean>(false);
 
@@ -199,9 +201,9 @@ export default function GroupCard({
         </Box>
       )}
       <CreateEventModal
+        groupID={groupID}
         openEventModal={openEventModal}
         setOpenEventModal={setOpenEventModal}
-        pathName={pathName}
       />
     </Box>
   );

@@ -146,7 +146,7 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
           id={id}
           unfollowHandler={unfollowHandler}
           follow={follow}
-        ></RequestsCard>
+        />
       ) : (
         <>
           <FollowersCard
@@ -157,7 +157,7 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
             id={id}
             unfollowHandler={unfollowHandler}
             follow={follow}
-          ></FollowersCard>
+          />
         </>
       )}
       <AlertDialog

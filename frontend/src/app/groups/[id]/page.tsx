@@ -79,6 +79,7 @@ export default function GroupPage() {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 pathName={pathname}
+                groupID={mainInfo.ID}
               />
               <GroupAddInfo
                 isMember={isMember}

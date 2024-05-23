@@ -4,7 +4,7 @@ import LeftColumnMainPage from "@/components/MainPage/LeftColumn";
 import ContactsSection from "@/components/shared/ContactsSection";
 import PostsSection from "@/components/shared/Post/PostsSection";
 import { fetchFromServer } from "@/lib/api";
-import { CommentProps, PostProps } from "@/types/types";
+import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import { Box, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,6 +30,16 @@ export default function ShowAllPosts() {
       prevPosts.map((post) =>
         post.postID === postID
           ? { ...post, comments: [...(post.comments || []), comment] }
+          : post
+      )
+    );
+  };
+
+  const addLikeToPost = (postID: number, like: ContactsProps) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postID === postID
+          ? { ...post, likes: [...(post.likes || []), like] }
           : post
       )
     );
@@ -77,7 +87,11 @@ export default function ShowAllPosts() {
               gap: "23px",
             }}
           >
-            <PostsSection addCommentToPost={addCommentToPost} posts={posts} />
+            <PostsSection
+              addLikeToPost={addLikeToPost}
+              addCommentToPost={addCommentToPost}
+              posts={posts}
+            />
           </Box>
         </Box>
         <Box

@@ -21,13 +21,20 @@ export default function ProfileImage({
         border: "2px solid #4a4a4a",
         borderRadius: "50%",
         overflow: "hidden",
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Image
-        width={width}
-        height={height}
+        fill
         src={image ? `http://localhost:8888/file/${image}` : noPhoto}
         alt="no prof pic"
+        style={{
+          objectFit: "cover",
+          objectPosition: "center",
+        }}
       />
     </Box>
   );

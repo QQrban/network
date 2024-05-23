@@ -3,7 +3,7 @@
 import { Box, Typography } from "@mui/material";
 import PostsSection from "../shared/Post/PostsSection";
 import { useEffect, useState } from "react";
-import { CommentProps, PostProps } from "@/types/types";
+import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
 import CircularIndeterminate from "../shared/LoadingCircular";
 
@@ -42,6 +42,16 @@ export default function ShowPost({ pathname }: Props) {
     );
   };
 
+  const addLikeToPost = (postID: number, like: ContactsProps) => {
+    setMainPagePosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postID === postID
+          ? { ...post, likes: [...(post.likes || []), like] }
+          : post
+      )
+    );
+  };
+
   return (
     <Box sx={{ width: "600px" }}>
       <Box
@@ -56,6 +66,7 @@ export default function ShowPost({ pathname }: Props) {
           <PostsSection
             posts={mainPagePosts}
             addCommentToPost={addCommentToPost}
+            addLikeToPost={addLikeToPost}
           />
         ) : (
           !showLoading && (

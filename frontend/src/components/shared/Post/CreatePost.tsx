@@ -37,7 +37,7 @@ export default function CreatePost({ setOpenPostModal }: CreatePostProps) {
         }}
       >
         <Link href={`/profile/${userData.id}`}>
-          <ProfileImage width={40} height={40} image={userData.image} />
+          <ProfileImage width={45} height={45} image={userData.image} />
         </Link>
         <Typography
           sx={{

@@ -5,6 +5,8 @@ import { Item } from "../shared/Item";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { ContactsProps } from "@/types/types";
+import ProfileImage from "../shared/ProfileImage";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -14,16 +16,16 @@ const StyledTypography = styled(Typography)`
 
 interface GroupAddInfoProps {
   description: string;
-  ownerID: number;
   profileIcon: string;
-  ownerName: string;
+  owner: ContactsProps;
+  isMember: boolean;
 }
 
 export default function GroupAddInfo({
   description,
-  ownerID,
   profileIcon,
-  ownerName,
+  owner,
+  isMember,
 }: GroupAddInfoProps) {
   const [expandAbout, setExpandAbout] = useState<boolean>(false);
 
@@ -39,57 +41,59 @@ export default function GroupAddInfo({
         gap: "23px",
       }}
     >
-      <Item
-        sx={{
-          position: "sticky",
-          top: "90px",
-          alignSelf: "flex-start",
-          width: "100%",
-          p: "14px",
-        }}
-        radius="8px"
-      >
-        <StyledTypography>Top Group Members</StyledTypography>
-        {[0, 1, 2].map((_, index) => (
-          <Link key={index} href="#">
-            <Box
-              sx={{
-                mt: "12px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "4px",
-                "&:hover": {
-                  backgroundColor: "#cacaca49",
-                },
-              }}
-            >
+      {isMember && (
+        <Item
+          sx={{
+            position: "sticky",
+            top: "90px",
+            alignSelf: "flex-start",
+            width: "100%",
+            p: "14px",
+          }}
+          radius="8px"
+        >
+          <StyledTypography>Top Group Members</StyledTypography>
+          {[0, 1, 2].map((_, index) => (
+            <Link key={index} href="#">
               <Box
                 sx={{
-                  width: "45px",
-                  height: "45px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "2px solid #cacacac9",
+                  mt: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "4px",
+                  "&:hover": {
+                    backgroundColor: "#cacaca49",
+                  },
                 }}
               >
-                <Image src={profileIcon} alt="profile" />
-              </Box>
-              <Box>
-                <Typography
+                <Box
                   sx={{
-                    fontFamily: "Schoolbell !important",
-                    fontWeight: 600,
-                    fontSize: "17px",
+                    width: "45px",
+                    height: "45px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: "2px solid #cacacac9",
                   }}
                 >
-                  Albert Einstein
-                </Typography>
+                  <Image src={profileIcon} alt="profile" />
+                </Box>
+                <Box>
+                  <Typography
+                    sx={{
+                      fontFamily: "Schoolbell !important",
+                      fontWeight: 600,
+                      fontSize: "17px",
+                    }}
+                  >
+                    Albert Einstein
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          </Link>
-        ))}
-      </Item>
+            </Link>
+          ))}
+        </Item>
+      )}
       <Item
         sx={{
           p: "14px",
@@ -130,7 +134,7 @@ export default function GroupAddInfo({
         radius="8px"
       >
         <StyledTypography>Admins</StyledTypography>
-        <Link href={`/profile/${ownerID}`}>
+        <Link href={`/profile/${owner.ID}`}>
           <Box
             sx={{
               mt: "12px",
@@ -143,17 +147,7 @@ export default function GroupAddInfo({
               },
             }}
           >
-            <Box
-              sx={{
-                width: "45px",
-                height: "45px",
-                borderRadius: "50%",
-                overflow: "hidden",
-                border: "2px solid #cacacac9",
-              }}
-            >
-              <Image src={profileIcon} alt="profile" />
-            </Box>
+            <ProfileImage width={50} height={50} image={owner.image} />
             <Box>
               <Typography
                 sx={{
@@ -162,7 +156,7 @@ export default function GroupAddInfo({
                   fontSize: "17px",
                 }}
               >
-                {ownerName}
+                {owner.firstName} {owner.lastName}
               </Typography>
             </Box>
           </Box>

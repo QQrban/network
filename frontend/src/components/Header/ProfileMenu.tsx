@@ -8,6 +8,7 @@ import { fetchFromServer } from "@/lib/api";
 import profileSvg from "../../../public/icons/profile.svg";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import ProfileImage from "../shared/ProfileImage";
 
 export default function ProfileMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -45,26 +46,7 @@ export default function ProfileMenu() {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <Box
-            sx={{
-              width: "42px",
-              height: "42px",
-              borderRadius: "50%",
-              overflow: "hidden",
-              outline: "2px solid #bebeed",
-            }}
-          >
-            <Image
-              width={42}
-              height={42}
-              src={
-                auth.image
-                  ? `http://localhost:8888/file/${auth.image}`
-                  : profileSvg
-              }
-              alt="Profile"
-            />
-          </Box>
+          <ProfileImage width={50} height={50} image={auth.image} />
         </IconButton>
       </TooltipStyled>
       <Menu

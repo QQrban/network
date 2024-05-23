@@ -18,7 +18,7 @@ export default function Header() {
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        height: "56px",
+        height: "70px",
         gap: "20px",
         padding: "30px",
       }}

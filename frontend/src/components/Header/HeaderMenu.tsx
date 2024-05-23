@@ -39,17 +39,7 @@ export default function HeaderMenu() {
           </IconButton>
         </Link>
       </TooltipStyled>
-      <Box
-        sx={{
-          minWidth: "48px",
-          height: "48px",
-          width: "48px",
-          overflow: "hidden",
-          borderRadius: "50%",
-        }}
-      >
-        <ProfileMenu />
-      </Box>
+      <ProfileMenu />
     </Box>
   );
 }

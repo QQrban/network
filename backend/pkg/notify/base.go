@@ -60,12 +60,33 @@ func NewNotifier(db *database.Database) *Notifier {
 	}
 }
 
-func (n Notifier) notify(msg Notification) {
-	content := fmt.Sprintf("<span>%v</span>", msg.Message())
-	//content += "\n<form style='display: flex; flex-direction: column; gap: 2px; margin-top: 3px'>"
-	for _, link := range msg.Links() {
-		content += "|" + link.String()
+type MessageContent struct {
+	Type       string `json:"type"`
+	Action     string `json:"action"`
+	UserName   string `json:"userName"`
+	UserID     int64  `json:"userID"`
+	GroupTitle string `json:"groupTitle"`
+	GroupID    int64  `json:"groupID"`
+	EventTitle string `json:"eventTitle"`
+	EventID    int64  `json:"eventID"`
+	Endpoint   string `json:"endpoint"`
+}
+
+func (m MessageContent) JSON() string {
+	b := new(bytes.Buffer)
+	err := json.NewEncoder(b).Encode(m)
+	if err != nil {
+		log.Println(err)
 	}
+	return b.String()
+}
+
+func (n Notifier) notify(msg Notification) {
+	content := fmt.Sprintf("%v", msg.Message())
+	//content += "\n<form style='display: flex; flex-direction: column; gap: 2px; margin-top: 3px'>"
+	/*for _, link := range msg.Links() {
+		content += "|" + link.String()
+	}*/
 	//content += "\n</form>"
 
 	message := &models.Message{

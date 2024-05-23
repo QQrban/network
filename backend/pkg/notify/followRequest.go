@@ -12,10 +12,6 @@ type FollowRequest struct {
 }
 
 func (n Notifier) FollowRequest(requester *models.User, target int64) {
-	/*fmt.Println("FollowRequest:",
-		"requester:", *requester,
-		"target:", target,
-	)*/
 	n.notify(FollowRequest{
 		requester: requester,
 		target:    target,
@@ -27,7 +23,14 @@ func (f FollowRequest) Targets() []int64 {
 }
 
 func (f FollowRequest) Message() string {
-	return fmt.Sprintf("{'type':'Follow','action':'request','userName': '%v','userID':%v}", html.EscapeString(userGetName(f.requester)), f.requester.ID)
+	msg := MessageContent{
+		Type:     "Follow",
+		Action:   "request",
+		UserName: html.EscapeString(userGetName(f.requester)),
+		UserID:   f.requester.ID,
+		Endpoint: fmt.Sprintf("/user/%v", f.requester.ID),
+	}
+	return fmt.Sprintf("%v", msg.JSON())
 }
 
 func (f FollowRequest) Links() []Link {

@@ -120,6 +120,7 @@ func (model *MessageModel) GetNotifications(userID int64) ([]*Message, error) {
 	if len(messages) > 0 {
 		latestID := messages[0].ID
 		userID := messages[0].ReceiverID
+		fmt.Println("latestID:", latestID, "userID:", userID)
 		stmt = model.queries.Prepare("setLatestNotification")
 		_, err = stmt.Exec(userID, latestID)
 		if err != nil {

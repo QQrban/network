@@ -23,7 +23,15 @@ func (f FollowAccepted) Targets() []int64 {
 }
 
 func (f FollowAccepted) Message() string {
-	return fmt.Sprintf("You are now following <strong>%v</strong>!", html.EscapeString(userGetName(f.accepter)))
+	msg := MessageContent{
+		Type:     "follow",
+		Action:   "accept",
+		UserName: html.EscapeString(userGetName(f.accepter)),
+		UserID:   f.accepter.ID,
+		Endpoint: fmt.Sprintf("/user/%v", f.accepter.ID),
+	}
+	//return fmt.Sprintf("You are now following <strong>%v</strong>!", html.EscapeString(userGetName(f.accepter)))
+	return fmt.Sprintf("%v", msg.JSON())
 }
 
 func (f FollowAccepted) Links() []Link {

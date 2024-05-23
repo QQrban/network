@@ -38,11 +38,24 @@ func (n EventCreated) Targets() []int64 {
 }
 
 func (n EventCreated) Message() string {
+	msg := MessageContent{
+		Type:     "event",
+		Action:   "create",
+		EventID:  n.event.ID,
+		EventTitle: html.EscapeString(n.event.Title),
+		GroupID:  n.group.ID,
+		GroupTitle: html.EscapeString(n.group.Title),
+		UserName: html.EscapeString(userGetName(n.creator)),
+		UserID:   n.creator.ID,
+		Endpoint: fmt.Sprintf("/event/%v", n.event.ID),
+	}
+
 	return fmt.Sprintf(
-		"Event <strong>%v</strong> has been created in <strong>%v</strong> by %v",
-		html.EscapeString(n.event.Title),
-		html.EscapeString(n.group.Title),
-		html.EscapeString(userGetName(n.creator)),
+		// "Event <strong>%v</strong> has been created in <strong>%v</strong> by %v",
+		// html.EscapeString(n.event.Title),
+		// html.EscapeString(n.group.Title),
+		// html.EscapeString(userGetName(n.creator)),
+		"%v", msg.JSON(),
 	)
 }
 

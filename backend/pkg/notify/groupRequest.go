@@ -23,10 +23,20 @@ func (n Request) Targets() []int64 {
 }
 
 func (n Request) Message() string {
+	msg := MessageContent{
+		Type:     "group",
+		Action:   "request",
+		GroupID:  n.group.ID,
+		GroupTitle: html.EscapeString(n.group.Title),
+		UserName: html.EscapeString(userGetName(n.requester)),
+		UserID:   n.requester.ID,
+		Endpoint: fmt.Sprintf("/user/%v", n.requester.ID),
+	}
 	return fmt.Sprintf(
-		"<strong>%v</strong> has requested to join your group <strong>%v</strong>",
-		html.EscapeString(userGetName(n.requester)),
-		html.EscapeString(n.group.Title),
+		//"<strong>%v</strong> has requested to join your group <strong>%v</strong>",
+		//html.EscapeString(userGetName(n.requester)),
+		//html.EscapeString(n.group.Title),
+		"%v", msg.JSON(),
 	)
 }
 

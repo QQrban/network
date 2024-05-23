@@ -106,12 +106,15 @@ export default function ProfileCard({
               setButtonBg(errorBtn.src);
             } else {
               setFollowValue("Pending");
+              setButtonBg(successBtn.src);
             }
           } else if (action === "unfollow") {
             setFollowValue("Follow");
-            setHasAccess(false);
+            setButtonBg(successBtn.src);
+            if (privateProfile) {
+              setHasAccess(false);
+            }
           }
-          setButtonBg(successBtn.src);
         }
       } catch (error) {
         console.error(error);

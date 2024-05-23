@@ -39,17 +39,14 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         );
         const data = await response.json();
 
-        if (activeTab === "Followers") {
-          setPeopleList(data);
-          console.log(data);
-        } else if (activeTab === "Following") {
+        if (activeTab === "Followers" || activeTab === "Following") {
           const people = data.filter(
             (item: any) =>
               !item.followInfo.youToMePending && !item.followInfo.meToYouPending
           );
           setPeopleList(people);
-        } else if (activeTab === "Requests") {
           console.log(data);
+        } else if (activeTab === "Requests") {
           const people = data.filter((item: any) => {
             return item.followInfo.youToMePending;
           });
@@ -82,19 +79,25 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
           }
         );
         if (response.ok) {
-          setPeopleList((prevList: any[]) =>
-            prevList.map((person) =>
-              person.ID === userToUnfollow
-                ? {
-                    ...person,
-                    followInfo: {
-                      ...person.followInfo,
-                      meToYou: false,
-                    },
-                  }
-                : person
-            )
-          );
+          if (activeTab !== "Followers") {
+            setPeopleList((prevList: any[]) =>
+              prevList.filter((person) => person.ID !== userToUnfollow)
+            );
+          } else {
+            setPeopleList((prevList: any[]) =>
+              prevList.map((person) =>
+                person.ID === userToUnfollow
+                  ? {
+                      ...person,
+                      followInfo: {
+                        ...person.followInfo,
+                        meToYou: false,
+                      },
+                    }
+                  : person
+              )
+            );
+          }
         }
       } catch (error) {
         console.error("Error unfollowing user:", error);
@@ -112,6 +115,8 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         credentials: "include",
       });
       if (response.ok) {
+        console.log(peopleList);
+
         setPeopleList((prevList: any[]) =>
           prevList.map((person) =>
             person.ID === userID

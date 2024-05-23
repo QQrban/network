@@ -31,12 +31,16 @@ interface Props {
   isYourProfile: boolean;
   selectedTab: String;
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
+  hasAccess: boolean;
+  setHasAccess: React.Dispatch<boolean>;
 }
 
 export default function ProfileCard({
   setSelectedTab,
   selectedTab,
   isYourProfile,
+  hasAccess,
+  setHasAccess,
 }: Props) {
   const [activeTab, setActiveTab] = useState<String>("Main Board");
   const [privateProfile, setPrivateProfile] = useState<boolean | null>(null);
@@ -44,6 +48,8 @@ export default function ProfileCard({
   const [followValue, setFollowValue] = useState<string>("");
 
   const profile = useSelector((state: any) => state.profileReducer.value);
+
+  console.log(profile);
 
   const { meToYou, meToYouPending, youToMePending } = profile.followInfo;
 
@@ -78,12 +84,13 @@ export default function ProfileCard({
 
   const requestValue: { [key: string]: string } = {
     Unfollow: "unfollow",
+    Pending: "pending",
     Follow: "follow",
   };
 
   const followHandler = async () => {
     const action = requestValue[followValue];
-    if (action) {
+    if (action !== "pending") {
       try {
         const response = await fetchFromServer(
           `/user/${profile.id}/${action}`,
@@ -94,18 +101,21 @@ export default function ProfileCard({
         );
         if (response.ok) {
           if (action === "follow") {
-            setFollowValue("Unfollow");
-            setButtonBg(errorBtn.src);
+            if (hasAccess && !privateProfile) {
+              setFollowValue("Unfollow");
+              setButtonBg(errorBtn.src);
+            } else {
+              setFollowValue("Pending");
+            }
           } else if (action === "unfollow") {
             setFollowValue("Follow");
-            setButtonBg(successBtn.src);
+            setHasAccess(false);
           }
+          setButtonBg(successBtn.src);
         }
       } catch (error) {
         console.error(error);
       }
-    } else {
-      console.error("Invalid follow action");
     }
   };
 

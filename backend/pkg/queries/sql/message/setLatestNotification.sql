@@ -1,4 +1,2 @@
-INSERT INTO latestNotification
-(userID, messageID)
-VALUES
-(?1, ?2)
+INSERT INTO latestNotification(userID, messageID)
+VALUES (?1, ?2);

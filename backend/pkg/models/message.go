@@ -120,13 +120,21 @@ func (model *MessageModel) GetNotifications(userID int64) ([]*Message, error) {
 	if len(messages) > 0 {
 		latestID := messages[0].ID
 		userID := messages[0].ReceiverID
-		fmt.Println("latestID:", latestID, "userID:", userID)
-		stmt = model.queries.Prepare("setLatestNotification")
-		_, err = stmt.Exec(userID, latestID)
+		err = model.setLatestNotification(userID, latestID)
 		if err != nil {
 			return nil, fmt.Errorf("Message/GetNotifications3: %w", err)
 		}
 	}
 
 	return messages, nil
+}
+
+func (model *MessageModel) setLatestNotification(userID, latestID int64) error {
+	fmt.Println("sql:", model.queries.GetString("setLatestNotification"))
+	stmt := model.queries.Prepare("setLatestNotification")
+	_, err := stmt.Exec(userID, latestID)
+	if err != nil {
+		return fmt.Errorf("Message/setLatestNotification: %w", err)
+	}
+	return nil
 }

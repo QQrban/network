@@ -45,12 +45,12 @@ func (qp QueryProvider) GetString(key string) string {
 // It panics if it fails to prepare the statement.
 func (qp QueryProvider) Prepare(key string) *sql.Stmt {
 	query := qp.GetString(key)
-
+	
 	stmt, err := qp.db.Prepare(query)
 	if err != nil {
 		panic(fmt.Errorf(`error preparing queries/sql/%v/%v.sql: %w`, qp.root, key, err))
 	}
-	
+
 	return stmt
 }
 

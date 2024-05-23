@@ -1,10 +1,7 @@
 CREATE TABLE latestNotification
 (
-    `userID`     INTEGER NOT NULL,
+    `userID`     INTEGER NOT NULL UNIQUE ON CONFLICT REPLACE,
     `messageID`  INTEGER NOT NULL,
     FOREIGN KEY (userID) REFERENCES `user` (ID),
-    FOREIGN KEY (messageID) REFERENCES `message` (ID)
+    FOREIGN KEY (messageID) REFERENCES `userMessage` (ID)
 );
-
-CREATE UNIQUE INDEX latestNotification_userID
-    ON latestNotification (userID, messageID);

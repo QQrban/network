@@ -1,7 +1,14 @@
 "use client";
 
 import { Item } from "@/components/shared/Item";
-import { Box, Divider, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  SpeedDial,
+  SpeedDialAction,
+  Typography,
+} from "@mui/material";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CommentsPost from "./CommentsPost";
@@ -13,10 +20,15 @@ import dayjs from "dayjs";
 import PostImage from "./PostImage";
 import PostImageDialog from "./PostImageDialog";
 import Link from "next/link";
+import Image from "next/image";
+import deleteIcon from "../../../../public/icons/delete.svg";
+import copyIcon from "../../../../public/icons/copy.svg";
+
 import ProfileImage from "../ProfileImage";
 import { useSelector } from "react-redux";
-import { fetchFromServer } from "@/lib/api";
 import GiveLike from "./GiveLike";
+import AlertDialog from "../Dialog";
+import { fetchFromServer } from "@/lib/api";
 
 interface PostsSectionProps {
   posts: PostProps[];
@@ -30,6 +42,8 @@ export default function PostsSection({
   addLikeToPost,
 }: PostsSectionProps) {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
   const [selectedImage, setSelectedImage] = useState<string>("");
 
   const userData = useSelector((state: any) => state.authReducer.value);
@@ -40,6 +54,26 @@ export default function PostsSection({
   const handleClickOpen = (image: string) => {
     setSelectedImage(image);
     setOpenDialog(true);
+  };
+
+  const copyLink = (postID: number) => {
+    navigator.clipboard.writeText(`http://localhost:3000/post/${postID}`);
+  };
+
+  const deletePost = async (postID: number) => {
+    try {
+      const response = await fetchFromServer(`/post/${postID}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      }
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -56,6 +90,7 @@ export default function PostsSection({
             <Item
               key={post.postID}
               sx={{
+                position: "relative",
                 overflow: "hidden",
                 width: "600px",
               }}
@@ -103,18 +138,86 @@ export default function PostsSection({
                     </Box>
                   </Box>
                 </Link>
-                <IconButton
+                <SpeedDial
                   sx={{
                     cursor: "pointer",
+
+                    position: "absolute",
+                    top: "6px",
+                    right: "-2px",
+                  }}
+                  ariaLabel="SpeedDial openIcon example"
+                  icon={
+                    <MoreHorizIcon
+                      sx={{
+                        color: "#8F8F8F",
+                        fontSize: "35px",
+                      }}
+                    />
+                  }
+                  direction="down"
+                  FabProps={{
+                    sx: {
+                      backgroundColor: "white",
+                      width: "36px",
+                      height: "32px",
+                      boxShadow: "none",
+                      "&:hover": {
+                        backgroundColor: "white",
+                      },
+                      "&:active": {
+                        backgroundColor: "transparent",
+                        boxShadow: "none",
+                      },
+                      "&:focus": {
+                        outline: "none",
+                      },
+                    },
                   }}
                 >
-                  <MoreHorizIcon
-                    sx={{
-                      color: "#8F8F8F",
-                      fontSize: "35px",
-                    }}
+                  <SpeedDialAction
+                    onClick={() => copyLink(post.postID)}
+                    icon={
+                      <Image
+                        width={30}
+                        height={30}
+                        src={copyIcon}
+                        alt="copyLink"
+                      />
+                    }
+                    tooltipTitle={
+                      <Typography
+                        sx={{
+                          fontFamily: "Schoolbell !important",
+                          fontSize: "20px",
+                        }}
+                      >
+                        Copy link
+                      </Typography>
+                    }
                   />
-                </IconButton>
+                  <SpeedDialAction
+                    onClick={() => deletePost(post.postID)}
+                    icon={
+                      <Image
+                        width={30}
+                        height={30}
+                        src={deleteIcon}
+                        alt="delete"
+                      />
+                    }
+                    tooltipTitle={
+                      <Typography
+                        sx={{
+                          fontFamily: "Schoolbell !important",
+                          fontSize: "20px",
+                        }}
+                      >
+                        Delete Post
+                      </Typography>
+                    }
+                  />
+                </SpeedDial>
               </Box>
               <Box
                 sx={{
@@ -180,6 +283,16 @@ export default function PostsSection({
           );
         }
       })}
+      <AlertDialog
+        title="Are you sure you want to delete this post?"
+        dialogText=""
+        open={open}
+        setOpen={setOpen}
+        onConfirm={function (): void {
+          // deletePost(post.postID);
+        }}
+      />
+      ;
       <PostImageDialog
         selectedImage={selectedImage}
         setSelectedImage={setSelectedImage}

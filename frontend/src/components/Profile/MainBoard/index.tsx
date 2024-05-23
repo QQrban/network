@@ -14,6 +14,7 @@ import privacyIcon from "../../../../public/icons/private.svg";
 import Image from "next/image";
 
 interface Props {
+  hasAccess: boolean;
   isYourProfile: boolean;
   pathname: string | undefined;
   posts: PostProps[];
@@ -24,11 +25,10 @@ export default function MainBoard({
   setSelectedTab,
   posts,
   isYourProfile,
+  hasAccess,
 }: Props) {
   const [profilePosts, setProfilePosts] = useState<PostProps[]>([]);
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
-  const [privateProfile, setPrivateProfile] = useState<boolean | null>(null);
-  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
 
   useEffect(() => {
     setProfilePosts(posts);
@@ -65,14 +65,9 @@ export default function MainBoard({
     );
   };
 
-  useEffect(() => {
-    setPrivateProfile(profile.private);
-    setHasAccess(profile.access);
-  }, [profile.private, profile.access]);
-
   return (
     <>
-      {!privateProfile || isYourProfile || profile.access ? (
+      {isYourProfile || hasAccess ? (
         <Box
           sx={{
             display: "flex",

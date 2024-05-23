@@ -18,6 +18,7 @@ import { PostProps } from "@/types/types";
 export default function ProfilePage() {
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [selectedTab, setSelectedTab] = useState<String>("Main Board");
+  const [hasAccess, setHasAccess] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
@@ -52,7 +53,7 @@ export default function ProfilePage() {
             },
           })
         );
-
+        setHasAccess(userData.access);
         const response = await fetchFromServer(`/user/${pathname}/posts`, {
           credentials: "include",
         });
@@ -75,6 +76,7 @@ export default function ProfilePage() {
             pathname={pathname}
             posts={posts}
             setSelectedTab={setSelectedTab}
+            hasAccess={hasAccess}
           />
         );
       case "Contacts":
@@ -90,6 +92,7 @@ export default function ProfilePage() {
             pathname={pathname}
             posts={posts}
             setSelectedTab={setSelectedTab}
+            hasAccess={hasAccess}
           />
         );
     }
@@ -116,6 +119,8 @@ export default function ProfilePage() {
           radius="8px"
         >
           <ProfileCard
+            hasAccess={hasAccess}
+            setHasAccess={setHasAccess}
             isYourProfile={isYourProfile}
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}

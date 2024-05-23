@@ -49,6 +49,7 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
               nickname: data.nickname,
               birthday: data.birthday,
               country: data.country,
+              image: data.image,
             })
           );
         } else {

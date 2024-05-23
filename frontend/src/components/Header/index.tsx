@@ -25,11 +25,6 @@ export default function Header() {
     >
       <Box
         sx={{
-          position: "absolute",
-        }}
-      ></Box>
-      <Box
-        sx={{
           display: "flex",
           alignItems: "center",
         }}

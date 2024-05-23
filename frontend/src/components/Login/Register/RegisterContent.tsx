@@ -17,7 +17,7 @@ import AvatarUpload from "../AvatarUpload";
 import { useFormik } from "formik";
 import dayjs from "dayjs";
 import { validationSchema } from "./validation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";

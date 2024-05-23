@@ -131,7 +131,7 @@ export default function RequestsCard({
                   }
                 />
 
-                {request.followInfo.meToYou ? (
+                {request.followInfo?.meToYou ? (
                   <SpeedDialAction
                     onClick={(event) =>
                       unfollowHandler(event, request.firstName, request.ID)

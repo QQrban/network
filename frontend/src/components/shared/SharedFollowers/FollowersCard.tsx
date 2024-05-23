@@ -15,8 +15,10 @@ import { ContactsProps } from "@/types/types";
 import Link from "next/link";
 
 interface Props {
-  activeTab: string;
   peopleList: ContactsProps[];
+  setFollowRequests: Function;
+  followRequest: ContactsProps[];
+  activeTab: string;
   id: any;
   unfollowHandler: Function;
   follow: Function;
@@ -24,6 +26,8 @@ interface Props {
 
 export default function FollowersCard({
   peopleList,
+  setFollowRequests,
+  followRequest,
   activeTab,
   id,
   unfollowHandler,
@@ -96,7 +100,7 @@ export default function FollowersCard({
                   }
                 />
 
-                {follower.followInfo.meToYou ? (
+                {follower.followInfo?.meToYou ? (
                   <SpeedDialAction
                     onClick={(event) =>
                       unfollowHandler(event, follower.firstName, follower.ID)
@@ -175,7 +179,7 @@ export default function FollowersCard({
               </Typography>
             </Box>
             {id !== follower.ID ? (
-              follower.followInfo.meToYou ? (
+              follower.followInfo?.meToYou ? (
                 <ConfirmBtn
                   onClick={(event) =>
                     unfollowHandler(event, follower.firstName, follower.ID)
@@ -183,6 +187,8 @@ export default function FollowersCard({
                   backgroundImage={errorBtn.src}
                   text="Unfollow"
                 />
+              ) : follower.followInfo?.meToYouPending ? (
+                <ConfirmBtn backgroundImage={successBtn.src} text="Pending" />
               ) : (
                 <ConfirmBtn
                   onClick={() => follow(follower.ID)}

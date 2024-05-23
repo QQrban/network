@@ -201,6 +201,7 @@ export default function GroupCard({
       <CreateEventModal
         openEventModal={openEventModal}
         setOpenEventModal={setOpenEventModal}
+        pathName={pathName}
       />
     </Box>
   );

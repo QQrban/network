@@ -39,11 +39,13 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         );
         const data = await response.json();
 
-        if (activeTab === "Followers" || activeTab === "Following") {
+        if (activeTab === "Followers") {
+          setPeopleList(data);
           console.log(data);
-
+        } else if (activeTab === "Following") {
           const people = data.filter(
-            (item: any) => !item.followInfo.youToMePending
+            (item: any) =>
+              !item.followInfo.youToMePending && !item.followInfo.meToYouPending
           );
           setPeopleList(people);
         } else if (activeTab === "Requests") {
@@ -129,38 +131,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
     }
   };
 
-  const confirmFollowRequest = async (userID: number) => {
-    try {
-      const response = await fetchFromServer(`/user/${userID}/accept`, {
-        method: "POST",
-        credentials: "include",
-      });
-      if (response.ok) {
-        setFollowRequests((prevList) =>
-          prevList.filter((person) => person.ID !== userID)
-        );
-      }
-    } catch (error) {
-      console.error("Error accepting follow from user:", error);
-    }
-  };
-
-  const denyFollowRequest = async (userID: number) => {
-    try {
-      const response = await fetchFromServer(`/user/${userID}/reject`, {
-        method: "POST",
-        credentials: "include",
-      });
-      if (response.ok) {
-        setFollowRequests((prevList) =>
-          prevList.filter((person) => person.ID !== userID)
-        );
-      }
-    } catch (error) {
-      console.error("Error rejecting follow from user:", error);
-    }
-  };
-
   return (
     <>
       {activeTab === "Requests" ? (
@@ -176,6 +146,8 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         <>
           <FollowersCard
             peopleList={peopleList}
+            setFollowRequests={setFollowRequests}
+            followRequest={followRequest}
             activeTab={activeTab}
             id={id}
             unfollowHandler={unfollowHandler}

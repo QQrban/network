@@ -17,9 +17,8 @@ export interface GroupProps {
   title: string;
   description: string;
   IncludesMe: boolean;
-  ownerID: number;
   pendingRequest: boolean;
-  ownerName: string;
+  owner: ContactsProps;
 }
 
 export interface CommentProps {

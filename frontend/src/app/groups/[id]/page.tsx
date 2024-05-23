@@ -10,7 +10,6 @@ import { GroupProps } from "@/types/types";
 
 import GroupCard from "@/components/Group/GroupCard";
 import GroupAddInfo from "@/components/Group/GroupAddInfo";
-import JoinGroupInfo from "@/components/Group/JoinGroupInfo";
 import JoinGroupCard from "@/components/Group/JoinGroupCard";
 
 export default function GroupPage() {
@@ -82,10 +81,10 @@ export default function GroupPage() {
                 pathName={pathname}
               />
               <GroupAddInfo
+                isMember={isMember}
                 description={mainInfo.description}
-                ownerID={mainInfo.ownerID}
                 profileIcon={profileIcon}
-                ownerName={mainInfo.ownerName}
+                owner={mainInfo.owner}
               />
             </>
           ) : (
@@ -95,11 +94,11 @@ export default function GroupPage() {
                 id={mainInfo.ID}
                 pendingRequest={mainInfo.pendingRequest}
               />
-              <JoinGroupInfo
+              <GroupAddInfo
+                isMember={isMember}
                 description={mainInfo.description}
-                ownerID={mainInfo.ownerID}
                 profileIcon={profileIcon}
-                ownerName={mainInfo.ownerName}
+                owner={mainInfo.owner}
               />
             </>
           )}

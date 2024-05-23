@@ -118,7 +118,9 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
+		done := make(chan bool)
 		go func() {
+			defer close(done)
 			me, err := Database.User.GetByID(session.UserID)
 			if err != nil {
 				log.Println(err)
@@ -126,6 +128,7 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 
 			Notify.FollowRequest(me, targetID)
 		}()
+		<-done
 	} else {
 		// Following a public user*/
 		err = Database.User.Follow(session.UserID, target.ID)
@@ -133,7 +136,9 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		/*go func() {
+		done := make(chan bool)
+		go func() {
+			defer close(done)
 			me, err := Database.User.GetByID(session.UserID)
 			if err != nil {
 				log.Println(err)
@@ -143,7 +148,8 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			} else {
 				Notify.Follow(me, targetID)
 			}
-		}()*/
+		}()
+		<-done
 	}
 }
 
@@ -158,14 +164,17 @@ func UserAcceptFollow(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	/*go func() {
+	done := make(chan bool)
+	go func() {
+		defer close(done)
 		me, err := Database.User.GetByID(session.UserID)
 		if err != nil {
 			log.Println(err)
 		}
 
 		Notify.FollowAccepted(me, targetID)
-	}()*/
+	}()
+	<-done
 }
 
 func UserRejectFollow(w http.ResponseWriter, r *http.Request) {

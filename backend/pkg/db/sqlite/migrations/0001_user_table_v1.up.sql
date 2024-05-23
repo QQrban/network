@@ -16,3 +16,8 @@ CREATE TABLE `user`
 
     --FOREIGN KEY (`image`) REFERENCES "image" (token)
 );
+
+INSERT INTO user
+(ID, password, firstname, lastname, nickname, email)
+VALUES
+(0, 'zaq12wsx', 'System', 'User', 'sys', 'sys@kood.ee');

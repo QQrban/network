@@ -44,7 +44,9 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, event)
 
+	done := make(chan bool)
 	go func() {
+		defer close(done)
 		creator, err := Database.User.GetByID(session.UserID)
 		if err != nil {
 			log.Println(err)
@@ -57,6 +59,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 
 		Notify.EventCreated(group.Group, event, creator, members)
 	}()
+	<-done
 }
 
 // rtr.Post("/api/event/([0-9]+)/going", api.EnsureAuth(api.EventGoing))

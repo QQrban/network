@@ -18,6 +18,7 @@ import (
 var frontend_host = getFrontendHost()
 
 type Notification interface {
+	//Source() int64
 	Targets() []int64
 	Message() string
 	Links() []Link
@@ -68,13 +69,14 @@ func (n Notifier) notify(msg Notification) {
 	content += "\n</form>"
 
 	message := &models.Message{
-		SenderID:   0,
+		SenderID:   0, //msg.Source(),
 		ReceiverID: 0,
 		Content:    content,
 		Created:    time.Now(),
 	}
 
 	targets := msg.Targets()
+
 	for _, t := range targets {
 		message.ReceiverID = t
 		_, err := n.database.Message.SendMessage(*message)
@@ -97,7 +99,7 @@ func (n Notifier) notify(msg Notification) {
 		log.Println(err)
 	}
 
-	_, err = http.Post(fmt.Sprintf("http://%v:8080/notify", frontend_host), "", b)
+	_, err = http.Post(fmt.Sprintf("http://%v:8888/notify", frontend_host), "", b)
 	if err != nil {
 		log.Printf("could not notify notification: %v\n", err)
 	}

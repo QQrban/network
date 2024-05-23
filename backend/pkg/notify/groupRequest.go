@@ -18,6 +18,10 @@ func (n Notifier) Request(group *models.Group, requester *models.User) {
 	})
 }
 
+/*func (n Request) Source() int64 {
+	return n.requester.ID
+}*/
+
 func (n Request) Targets() []int64 {
 	return []int64{n.group.OwnerID}
 }

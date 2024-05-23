@@ -27,6 +27,10 @@ func (n Notifier) EventCreated(
 	})
 }
 
+/*func (n EventCreated) Source() int64 {
+	return n.creator.ID
+}*/
+
 func (n EventCreated) Targets() []int64 {
 	ids := make([]int64, 0, len(n.members)-1)
 	for _, member := range n.members {

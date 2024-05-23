@@ -18,6 +18,10 @@ func (n Notifier) Follow(follower *models.User, following int64) {
 	})
 }
 
+/*func (f Follow) Source() int64 {
+	return f.follower.ID
+}*/
+
 func (f Follow) Targets() []int64 {
 	return []int64{f.following}
 }

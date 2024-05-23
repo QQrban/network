@@ -12,11 +12,19 @@ type FollowRequest struct {
 }
 
 func (n Notifier) FollowRequest(requester *models.User, target int64) {
+	/*fmt.Println("FollowRequest:",
+		"requester:", *requester,
+		"target:", target,
+	)*/
 	n.notify(FollowRequest{
 		requester: requester,
 		target:    target,
 	})
 }
+
+/*func (f FollowRequest) Source() int64 {
+	return f.requester.ID
+}*/
 
 func (f FollowRequest) Targets() []int64 {
 	return []int64{f.target}

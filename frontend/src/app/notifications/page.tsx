@@ -8,22 +8,33 @@ import {
 } from "@/components/Notifications/mock";
 import { useEffect, useState } from "react";
 import { fetchFromServer } from "@/lib/api";
+import { NotificationProps } from "@/types/types";
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [iNotifications, setINotifications] = useState<NotificationProps[]>([]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const response = await fetchFromServer("/notifications", {
+      const response = await fetchFromServer("/notifications/all", {
         credentials: "include",
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+
+        const parsedData = data.map((notification: any) => {
+          return {
+            ...notification,
+            content: JSON.parse(notification.content),
+          };
+        });
+        setINotifications(parsedData);
       }
     };
     fetchNotifications();
   }, []);
+
+  console.log(iNotifications);
 
   useEffect(() => {
     const filteredNotifications = yourNotifications.filter(

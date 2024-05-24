@@ -98,7 +98,7 @@ export default function MainBoard({
                 m: "23px 0 13px 0",
               }}
             >
-              <Typography fontSize={22}>Posts</Typography>
+              <Typography fontSize={30}>Posts</Typography>
               {profilePosts?.length > 2 && (
                 <Button
                   onClick={() =>
@@ -130,17 +130,21 @@ export default function MainBoard({
                 sx={{
                   fontFamily: "Gloria Hallelujah !important",
                   fontSize: "46px",
+                  textTransform: "capitalize",
                 }}
               >
-                No Posts Yet!
+                This user has no posts
               </Typography>
             )}
           </Box>
-          <Box>
+          <Box
+            sx={{
+              width: "600px",
+            }}
+          >
             <Item
               radius="8px"
               sx={{
-                width: "100%",
                 p: "10px 20px",
                 alignSelf: "flex-start",
               }}
@@ -165,7 +169,7 @@ export default function MainBoard({
               >
                 {profile.about
                   ? profile.about
-                  : "Mr. X preferred to remain incognito and said nothing about himself."}
+                  : "This account preferred to remain incognito and said nothing about himself."}
               </Typography>
             </Item>
             <PhotosContent

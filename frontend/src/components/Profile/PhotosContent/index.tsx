@@ -25,7 +25,6 @@ export default function PhotosContent({
   posts,
 }: PhotosContentProps) {
   const [photos, setPhotos] = useState<PhotosProps[]>([]);
-  console.log(posts);
 
   useEffect(() => {
     const allPhotos: PhotosProps[] = [];
@@ -41,7 +40,7 @@ export default function PhotosContent({
   }, [posts]);
 
   return (
-    <Box sx={{ mt: "23px" }}>
+    <Box sx={{ mt: "23px", width: "100%" }}>
       <Box
         sx={{
           display: "flex",
@@ -51,7 +50,6 @@ export default function PhotosContent({
       >
         <Typography
           sx={{
-            fontFamily: "Gloria Hallelujah !important",
             fontSize: "30px",
             p: `${!isMainBoard && "0 60px"}`,
           }}
@@ -85,37 +83,71 @@ export default function PhotosContent({
             flexWrap: "wrap",
           }}
         >
-          {photos.slice(0, 4).map((photo, index) => (
-            <Link href={`/post/${photo.postID}`} key={index}>
-              <Box
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    filter: "brightness(96%)",
-                  },
-                }}
-              >
-                <Item
-                  sx={{
-                    width: "220px",
-                    height: "270px",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                  radius="8px"
-                >
-                  <Image
-                    src={`http://localhost:8888/file/${photo.image}`}
-                    alt={`Photo from post ${photo.postID}`}
-                    fill
-                    objectFit="cover"
-                  />
-                </Item>
-              </Box>
-            </Link>
-          ))}
+          {photos.length > 0 ? (
+            isMainBoard ? (
+              photos
+                .slice(0, 4)
+                .map((photo, index) => (
+                  <PhotoItem index={index} key={index} photo={photo} />
+                ))
+            ) : (
+              photos.map((photo, index) => (
+                <PhotoItem index={index} key={index} photo={photo} />
+              ))
+            )
+          ) : (
+            <Typography
+              sx={{
+                textTransform: "capitalize",
+                fontSize: "40px",
+                fontFamily: "Gloria Hallelujah !important",
+              }}
+            >
+              This user has no photos
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>
+  );
+}
+
+interface PhotoItemProps {
+  index: number;
+  photo: {
+    postID: number;
+    image: string;
+  };
+}
+
+function PhotoItem({ photo, index }: PhotoItemProps) {
+  return (
+    <Link href={`/post/${photo.postID}`} key={index}>
+      <Box
+        sx={{
+          cursor: "pointer",
+          "&:hover": {
+            filter: "brightness(96%)",
+          },
+        }}
+      >
+        <Item
+          sx={{
+            width: "220px",
+            height: "270px",
+            position: "relative",
+            overflow: "hidden",
+          }}
+          radius="8px"
+        >
+          <Image
+            src={`http://localhost:8888/file/${photo.image}`}
+            alt={`Photo from post ${photo.postID}`}
+            fill
+            style={{ objectFit: "cover" }}
+          />
+        </Item>
+      </Box>
+    </Link>
   );
 }

@@ -84,7 +84,6 @@ func getOptions(options string) []string {
 
 func (model EventModel) GetByGroup(groupID, myID int64) ([]*Event, error) {
 	stmt := model.queries.Prepare("getByGroup")
-
 	rows, err := stmt.Query(groupID, myID)
 	if err != nil {
 		return nil, fmt.Errorf("Event/GetByGroup: %w", err)
@@ -202,10 +201,14 @@ func (model EventModel) Insert(group Event) (int64, error) {
 		return 0, fmt.Errorf("Event/Insert: %w", err)
 	}
 
-	return res.LastInsertId()
+	eventID, _ := res.LastInsertId()
+
+	model.Respond(eventID, group.AuthorID, 1)
+
+	return eventID, nil
 }
 
-func (model EventModel) Going(eventID, userID int64) error {
+/*func (model EventModel) Going(eventID, userID int64) error {
 	stmt := model.queries.Prepare("going")
 
 	_, err := stmt.Exec(eventID, userID)
@@ -227,7 +230,7 @@ func (model EventModel) NotGoing(eventID, userID int64) error {
 	}
 
 	return nil
-}
+}*/
 
 func (model EventModel) Unset(eventID, userID int64) error {
 	stmt := model.queries.Prepare("unset")

@@ -121,6 +121,7 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 func GetGroupEvents(w http.ResponseWriter, r *http.Request) {
 	myID := getPossibleUserID(r)
 	groupID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
+
 	members, err := Database.Event.GetByGroup(groupID, myID)
 	if err != nil {
 		panic(err)

@@ -80,19 +80,6 @@ export default function CommentsPost({ comments }: CommentPostProps) {
               <Typography fontSize={16}>
                 {dayjs(comment.created).format("MMM D, YYYY")}
               </Typography>
-              <Typography
-                sx={{
-                  color: "#4499df",
-                  cursor: "pointer",
-                  "&:hover": {
-                    borderRadius: "50%",
-                    backgroundColor: "#bad7ef3c",
-                  },
-                }}
-                fontSize={16}
-              >
-                Like
-              </Typography>
             </Box>
           </Box>
         </Box>

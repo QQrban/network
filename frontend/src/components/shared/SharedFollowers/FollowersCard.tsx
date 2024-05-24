@@ -16,8 +16,6 @@ import Link from "next/link";
 
 interface Props {
   peopleList: ContactsProps[];
-  setFollowRequests: Function;
-  followRequest: ContactsProps[];
   activeTab: string;
   id: any;
   unfollowHandler: Function;
@@ -26,8 +24,6 @@ interface Props {
 
 export default function FollowersCard({
   peopleList,
-  setFollowRequests,
-  followRequest,
   activeTab,
   id,
   unfollowHandler,

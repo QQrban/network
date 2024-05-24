@@ -127,6 +127,7 @@ function EventItem({ event, myStatusHandler }: EventItemProps) {
         sx={{
           maxWidth: "300px",
           fontSize: "16px",
+          wordBreak: "break-word",
         }}
       >
         {event.description}

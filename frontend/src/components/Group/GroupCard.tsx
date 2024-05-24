@@ -197,7 +197,7 @@ export default function GroupCard({
             gap: "23px",
           }}
         >
-          <EventSection events={yourEvents} />
+          <EventSection groupID={groupID} events={yourEvents} />
         </Box>
       )}
       <CreateEventModal

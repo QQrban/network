@@ -10,16 +10,23 @@ import errorBtn from "../../../public/icons/errorBtn.svg";
 import { Event } from "./mock";
 import ConfirmBtn from "../shared/ConfirmBtn";
 import AlertDialog from "../shared/Dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchFromServer } from "@/lib/api";
 
 interface EventSectionProps {
   events: Event[];
   page?: string;
+  groupID: number;
 }
 
-export default function EventSection({ events, page }: EventSectionProps) {
+export default function EventSection({
+  events,
+  page,
+  groupID,
+}: EventSectionProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [eventName, setEventName] = useState<string>("");
+  const [ievents, setIEvents] = useState();
 
   const handleClick = (name: string, interested: boolean) => {
     if (interested) {
@@ -29,6 +36,25 @@ export default function EventSection({ events, page }: EventSectionProps) {
       return false;
     }
   };
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await fetchFromServer(`/group/${groupID}/events`, {
+          credentials: "include",
+        });
+        console.log(response);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchGroups();
+  }, [groupID]);
 
   return (
     <>
@@ -98,6 +124,7 @@ export default function EventSection({ events, page }: EventSectionProps) {
         </Item>
       ))}
       <AlertDialog
+        onConfirm={() => console.log(123)}
         title={`*${eventName.toUpperCase()}?*`}
         dialogText="Are you sure you don't want to go to this event?"
         open={open}

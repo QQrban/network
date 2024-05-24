@@ -15,14 +15,12 @@ export default function ShowPost({ pathname }: Props) {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
   const [showLoading, setShowLoading] = useState<boolean>(false);
 
-  console.log(mainPagePosts);
-
   useEffect(() => {
     const fetchFollowingPosts = async () => {
-      if (mainPagePosts.length < 1) return;
       const response = await fetchFromServer(`/post/${pathname}`, {
         credentials: "include",
       });
+      if (!response.ok) return;
       const data = await response.json();
       setMainPagePosts([data]);
     };
@@ -31,7 +29,7 @@ export default function ShowPost({ pathname }: Props) {
       fetchFollowingPosts();
       setShowLoading(false);
     }, 500);
-  }, [pathname, mainPagePosts]);
+  }, [pathname]);
 
   const addCommentToPost = (postID: number, comment: CommentProps) => {
     setMainPagePosts((prevPosts) =>

@@ -25,6 +25,7 @@ export default function PhotosContent({
   posts,
 }: PhotosContentProps) {
   const [photos, setPhotos] = useState<PhotosProps[]>([]);
+  console.log(posts);
 
   useEffect(() => {
     const allPhotos: PhotosProps[] = [];

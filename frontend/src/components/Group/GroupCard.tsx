@@ -90,6 +90,10 @@ export default function GroupCard({
     );
   };
 
+  const addNewEvent = (newEvent: EventProps) => {
+    setEvents((prevEvents) => [{ ...newEvent }, ...prevEvents]);
+  };
+
   return (
     <Box sx={{ width: "600px" }}>
       <Item
@@ -233,6 +237,7 @@ export default function GroupCard({
         </Box>
       )}
       <CreateEventModal
+        addNewEvent={addNewEvent}
         groupID={groupID}
         openEventModal={openEventModal}
         setOpenEventModal={setOpenEventModal}

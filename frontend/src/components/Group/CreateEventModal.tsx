@@ -14,11 +14,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { fetchFromServer } from "@/lib/api";
 import { useEffect, useState } from "react";
+import { EventProps } from "@/types/types";
 
 interface CreateEventModalProps {
   openEventModal: boolean;
   setOpenEventModal: React.Dispatch<boolean>;
   groupID: number;
+  addNewEvent: (newEvent: EventProps) => void;
 }
 
 interface FormValues {
@@ -45,6 +47,7 @@ export default function CreateEventModal({
   openEventModal,
   setOpenEventModal,
   groupID,
+  addNewEvent,
 }: CreateEventModalProps) {
   const handleClose = () => {
     setOpenEventModal(false);
@@ -66,6 +69,8 @@ export default function CreateEventModal({
         if (response.ok) {
           resetForm();
           setOpenEventModal(false);
+          const newEvent: EventProps = await response.json();
+          addNewEvent(newEvent);
         } else {
           console.error("Registration failed");
         }

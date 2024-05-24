@@ -6,8 +6,8 @@ CREATE TABLE userMessage
     `content`    TEXT    NOT NULL,
     `created`    DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     --`edited`     DATE    NOT NULL DEFAULT '',
-    FOREIGN KEY (senderID) REFERENCES `user` (ID),
-    FOREIGN KEY (receiverID) REFERENCES `user` (ID)
+    FOREIGN KEY (senderID) REFERENCES `user` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (receiverID) REFERENCES `user` (ID) ON DELETE CASCADE
 );
 
 CREATE INDEX userMessage_SR

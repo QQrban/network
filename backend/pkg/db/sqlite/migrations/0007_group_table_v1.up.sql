@@ -5,7 +5,7 @@ CREATE TABLE `group`
     `title`       TEXT    NOT NULL UNIQUE,
     `description` TEXT    NOT NULL,
     `created`     DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ownerID) REFERENCES user (ID),
+    FOREIGN KEY (ownerID) REFERENCES user (ID) ON DELETE RESTRICT,
     UNIQUE (ownerID, title) 
 );
 

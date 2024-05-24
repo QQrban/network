@@ -6,5 +6,5 @@ CREATE TABLE `session`
     `created` DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `expires` DATE    NOT NULL,
 
-    FOREIGN KEY (userID) REFERENCES user (ID)
+    FOREIGN KEY (userID) REFERENCES user (ID) ON DELETE CASCADE
 );

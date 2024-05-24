@@ -10,6 +10,6 @@ CREATE TABLE event
     --`type`        TEXT NOT NULL DEFAULT 'radio' CHECK (type IN ('radio', 'checkbox')),
     `created`     DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (groupID) REFERENCES "group" (ID),
-    FOREIGN KEY (authorID) REFERENCES user (ID)
+    FOREIGN KEY (groupID) REFERENCES "group" (ID) ON DELETE CASCADE,
+    FOREIGN KEY (authorID) REFERENCES user (ID) ON DELETE RESTRICT
 );

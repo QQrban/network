@@ -2,6 +2,6 @@ CREATE TABLE latestNotification
 (
     `userID`     INTEGER NOT NULL UNIQUE ON CONFLICT REPLACE,
     `messageID`  INTEGER NOT NULL,
-    FOREIGN KEY (userID) REFERENCES `user` (ID),
-    FOREIGN KEY (messageID) REFERENCES `userMessage` (ID)
+    FOREIGN KEY (userID) REFERENCES `user` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (messageID) REFERENCES `userMessage` (ID) ON DELETE CASCADE
 );

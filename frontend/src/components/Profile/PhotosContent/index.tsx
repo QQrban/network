@@ -1,34 +1,44 @@
 "use client";
 
 import { Item } from "@/components/shared/Item";
-import {
-  Box,
-  Button,
-  SpeedDial,
-  SpeedDialAction,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import wall from "../../../../public/mockBG.png";
-import deleteIcon from "../../../../public/icons/delete.svg";
-import AlertDialog from "@/components/shared/Dialog";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import { PostProps } from "@/types/types";
+import Link from "next/link";
 
 interface PhotosContentProps {
+  posts: PostProps[];
   isMainBoard: boolean;
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
+}
+
+interface PhotosProps {
+  postID: number;
+  image: string;
 }
 
 export default function PhotosContent({
   isMainBoard,
   setSelectedTab,
+  posts,
 }: PhotosContentProps) {
-  const [open, setOpen] = useState<boolean>(false);
+  const [photos, setPhotos] = useState<PhotosProps[]>([]);
+  console.log(posts);
 
-  const nums = [0, 1, 2, 3, 4, 5, 6];
+  useEffect(() => {
+    const allPhotos: PhotosProps[] = [];
 
-  const newNums = isMainBoard ? nums.slice(0, 4) : nums;
+    posts.forEach((post) => {
+      const photosArr = post.images.split(",");
+      photosArr.forEach((image) => {
+        image !== "" && allPhotos.push({ postID: post.postID, image });
+      });
+    });
+
+    setPhotos(allPhotos);
+  }, [posts]);
 
   return (
     <Box sx={{ mt: "23px" }}>
@@ -75,86 +85,37 @@ export default function PhotosContent({
             flexWrap: "wrap",
           }}
         >
-          {newNums.map((_, index) => (
-            <Box
-              sx={{
-                cursor: "pointer",
-                "&:hover": {
-                  filter: "brightness(96%)",
-                },
-              }}
-              key={index}
-            >
-              <Item
+          {photos.slice(0, 4).map((photo, index) => (
+            <Link href={`/post/${photo.postID}`} key={index}>
+              <Box
                 sx={{
-                  width: "220px",
-                  height: "270px",
-                  position: "relative",
+                  cursor: "pointer",
+                  "&:hover": {
+                    filter: "brightness(96%)",
+                  },
                 }}
-                radius="8px"
               >
-                <SpeedDial
+                <Item
                   sx={{
-                    position: "absolute",
-                    top: "6px",
-                    right: "-2px",
+                    width: "220px",
+                    height: "270px",
+                    position: "relative",
+                    overflow: "hidden",
                   }}
-                  ariaLabel="SpeedDial openIcon example"
-                  icon={<MoreVertIcon sx={{ color: "grey" }} />}
-                  direction="down"
-                  FabProps={{
-                    sx: {
-                      backgroundColor: "white",
-                      width: "36px",
-                      height: "32px",
-                      boxShadow: "none",
-                      "&:hover": {
-                        backgroundColor: "white",
-                      },
-                      "&:active": {
-                        backgroundColor: "transparent",
-                        boxShadow: "none",
-                      },
-                      "&:focus": {
-                        outline: "none",
-                      },
-                    },
-                  }}
+                  radius="8px"
                 >
-                  <SpeedDialAction
-                    onClick={() => setOpen(true)}
-                    icon={
-                      <Image
-                        width={30}
-                        height={30}
-                        src={deleteIcon}
-                        alt="delete"
-                      />
-                    }
-                    tooltipTitle={
-                      <Typography
-                        sx={{
-                          fontFamily: "Schoolbell !important",
-                          fontSize: "20px",
-                        }}
-                      >
-                        Delete Photo
-                      </Typography>
-                    }
+                  <Image
+                    src={`http://localhost:8888/file/${photo.image}`}
+                    alt={`Photo from post ${photo.postID}`}
+                    fill
+                    objectFit="cover"
                   />
-                </SpeedDial>
-                <Image src={wall} alt="photo" />
-              </Item>
-            </Box>
+                </Item>
+              </Box>
+            </Link>
           ))}
         </Box>
       </Box>
-      <AlertDialog
-        title="Are you sure you want to delete this photo?"
-        dialogText=""
-        open={open}
-        setOpen={setOpen}
-      />
     </Box>
   );
 }

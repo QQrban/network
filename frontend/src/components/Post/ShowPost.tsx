@@ -15,13 +15,12 @@ export default function ShowPost({ pathname }: Props) {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
   const [showLoading, setShowLoading] = useState<boolean>(false);
 
-  console.log(mainPagePosts);
-
   useEffect(() => {
     const fetchFollowingPosts = async () => {
       const response = await fetchFromServer(`/post/${pathname}`, {
         credentials: "include",
       });
+      if (!response.ok) return;
       const data = await response.json();
       setMainPagePosts([data]);
     };
@@ -64,11 +63,13 @@ export default function ShowPost({ pathname }: Props) {
         sx={{
           mt: "23px",
           display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           flexDirection: "column",
           gap: "23px",
         }}
       >
-        {mainPagePosts ? (
+        {mainPagePosts?.length > 0 ? (
           <PostsSection
             deletePostFromList={deletePostFromList}
             posts={mainPagePosts}
@@ -82,9 +83,11 @@ export default function ShowPost({ pathname }: Props) {
                 textAlign: "center",
                 fontFamily: "Gloria Hallelujah !important",
                 fontSize: "50px",
+                textTransform: "capitalize",
+                lineHeight: "200%",
               }}
             >
-              Nothing to Show Yet
+              Sorry, but the post you are looking for doesn&apos;t exist
             </Typography>
           )
         )}

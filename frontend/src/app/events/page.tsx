@@ -2,7 +2,6 @@
 
 import { Box, Typography } from "@mui/material";
 import EventSection from "@/components/Events/EventSection";
-import { Event, yourEvents } from "@/components/Events/mock";
 import { useEffect, useState } from "react";
 import { EventProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";

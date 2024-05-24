@@ -22,8 +22,9 @@ interface EventSectionProps {
 export default function EventSection({
   events,
   statusHandler,
-  groupID,
 }: EventSectionProps) {
+  console.log(events);
+
   const myStatusHandler = async (eventID: number, status: boolean) => {
     const eventStatus = status ? "Going" : "Not Going";
     const option: number = eventStatus === "Going" ? 1 : 2;
@@ -60,6 +61,7 @@ interface EventItemProps {
 
 function EventItem({ event, myStatusHandler }: EventItemProps) {
   const [open, setOpen] = useState<boolean>(false);
+  console.log(event);
 
   const handleConfirmClick = (status: boolean) => {
     if (status === false && event.myStatus === "Going") {

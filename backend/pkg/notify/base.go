@@ -133,13 +133,13 @@ func userGetName(u *models.User) string {
 	return fmt.Sprintf("%v %v", u.FirstName, u.LastName)
 }
 
-func conditionalString(b bool, s string) string {
+/*func conditionalString(b bool, s string) string {
 	if b {
 		return s
 	}
 
 	return ""
-}
+}*/
 
 func getFrontendHost() string {
 	v := os.Getenv("FRONTEND_ADDRESS")

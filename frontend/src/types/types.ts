@@ -64,3 +64,23 @@ export interface EventProps {
   time: string;
   title: string;
 }
+
+export interface NotificationProps {
+  ID: number;
+  content: {
+    action: "create" | "follow" | "accept" | "request" | "invite" | "like";
+    endpoint: string;
+    eventID: number;
+    eventTitle: string;
+    groupID: number;
+    groupTitle: string;
+    type: "follow" | "event" | "group" | "post";
+    userID: number;
+    userName: string;
+  };
+  created: string;
+  isGroup: boolean;
+  receiverID: number;
+  senderData: ContactsProps | null;
+  senderID: 0;
+}

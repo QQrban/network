@@ -208,7 +208,7 @@ func (model EventModel) Insert(group Event) (int64, error) {
 	return eventID, nil
 }
 
-/*func (model EventModel) Going(eventID, userID int64) error {
+func (model EventModel) Going(eventID, userID int64) error {
 	stmt := model.queries.Prepare("going")
 
 	_, err := stmt.Exec(eventID, userID)
@@ -230,7 +230,7 @@ func (model EventModel) NotGoing(eventID, userID int64) error {
 	}
 
 	return nil
-}*/
+}
 
 func (model EventModel) Unset(eventID, userID int64) error {
 	stmt := model.queries.Prepare("unset")

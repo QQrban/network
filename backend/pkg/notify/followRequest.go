@@ -28,7 +28,7 @@ func (f FollowRequest) Message() string {
 		Action:   "request",
 		UserName: html.EscapeString(userGetName(f.requester)),
 		UserID:   f.requester.ID,
-		Endpoint: fmt.Sprintf("/user/%v", f.requester.ID),
+		Endpoint: fmt.Sprintf("/profile/%v", f.requester.ID),
 	}
 	return fmt.Sprintf("%v", msg.JSON())
 }

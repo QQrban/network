@@ -19,6 +19,7 @@ export default function ShowPost({ pathname }: Props) {
 
   useEffect(() => {
     const fetchFollowingPosts = async () => {
+      if (mainPagePosts.length < 1) return;
       const response = await fetchFromServer(`/post/${pathname}`, {
         credentials: "include",
       });
@@ -30,7 +31,7 @@ export default function ShowPost({ pathname }: Props) {
       fetchFollowingPosts();
       setShowLoading(false);
     }, 500);
-  }, [pathname]);
+  }, [pathname, mainPagePosts]);
 
   const addCommentToPost = (postID: number, comment: CommentProps) => {
     setMainPagePosts((prevPosts) =>
@@ -64,11 +65,13 @@ export default function ShowPost({ pathname }: Props) {
         sx={{
           mt: "23px",
           display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           flexDirection: "column",
           gap: "23px",
         }}
       >
-        {mainPagePosts ? (
+        {mainPagePosts?.length > 0 ? (
           <PostsSection
             deletePostFromList={deletePostFromList}
             posts={mainPagePosts}
@@ -82,9 +85,11 @@ export default function ShowPost({ pathname }: Props) {
                 textAlign: "center",
                 fontFamily: "Gloria Hallelujah !important",
                 fontSize: "50px",
+                textTransform: "capitalize",
+                lineHeight: "200%",
               }}
             >
-              Nothing to Show Yet
+              Sorry, but the post you are looking for doesn&apos;t exist
             </Typography>
           )
         )}

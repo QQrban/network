@@ -168,7 +168,11 @@ export default function MainBoard({
                   : "Mr. X preferred to remain incognito and said nothing about himself."}
               </Typography>
             </Item>
-            <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={true} />
+            <PhotosContent
+              posts={posts}
+              setSelectedTab={setSelectedTab}
+              isMainBoard={true}
+            />
           </Box>
           <CreatePostModal
             text="Create Post"

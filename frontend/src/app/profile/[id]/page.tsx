@@ -83,7 +83,11 @@ export default function ProfilePage() {
         return <ContactsContent />;
       case "Photos":
         return (
-          <PhotosContent setSelectedTab={setSelectedTab} isMainBoard={false} />
+          <PhotosContent
+            posts={posts}
+            setSelectedTab={setSelectedTab}
+            isMainBoard={false}
+          />
         );
       default:
         return (

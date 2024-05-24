@@ -65,6 +65,12 @@ export default function MainBoard({
     );
   };
 
+  const deletePostFromList = async (postID: number) => {
+    setProfilePosts((prevPosts) =>
+      prevPosts.filter((post) => post.postID !== postID)
+    );
+  };
+
   return (
     <>
       {isYourProfile || hasAccess ? (
@@ -109,6 +115,7 @@ export default function MainBoard({
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "23px" }}>
               <PostsSection
+                deletePostFromList={deletePostFromList}
                 addLikeToPost={addLikeToPost}
                 addCommentToPost={addCommentToPost}
                 posts={

@@ -7,7 +7,7 @@ import (
 
 // Prepare sets up the router with checks and routes.
 func prepare(rtr *router.Router) {
-	
+
 	rtr.Get("/check-auth", api.EnsureAuth(api.CheckAuth))
 	rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
 	rtr.Get("/user/([0-9]+)", api.OptionalAuth(api.GetUserByID))
@@ -78,4 +78,5 @@ func prepare(rtr *router.Router) {
 	rtr.Get("/stats/user/([0-9]+)", api.EnsureAuth(api.GetUserStats))
 	rtr.Get("/stats/group/([0-9]+)", api.EnsureAuth(api.GetGroupStats))
 	rtr.Get("/stats/event/([0-9]+)", api.EnsureAuth(api.GetEventStats))
+	
 }

@@ -22,7 +22,10 @@ export default function Events({ groupID }: Props) {
 
         if (response.ok) {
           const data = await response.json();
-          setEvents(data);
+          const filteredEvents = data.filter(
+            (event: any) => event.myStatus === "Going"
+          );
+          setEvents(filteredEvents);
         }
       } catch (error) {
         console.error(error);

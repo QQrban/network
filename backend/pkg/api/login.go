@@ -34,9 +34,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check password
-	// TODO: Password encryption
-	if user.Password != credentials.Password {
+	// Check password + password encryption
+	fmt.Println(credentials.Password, user.Password)
+	if !CheckPasswordHash(credentials.Password, user.Password) {
 		writeStatusError(w, http.StatusUnauthorized)
 		return
 	}
@@ -113,6 +113,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	email := r.FormValue("email")
 	password := r.FormValue("password")
+	hashedPassword, _ := HashPassword(password)
 	firstName := r.FormValue("firstName")
 	lastName := r.FormValue("lastName")
 	layout := "2006-01-02T15:04:05-07:00"
@@ -140,7 +141,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	incoming.Email = &email
-	incoming.Password = &password
+	incoming.Password = &hashedPassword
 	incoming.FirstName = &firstName
 	incoming.LastName = &lastName
 	incoming.Birthday = &birthday

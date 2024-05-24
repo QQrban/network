@@ -47,7 +47,7 @@ func (n EventCreated) Message() string {
 		GroupTitle: html.EscapeString(n.group.Title),
 		UserName: html.EscapeString(userGetName(n.creator)),
 		UserID:   n.creator.ID,
-		Endpoint: fmt.Sprintf("/event/%v", n.event.ID),
+		Endpoint: fmt.Sprintf("/group/%v", n.group.ID),
 	}
 
 	return fmt.Sprintf(

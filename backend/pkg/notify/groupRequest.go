@@ -30,7 +30,7 @@ func (n Request) Message() string {
 		GroupTitle: html.EscapeString(n.group.Title),
 		UserName: html.EscapeString(userGetName(n.requester)),
 		UserID:   n.requester.ID,
-		Endpoint: fmt.Sprintf("/user/%v", n.requester.ID),
+		Endpoint: fmt.Sprintf("/profile/%v", n.requester.ID),
 	}
 	return fmt.Sprintf(
 		//"<strong>%v</strong> has requested to join your group <strong>%v</strong>",

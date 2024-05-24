@@ -28,7 +28,7 @@ func (n Invite) Message() string {
 		Action:   "invite",
 		GroupID:  n.group.ID,
 		GroupTitle: html.EscapeString(n.group.Title),
-		Endpoint: fmt.Sprintf("/api/group/%v/join", n.group.ID),
+		Endpoint: fmt.Sprintf("/group/%v/join", n.group.ID),
 	}
 	return fmt.Sprintf(
 		//"You have been invited to the group <strong>%v</strong>.",

@@ -24,7 +24,7 @@ func (f FollowRequest) Targets() []int64 {
 
 func (f FollowRequest) Message() string {
 	msg := MessageContent{
-		Type:     "Follow",
+		Type:     "follow",
 		Action:   "request",
 		UserName: html.EscapeString(userGetName(f.requester)),
 		UserID:   f.requester.ID,

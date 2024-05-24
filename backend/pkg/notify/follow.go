@@ -28,7 +28,7 @@ func (f Follow) Message() string {
 		Action:   "follow",
 		UserName: html.EscapeString(userGetName(f.follower)),
 		UserID:   f.follower.ID,
-		Endpoint: fmt.Sprintf("/user/%v", f.follower.ID),
+		Endpoint: fmt.Sprintf("/profile/%v", f.follower.ID),
 	}
 
 	//return fmt.Sprintf("<strong>%v</strong> is now your follower!", html.EscapeString(userGetName(f.follower)))

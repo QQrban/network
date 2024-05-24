@@ -72,9 +72,9 @@ type MessageContent struct {
 	Endpoint   string `json:"endpoint"`
 }
 
-func (m MessageContent) JSON() string {
+func (m *MessageContent) JSON() string {
 	b := new(bytes.Buffer)
-	err := json.NewEncoder(b).Encode(m)
+	err := json.NewEncoder(b).Encode(*m)
 	if err != nil {
 		log.Println(err)
 	}

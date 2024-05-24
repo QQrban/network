@@ -130,11 +130,35 @@ func (model *MessageModel) GetNotifications(userID int64) ([]*Message, error) {
 }
 
 func (model *MessageModel) setLatestNotification(userID, latestID int64) error {
-	fmt.Println("sql:", model.queries.GetString("setLatestNotification"))
 	stmt := model.queries.Prepare("setLatestNotification")
 	_, err := stmt.Exec(userID, latestID)
 	if err != nil {
 		return fmt.Errorf("Message/setLatestNotification: %w", err)
 	}
 	return nil
+}
+
+func (model *MessageModel) GetAllNotifications(userID int64) ([]*Message, error) {
+	stmt := model.queries.Prepare("getAllNotifications")
+
+	rows, err := stmt.Query(userID)
+	if err != nil {
+		return nil, fmt.Errorf("Message/GetAllNotifications1: %w", err)
+	}
+	defer rows.Close()
+
+	messages := make([]*Message, 0)
+
+	for rows.Next() {
+		message := &Message{}
+		err = rows.Scan(message.pointerSlice()...)
+
+		if err != nil {
+			return nil, fmt.Errorf("Message/GetAllNotifications2: %w", err)
+		}
+
+		messages = append(messages, message)
+	}
+
+	return messages, nil
 }

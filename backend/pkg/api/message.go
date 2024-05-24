@@ -65,3 +65,12 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, notifications)
 }
+
+func GetAllNotifications(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	notifications, err := Database.Message.GetAllNotifications(session.UserID)
+	panicIfErr(err)
+
+	writeJSON(w, notifications)
+}

@@ -73,10 +73,11 @@ func prepare(rtr *router.Router) {
 	rtr.Post("/message/send", api.EnsureAuth(api.SendMessage))
 	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages)) // NB! What's this about?
 	rtr.Get("/notifications", api.EnsureAuth(api.GetNotifications))
+	rtr.Get("/notifications/all", api.EnsureAuth(api.GetAllNotifications))
 
 	rtr.Get("/stats", api.EnsureAuth(api.GetStats))
 	rtr.Get("/stats/user/([0-9]+)", api.EnsureAuth(api.GetUserStats))
 	rtr.Get("/stats/group/([0-9]+)", api.EnsureAuth(api.GetGroupStats))
 	rtr.Get("/stats/event/([0-9]+)", api.EnsureAuth(api.GetEventStats))
-	
+
 }

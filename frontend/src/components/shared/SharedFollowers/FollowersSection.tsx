@@ -151,8 +151,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         <>
           <FollowersCard
             peopleList={peopleList}
-            setFollowRequests={setFollowRequests}
-            followRequest={followRequest}
             activeTab={activeTab}
             id={id}
             unfollowHandler={unfollowHandler}

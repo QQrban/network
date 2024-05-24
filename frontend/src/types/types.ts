@@ -52,3 +52,16 @@ export interface PostProps {
   postID: number;
   status: "public";
 }
+
+export interface EventProps {
+  [x: string]: any;
+  ID: number;
+  authorID: number;
+  created: string;
+  description: string;
+  groupID: number;
+  myStatus: "Going" | "Not Going";
+  options: "Going,Not Going";
+  time: string;
+  title: string;
+}

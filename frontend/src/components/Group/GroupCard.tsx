@@ -19,10 +19,11 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Image from "next/image";
 import copyIcon from "../../../public/icons/copy.svg";
 import EventSection from "../Events/EventSection";
-import { yourEvents } from "../Events/mock";
 import GroupPostsSection from "./GroupPostsSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateEventModal from "./CreateEventModal";
+import { EventProps } from "@/types/types";
+import { fetchFromServer } from "@/lib/api";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -57,9 +58,36 @@ export default function GroupCard({
   groupID,
 }: GroupCardProps) {
   const [openEventModal, setOpenEventModal] = useState<boolean>(false);
+  const [events, setEvents] = useState<EventProps[]>([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue);
+  };
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await fetchFromServer(`/group/${groupID}/events`, {
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setEvents(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchGroups();
+  }, [groupID]);
+
+  const statusHandler = (eventID: number, status: "Going" | "Not Going") => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.ID === eventID ? { ...event, myStatus: status } : event
+      )
+    );
   };
 
   return (
@@ -197,7 +225,11 @@ export default function GroupCard({
             gap: "23px",
           }}
         >
-          <EventSection groupID={groupID} events={yourEvents} />
+          <EventSection
+            statusHandler={statusHandler}
+            groupID={groupID}
+            events={events}
+          />
         </Box>
       )}
       <CreateEventModal

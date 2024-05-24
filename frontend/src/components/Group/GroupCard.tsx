@@ -223,7 +223,7 @@ export default function GroupCard({
             />
           </Box>
         </Box>
-      ) : (
+      ) : events.length > 0 ? (
         <Box
           sx={{
             mt: "23px",
@@ -238,6 +238,16 @@ export default function GroupCard({
             events={events}
           />
         </Box>
+      ) : (
+        <Typography
+          sx={{
+            mt: "23px",
+            fontSize: "30px",
+            fontFamily: "Gloria Hallelujah !important",
+          }}
+        >
+          This group has no events yet!
+        </Typography>
       )}
       <CreateEventModal
         addNewEvent={addNewEvent}

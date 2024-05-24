@@ -19,6 +19,8 @@ export default function MiddleColumn() {
         credentials: "include",
       });
       const data = await response.json();
+      console.log(data);
+
       setMainPagePosts(data);
     };
     setShowLoading(true);

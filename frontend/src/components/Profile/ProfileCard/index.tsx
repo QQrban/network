@@ -68,8 +68,6 @@ export default function ProfileCard({
       setButtonBg(errorBtn.src);
     } else if (meToYouPending) {
       setFollowValue("Pending");
-    } else if (youToMePending) {
-      setFollowValue("Accept Follow");
     } else {
       setFollowValue("Follow");
       setButtonBg(successBtn.src);

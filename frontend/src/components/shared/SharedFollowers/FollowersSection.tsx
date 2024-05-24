@@ -38,14 +38,19 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
           }
         );
         const data = await response.json();
-
-        if (activeTab === "Followers" || activeTab === "Following") {
-          const people = data.filter(
-            (item: any) =>
-              !item.followInfo.youToMePending && !item.followInfo.meToYouPending
-          );
-          setPeopleList(people);
+        if (activeTab === "Followers") {
           console.log(data);
+          const people = data.filter((item: any) => {
+            const { youToMePending } = item.followInfo;
+            return !youToMePending;
+          });
+          setPeopleList(people);
+        } else if (activeTab === "Following") {
+          const people = data.filter((item: any) => {
+            const { youToMePending, meToYouPending, meToYou } = item.followInfo;
+            return (youToMePending && !meToYouPending) || meToYou;
+          });
+          setPeopleList(people);
         } else if (activeTab === "Requests") {
           const people = data.filter((item: any) => {
             return item.followInfo.youToMePending;

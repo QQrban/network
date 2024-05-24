@@ -54,7 +54,6 @@ export interface PostProps {
 }
 
 export interface EventProps {
-  [x: string]: any;
   ID: number;
   authorID: number;
   created: string;

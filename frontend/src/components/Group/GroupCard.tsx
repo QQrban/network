@@ -91,7 +91,10 @@ export default function GroupCard({
   };
 
   const addNewEvent = (newEvent: EventProps) => {
-    setEvents((prevEvents) => [{ ...newEvent }, ...prevEvents]);
+    setEvents((prevEvents) => [
+      { ...newEvent, myStatus: "Going" },
+      ...prevEvents,
+    ]);
   };
 
   return (

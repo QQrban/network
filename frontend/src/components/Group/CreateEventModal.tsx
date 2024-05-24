@@ -70,6 +70,8 @@ export default function CreateEventModal({
           resetForm();
           setOpenEventModal(false);
           const newEvent: EventProps = await response.json();
+          console.log(newEvent);
+
           addNewEvent(newEvent);
         } else {
           console.error("Registration failed");

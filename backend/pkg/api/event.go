@@ -34,7 +34,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if event.Options == "" {
-		event.Options = "Going,Not Going"
+		event.Options = "Interested,Not Interested"
 	}
 	id, err := Database.Event.Insert(*event)
 	panicIfErr(err)

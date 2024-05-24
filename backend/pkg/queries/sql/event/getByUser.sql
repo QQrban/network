@@ -4,3 +4,5 @@ FROM event e
       e.ID = eM.eventID AND
       eM.userID = ?1; --AND
       --eM.option = ?2;
+ORDER BY e.time DESC, e.ID DESC;
+

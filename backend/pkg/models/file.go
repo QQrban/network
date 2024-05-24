@@ -90,7 +90,7 @@ func (model FileModel) Insert(file io.Reader, filename string) (string, error) {
 
 func (model FileModel) Delete(token string) (bool, error) {
 	stmt := model.queries.Prepare("delete")
-	fmt.Printf("Del token: '%v'", token)
+
 	file, err := model.Get(token)
 	if err != nil {
 		return false, fmt.Errorf("File/Delete1: %w", err)

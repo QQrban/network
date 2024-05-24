@@ -23,8 +23,6 @@ export default function EventSection({
   events,
   statusHandler,
 }: EventSectionProps) {
-  console.log(events);
-
   const myStatusHandler = async (eventID: number, status: boolean) => {
     const eventStatus = status ? "Going" : "Not Going";
     const option: number = eventStatus === "Going" ? 1 : 2;
@@ -61,7 +59,6 @@ interface EventItemProps {
 
 function EventItem({ event, myStatusHandler }: EventItemProps) {
   const [open, setOpen] = useState<boolean>(false);
-  console.log(event);
 
   const handleConfirmClick = (status: boolean) => {
     if (status === false && event.myStatus === "Going") {
@@ -118,9 +115,6 @@ function EventItem({ event, myStatusHandler }: EventItemProps) {
             </Typography>
             <Typography sx={{ color: "#7d7d7d", fontSize: "16px" }}>
               {dayjs(event.time).format("MMM D YYYY, HH:mm")}
-            </Typography>
-            <Typography sx={{ color: "#2a2a2a6c" }}>
-              {event.location}
             </Typography>
           </Box>
         </Box>

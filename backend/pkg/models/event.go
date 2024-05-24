@@ -94,7 +94,6 @@ func (model EventModel) GetByGroup(groupID, myID int64) ([]*Event, error) {
 
 	for rows.Next() {
 		event := &Event{}
-
 		err = rows.Scan(append(event.pointerSlice(), &event.MyStatus)...)
 		if err != nil {
 			return nil, fmt.Errorf("Event/GetByGroup: %w", err)

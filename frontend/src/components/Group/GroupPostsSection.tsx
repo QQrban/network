@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import CreatePost from "../shared/Post/CreatePost";
 import PostsSection from "../shared/Post/PostsSection";
 import { fetchFromServer } from "@/lib/api";
-import { PostProps, CommentProps } from "@/types/types";
+import { PostProps, CommentProps, ContactsProps } from "@/types/types";
 import { Box, Typography } from "@mui/material";
 import CreatePostModal from "./CreatePostModal";
 
@@ -53,6 +53,20 @@ export default function GroupPostsSection({
     );
   };
 
+  const addLikeToPost = (postID: number, like: ContactsProps) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.postID === postID
+          ? { ...post, likes: [...(post.likes || []), like] }
+          : post
+      )
+    );
+  };
+
+  const deletePostFromList = async (postID: number) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.postID !== postID));
+  };
+
   return (
     <Box
       sx={{
@@ -64,7 +78,12 @@ export default function GroupPostsSection({
     >
       <CreatePost setOpenPostModal={setOpenPostModal} />
       {posts.length > 0 ? (
-        <PostsSection posts={posts} addCommentToPost={addCommentToPost} />
+        <PostsSection
+          addLikeToPost={addLikeToPost}
+          deletePostFromList={deletePostFromList}
+          posts={posts}
+          addCommentToPost={addCommentToPost}
+        />
       ) : (
         <Typography
           sx={{

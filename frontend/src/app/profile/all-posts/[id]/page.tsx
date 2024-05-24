@@ -45,6 +45,10 @@ export default function ShowAllPosts() {
     );
   };
 
+  const deletePostFromList = async (postID: number) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.postID !== postID));
+  };
+
   return (
     <Box sx={{ mt: "13px" }}>
       <Typography
@@ -88,6 +92,7 @@ export default function ShowAllPosts() {
             }}
           >
             <PostsSection
+              deletePostFromList={deletePostFromList}
               addLikeToPost={addLikeToPost}
               addCommentToPost={addCommentToPost}
               posts={posts}

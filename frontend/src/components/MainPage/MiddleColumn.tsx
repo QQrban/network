@@ -55,6 +55,12 @@ export default function MiddleColumn() {
     );
   };
 
+  const deletePostFromList = async (postID: number) => {
+    setMainPagePosts((prevPosts) =>
+      prevPosts.filter((post) => post.postID !== postID)
+    );
+  };
+
   return (
     <Box sx={{ width: "600px" }}>
       <Box sx={{ width: "100%" }}>
@@ -70,6 +76,7 @@ export default function MiddleColumn() {
       >
         {mainPagePosts.length > 0 ? (
           <PostsSection
+            deletePostFromList={deletePostFromList}
             addLikeToPost={addLikeToPost}
             posts={mainPagePosts}
             addCommentToPost={addCommentToPost}

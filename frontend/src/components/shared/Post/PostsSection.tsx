@@ -34,13 +34,16 @@ interface PostsSectionProps {
   posts: PostProps[];
   addCommentToPost: (postID: number, comment: CommentProps) => void;
   addLikeToPost: (postID: number, like: ContactsProps) => void;
+  deletePostFromList: (postID: number) => void;
 }
 
 export default function PostsSection({
   posts,
   addCommentToPost,
   addLikeToPost,
+  deletePostFromList,
 }: PostsSectionProps) {
+  const [postID, setPostID] = useState<number>(0);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -62,23 +65,25 @@ export default function PostsSection({
   };
 
   const deletePost = async (postID: number) => {
-    console.log(postID);
-
     try {
       const response = await fetchFromServer(`/post/${postID}`, {
         method: "DELETE",
         credentials: "include",
       });
-      console.log(response);
 
       if (response.ok) {
-        const data = await response.json();
-        console.log(data);
+        deletePostFromList(postID);
+        setOpen(false);
       }
       console.log(response);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const openModal = (postID: number) => {
+    setPostID(postID);
+    setOpen(true);
   };
 
   return (
@@ -146,7 +151,6 @@ export default function PostsSection({
                 <SpeedDial
                   sx={{
                     cursor: "pointer",
-
                     position: "absolute",
                     top: "6px",
                     right: "-2px",
@@ -203,7 +207,7 @@ export default function PostsSection({
                   />
                   {userData.id === post.author.ID && (
                     <SpeedDialAction
-                      onClick={() => deletePost(post.postID)}
+                      onClick={() => openModal(post.postID)}
                       icon={
                         <Image
                           width={30}
@@ -295,9 +299,7 @@ export default function PostsSection({
         dialogText=""
         open={open}
         setOpen={setOpen}
-        onConfirm={function (): void {
-          // deletePost(post.postID);
-        }}
+        onConfirm={() => deletePost(postID)}
       />
       <PostImageDialog
         selectedImage={selectedImage}

@@ -30,7 +30,7 @@ export default function ShowPost({ pathname }: Props) {
       fetchFollowingPosts();
       setShowLoading(false);
     }, 500);
-  }, []);
+  }, [pathname]);
 
   const addCommentToPost = (postID: number, comment: CommentProps) => {
     setMainPagePosts((prevPosts) =>
@@ -52,6 +52,12 @@ export default function ShowPost({ pathname }: Props) {
     );
   };
 
+  const deletePostFromList = async (postID: number) => {
+    setMainPagePosts((prevPosts) =>
+      prevPosts.filter((post) => post.postID !== postID)
+    );
+  };
+
   return (
     <Box sx={{ width: "600px" }}>
       <Box
@@ -64,6 +70,7 @@ export default function ShowPost({ pathname }: Props) {
       >
         {mainPagePosts ? (
           <PostsSection
+            deletePostFromList={deletePostFromList}
             posts={mainPagePosts}
             addCommentToPost={addCommentToPost}
             addLikeToPost={addLikeToPost}

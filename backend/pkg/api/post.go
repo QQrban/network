@@ -275,7 +275,6 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 			writeStatusError(w, http.StatusNotFound)
 			return
 		}
-		authorID := post.AuthorID
 		go func() {
 			defer close(done)
 			me, err := Database.User.GetByID(session.UserID)
@@ -283,7 +282,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 				log.Println(err)
 			}
 
-			Notify.PostLiked(me, authorID)
+			Notify.PostLiked(me, post)
 		}()
 		<-done
 	}

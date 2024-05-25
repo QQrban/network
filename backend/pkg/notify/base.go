@@ -61,15 +61,17 @@ func NewNotifier(db *database.Database) *Notifier {
 }
 
 type MessageContent struct {
-	Type       string `json:"type"`
-	Action     string `json:"action"`
-	UserName   string `json:"userName"`
-	UserID     int64  `json:"userID"`
-	GroupTitle string `json:"groupTitle"`
-	GroupID    int64  `json:"groupID"`
-	EventTitle string `json:"eventTitle"`
-	EventID    int64  `json:"eventID"`
-	Endpoint   string `json:"endpoint"`
+	Type        string `json:"type"`
+	Action      string `json:"action"`
+	UserName    string `json:"userName"`
+	UserID      int64  `json:"userID"`
+	GroupTitle  string `json:"groupTitle"`
+	GroupID     int64  `json:"groupID"`
+	EventTitle  string `json:"eventTitle"`
+	EventID     int64  `json:"eventID"`
+	Endpoint    string `json:"endpoint"`
+	PostID      int64  `json:"postID"`
+	PostContent string `json:"postContent"`
 }
 
 func (m *MessageContent) JSON() string {

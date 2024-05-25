@@ -74,6 +74,8 @@ export interface NotificationProps {
     eventTitle: string;
     groupID: number;
     groupTitle: string;
+    postID: number;
+    postContent: string;
     type: "follow" | "event" | "group" | "post";
     userID: number;
     userName: string;

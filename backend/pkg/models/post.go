@@ -417,7 +417,7 @@ func (model PostModel) InsertAllowedUser(postID, userID int64) error {
 	return nil
 }
 
-func (model PostModel) Like(postID, userID int64) (int, error) {
+func (model PostModel) Like(postID, userID int64) (int, string, error) {
 	stmt := model.queries.Prepare("hasLiked")
 	res := stmt.QueryRow(postID, userID)
 
@@ -425,22 +425,23 @@ func (model PostModel) Like(postID, userID int64) (int, error) {
 	err := res.Scan(&hasLiked)
 
 	if err != nil {
-		return -1, fmt.Errorf("Post/Like1: %w", err)
+		return -1, "", fmt.Errorf("Post/Like1: %w", err)
 	}
+	typ := ""
 	if hasLiked {
 		stmt := model.queries.Prepare("unlike")
 		_, err := stmt.Exec(postID, userID)
-
+		typ = "-"
 		if err != nil {
-			return -1, fmt.Errorf("Post/Like2: %w", err)
+			return -1, "", fmt.Errorf("Post/Like2: %w", err)
 		}
 	} else {
 		stmt := model.queries.Prepare("like")
-
 		_, err := stmt.Exec(postID, userID)
+		typ = "+"
 
 		if err != nil {
-			return -1, fmt.Errorf("Post/Like3: %w", err)
+			return -1, "", fmt.Errorf("Post/Like3: %w", err)
 		}
 	}
 
@@ -451,10 +452,10 @@ func (model PostModel) Like(postID, userID int64) (int, error) {
 	err = res.Scan(&likes)
 
 	if err != nil {
-		return -1, fmt.Errorf("Post/Like4: %w", err)
+		return -1, "", fmt.Errorf("Post/Like4: %w", err)
 	}
 
-	return likes, nil
+	return likes, typ, nil
 }
 
 func (model PostModel) Delete(postID int64) error {

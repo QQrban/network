@@ -184,8 +184,6 @@ func GetPostByID(w http.ResponseWriter, r *http.Request) {
 		}
 	}*/
 
-
-
 	writeJSON(w, post)
 }
 
@@ -266,8 +264,29 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	slug := router.GetSlug(r, 0)
 	postID, _ := strconv.ParseInt(slug, 10, 64)
 
-	likes, err := Database.Post.Like(postID, session.UserID)
+	likes, typ, err := Database.Post.Like(postID, session.UserID)
 	panicIfErr(err)
+
+	if typ == "+" {
+		done := make(chan bool)
+		post, err := Database.Post.GetByID(postID)
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusNotFound)
+			return
+		}
+		authorID := post.AuthorID
+		go func() {
+			defer close(done)
+			me, err := Database.User.GetByID(session.UserID)
+			if err != nil {
+				log.Println(err)
+			}
+
+			Notify.PostLiked(me, authorID)
+		}()
+		<-done
+	}
 
 	writeJSON(w, likes)
 }

@@ -30,7 +30,6 @@ func (f PostLiked) Message() string {
 		UserID:   f.liker.ID,
 		Endpoint: fmt.Sprintf("/profile/%v", f.liker.ID),
 	}
-	//return fmt.Sprintf("You are now following <strong>%v</strong>!", html.EscapeString(userGetName(f.accepter)))
 	return fmt.Sprintf("%v", msg.JSON())
 }
 

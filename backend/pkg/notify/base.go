@@ -120,7 +120,7 @@ func (n Notifier) notify(msg Notification) {
 		log.Println(err)
 	}
 
-	_, err = http.Post(fmt.Sprintf("http://%v:8888/notify", frontend_host), "", b)
+	_, err = http.Post(fmt.Sprintf("http://%v:8888/notify", frontend_host), "", b) //8080
 	if err != nil {
 		log.Printf("could not notify notification: %v\n", err)
 	}

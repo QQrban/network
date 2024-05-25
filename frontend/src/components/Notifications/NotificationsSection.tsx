@@ -4,22 +4,35 @@ import { Item } from "../shared/Item";
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import eventBg from "../../../public/eventBG.svg";
-import { Notification } from "./mock";
 import Link from "next/link";
+import { NotificationProps } from "@/types/types";
 
 interface NotificationSectionProps {
-  notifications: Notification[];
+  notifications: NotificationProps[];
   page?: string;
 }
 
 export default function NotificationsSection({
   notifications,
 }: NotificationSectionProps) {
+  function getNotificationLink(notification: NotificationProps): string {
+    switch (notification.content.type) {
+      case "follow":
+        return `/profile/${notification.content.userID}`;
+      case "group":
+        return `/groups/${notification.content.groupID}`;
+      case "post":
+        return `/post/${notification.content.eventID}`;
+      default:
+        return "#";
+    }
+  }
+
   return (
     <>
       {notifications.map((notification) => (
         <Item
-          key={notification.id}
+          key={notification.ID}
           sx={{
             backgroundImage: `url(${eventBg.src})`,
             width: "100%",
@@ -33,48 +46,35 @@ export default function NotificationsSection({
           }}
           radius="12px"
         >
-          <Link href={`/post/${notification.postId}`}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "10px",
-                }}
-              >
-                <Box>
-                  <Image
-                    src={notification.img}
-                    alt={notification.reaction}
-                    width={28}
-                    height={28}
-                  />
-                </Box>
-                <Box>
-                  <Typography
-                    sx={{
-                      fontSize: "22px",
-                      fontWeight: 600,
-                      fontFamily: "Schoolbell !important",
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {notification.reaction}
-                  </Typography>
-                </Box>
+          {/* type: "follow" | "event" | "group" | "post"; 
+          follow - should link to `/profile/${userID}`
+          event - forget about it for now
+          group - `/groups/${groupID}`
+          post - /post/${notification.postId}
+          */}
+          <Link href={getNotificationLink(notification)}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Box sx={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+                {/* <Image
+                  src={`/icons/${notification.content.action}.svg`}
+                  alt={notification.content.action}
+                  width={28}
+                  height={28}
+                /> */}
+                <Typography
+                  sx={{
+                    fontSize: "22px",
+                    fontWeight: 600,
+                    fontFamily: "Schoolbell !important",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {notification.content.action}
+                </Typography>
               </Box>
-            </Box>
-            <Box
-              sx={{
-                fontSize: "16px",
-              }}
-            >
-              {notification.description}
+              <Typography sx={{ fontSize: "16px" }}>
+                {notification.content.userName} {notification.content.action}
+              </Typography>
             </Box>
           </Link>
         </Item>

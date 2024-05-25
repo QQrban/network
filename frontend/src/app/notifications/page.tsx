@@ -11,7 +11,7 @@ import { fetchFromServer } from "@/lib/api";
 import { NotificationProps } from "@/types/types";
 
 export default function Notifications() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  // const [notifications, setNotifications] = useState<Notification[]>([]);
   const [iNotifications, setINotifications] = useState<NotificationProps[]>([]);
 
   useEffect(() => {
@@ -36,13 +36,6 @@ export default function Notifications() {
 
   console.log(iNotifications);
 
-  useEffect(() => {
-    const filteredNotifications = yourNotifications.filter(
-      (notification) => notification.unread
-    );
-    setNotifications(filteredNotifications);
-  }, []);
-
   return (
     <Box
       sx={{
@@ -58,7 +51,7 @@ export default function Notifications() {
       >
         Notifications
       </Typography>
-      {notifications.length > 0 ? (
+      {iNotifications.length > 0 ? (
         <Box
           sx={{
             mt: "23px",
@@ -68,7 +61,7 @@ export default function Notifications() {
             width: "700px",
           }}
         >
-          <NotificationsSection notifications={notifications} />
+          <NotificationsSection notifications={iNotifications} />
         </Box>
       ) : (
         <Typography sx={{ fontSize: "30px" }}>

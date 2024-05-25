@@ -235,7 +235,9 @@ export default function PostsSection({
                   p: "5px 17px",
                 }}
               >
-                <Typography>{post.content}</Typography>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {post.content}
+                </Typography>
               </Box>
               {postImages && postImages.length > 0 && (
                 <Box sx={{ display: "flex" }}>

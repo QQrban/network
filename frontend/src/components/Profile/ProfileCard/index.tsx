@@ -49,8 +49,6 @@ export default function ProfileCard({
 
   const profile = useSelector((state: any) => state.profileReducer.value);
 
-  console.log(profile);
-
   const { meToYou, meToYouPending, youToMePending } = profile.followInfo;
 
   const handleTabClick = (tabName: String) => {
@@ -68,6 +66,7 @@ export default function ProfileCard({
       setButtonBg(errorBtn.src);
     } else if (meToYouPending) {
       setFollowValue("Pending");
+      setButtonBg(successBtn.src);
     } else {
       setFollowValue("Follow");
       setButtonBg(successBtn.src);
@@ -88,35 +87,35 @@ export default function ProfileCard({
 
   const followHandler = async () => {
     const action = requestValue[followValue];
-    if (action !== "pending") {
-      try {
-        const response = await fetchFromServer(
-          `/user/${profile.id}/${action}`,
-          {
-            method: "POST",
-            credentials: "include",
-          }
-        );
-        if (response.ok) {
-          if (action === "follow") {
-            if (hasAccess && !privateProfile) {
-              setFollowValue("Unfollow");
-              setButtonBg(errorBtn.src);
-            } else {
-              setFollowValue("Pending");
-              setButtonBg(successBtn.src);
-            }
-          } else if (action === "unfollow") {
-            setFollowValue("Follow");
+    console.log(action);
+
+    try {
+      const response =
+        action !== "pending" &&
+        (await fetchFromServer(`/user/${profile.id}/${action}`, {
+          method: "POST",
+          credentials: "include",
+        }));
+      if (response.ok) {
+        if (action === "follow") {
+          if (hasAccess && !privateProfile) {
+            setFollowValue("Unfollow");
+            setButtonBg(errorBtn.src);
+          } else {
+            setFollowValue("Pending");
             setButtonBg(successBtn.src);
-            if (privateProfile) {
-              setHasAccess(false);
-            }
+          }
+        } else if (action === "unfollow") {
+          setFollowValue("Follow");
+          setSelectedTab("Main Board");
+          setButtonBg(successBtn.src);
+          if (privateProfile) {
+            setHasAccess(false);
           }
         }
-      } catch (error) {
-        console.error(error);
       }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -227,7 +226,7 @@ export default function ProfileCard({
         )}
       </Box>
 
-      {!privateProfile || isYourProfile ? (
+      {!privateProfile || isYourProfile || hasAccess ? (
         <>
           <Divider sx={{ mt: "11px" }} />
           <Box

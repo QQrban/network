@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import CreatePostModal from "../Group/CreatePostModal";
 import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
-import CircularIndeterminate from "../shared/LoadingCircular";
+import CircularIndeterminate from "../shared/CircularIndeterminate";
 
 export default function MiddleColumn() {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
@@ -19,7 +19,6 @@ export default function MiddleColumn() {
         credentials: "include",
       });
       const data = await response.json();
-      console.log(data);
 
       setMainPagePosts(data);
     };
@@ -42,7 +41,9 @@ export default function MiddleColumn() {
   const addCommentToPost = (postID: number, comment: CommentProps) => {
     setMainPagePosts((prevPosts) =>
       prevPosts.map((post) =>
-        post.postID === postID ? { ...post, comments: [...[], comment] } : post
+        post.postID === postID
+          ? { ...post, comments: [...post.comments, comment] }
+          : post
       )
     );
   };

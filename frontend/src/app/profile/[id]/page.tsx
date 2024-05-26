@@ -17,6 +17,7 @@ import { PostProps } from "@/types/types";
 
 export default function ProfilePage() {
   const [posts, setPosts] = useState<PostProps[]>([]);
+  const [profilePosts, setProfilePosts] = useState<PostProps[]>([]);
   const [selectedTab, setSelectedTab] = useState<String>("Main Board");
   const [hasAccess, setHasAccess] = useState<boolean>(false);
 
@@ -67,14 +68,19 @@ export default function ProfilePage() {
     fetchData();
   }, [pathname, dispatch]);
 
+  useEffect(() => {
+    setProfilePosts(posts);
+  }, [posts]);
+
   const renderContent = () => {
     switch (selectedTab) {
       case "Main Board":
         return (
           <MainBoard
+            setProfilePosts={setProfilePosts}
             isYourProfile={isYourProfile}
             pathname={pathname}
-            posts={posts}
+            profilePosts={profilePosts}
             setSelectedTab={setSelectedTab}
             hasAccess={hasAccess}
           />
@@ -84,7 +90,7 @@ export default function ProfilePage() {
       case "Photos":
         return (
           <PhotosContent
-            posts={posts}
+            posts={profilePosts}
             setSelectedTab={setSelectedTab}
             isMainBoard={false}
           />
@@ -92,9 +98,10 @@ export default function ProfilePage() {
       default:
         return (
           <MainBoard
+            setProfilePosts={setProfilePosts}
             isYourProfile={isYourProfile}
             pathname={pathname}
-            posts={posts}
+            profilePosts={profilePosts}
             setSelectedTab={setSelectedTab}
             hasAccess={hasAccess}
           />

@@ -69,7 +69,6 @@ export default function CreateGroupModal({
           credentials: "include",
         });
         if (response.ok) {
-          console.log("Group created");
           setOperationSuccessful(true);
           resetForm();
           const id = setTimeout(() => {
@@ -79,7 +78,6 @@ export default function CreateGroupModal({
           setCreatedGroup(true);
         } else {
           setOperationSuccessful(false);
-          console.log(response);
         }
       } catch (error) {
         console.error("Error during login:", error);

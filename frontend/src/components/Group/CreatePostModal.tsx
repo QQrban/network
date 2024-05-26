@@ -86,13 +86,11 @@ export default function CreatePostModal({
 
       if (response.ok) {
         const newPost: PostProps = await response.json();
-        console.log(newPost);
         resetForm();
         setSelectedImages([]);
         addNewPost(newPost);
         handleClose();
       } else {
-        console.log(response);
       }
     },
   });

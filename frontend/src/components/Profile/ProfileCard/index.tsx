@@ -87,7 +87,6 @@ export default function ProfileCard({
 
   const followHandler = async () => {
     const action = requestValue[followValue];
-    console.log(action);
 
     try {
       const response =

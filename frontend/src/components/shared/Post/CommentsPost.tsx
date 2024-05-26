@@ -3,12 +3,14 @@ import Image from "next/image";
 import noPhoto from "../../../../public/icons/profile.svg";
 import { CommentProps } from "@/types/types";
 import dayjs from "dayjs";
+import ProfileImage from "../ProfileImage";
 
 interface CommentPostProps {
   comments: CommentProps[];
 }
 
 export default function CommentsPost({ comments }: CommentPostProps) {
+
   return (
     <>
       {comments?.map((comment) => (
@@ -25,17 +27,7 @@ export default function CommentsPost({ comments }: CommentPostProps) {
               gap: "5px",
             }}
           >
-            <Box
-              sx={{
-                width: "36px",
-                height: "36px",
-                border: "2px solid #4a4a4a",
-                borderRadius: "50%",
-                overflow: "hidden",
-              }}
-            >
-              <Image src={noPhoto} alt="profile pic" />
-            </Box>
+            <ProfileImage image={comment.author.image} width={36} height={36} />
             <Box
               sx={{
                 display: "flex",

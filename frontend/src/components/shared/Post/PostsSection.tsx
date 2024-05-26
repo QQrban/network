@@ -75,7 +75,6 @@ export default function PostsSection({
         deletePostFromList(postID);
         setOpen(false);
       }
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -125,7 +124,7 @@ export default function PostsSection({
                     <ProfileImage
                       width={40}
                       height={40}
-                      image={userData.image}
+                      image={post.author.image}
                     />
                     <Box>
                       <Typography

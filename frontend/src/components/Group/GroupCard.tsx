@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import CreateEventModal from "./CreateEventModal";
 import { EventProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
+import InviteUsers from "./InviteUsers";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -57,6 +58,7 @@ export default function GroupCard({
   pathName,
   groupID,
 }: GroupCardProps) {
+  const [openInviteModal, setOpenInviteModal] = useState<boolean>(false);
   const [openEventModal, setOpenEventModal] = useState<boolean>(false);
   const [events, setEvents] = useState<EventProps[]>([]);
 
@@ -131,7 +133,11 @@ export default function GroupCard({
             }}
           >
             <Box sx={{ width: "120px" }}>
-              <ConfirmBtn backgroundImage={confirmBtn.src} text="Invite" />
+              <ConfirmBtn
+                onClick={() => setOpenInviteModal(true)}
+                backgroundImage={confirmBtn.src}
+                text="Invite"
+              />
             </Box>
             <Box sx={{ width: "190px" }}>
               <ConfirmBtn
@@ -254,6 +260,11 @@ export default function GroupCard({
         groupID={groupID}
         openEventModal={openEventModal}
         setOpenEventModal={setOpenEventModal}
+      />
+      <InviteUsers
+        groupID={groupID}
+        openInviteModal={openInviteModal}
+        setOpenInviteModal={setOpenInviteModal}
       />
     </Box>
   );

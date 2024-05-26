@@ -17,22 +17,19 @@ interface Props {
   hasAccess: boolean;
   isYourProfile: boolean;
   pathname: string | undefined;
-  posts: PostProps[];
+  profilePosts: PostProps[];
+  setProfilePosts: React.Dispatch<React.SetStateAction<PostProps[]>>;
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
 }
 
 export default function MainBoard({
   setSelectedTab,
-  posts,
+  profilePosts,
+  setProfilePosts,
   isYourProfile,
   hasAccess,
 }: Props) {
-  const [profilePosts, setProfilePosts] = useState<PostProps[]>([]);
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
-
-  useEffect(() => {
-    setProfilePosts(posts);
-  }, [posts]);
 
   const profile = useSelector((state: any) => state.profileReducer.value);
 
@@ -173,7 +170,7 @@ export default function MainBoard({
               </Typography>
             </Item>
             <PhotosContent
-              posts={posts}
+              posts={profilePosts}
               setSelectedTab={setSelectedTab}
               isMainBoard={true}
             />

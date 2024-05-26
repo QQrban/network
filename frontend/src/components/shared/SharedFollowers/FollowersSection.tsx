@@ -39,7 +39,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         );
         const data = await response.json();
         if (activeTab === "Followers") {
-          console.log(data);
           const people = data.filter((item: any) => {
             const { youToMePending } = item.followInfo;
             return !youToMePending;
@@ -120,8 +119,6 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
         credentials: "include",
       });
       if (response.ok) {
-        console.log(peopleList);
-
         setPeopleList((prevList: any[]) =>
           prevList.map((person) =>
             person.ID === userID

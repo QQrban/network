@@ -29,8 +29,6 @@ export default function FollowersCard({
   unfollowHandler,
   follow,
 }: Props) {
-  console.log(peopleList);
-
   return (
     <>
       {peopleList?.length ? (

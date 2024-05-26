@@ -5,7 +5,7 @@ import PostsSection from "../shared/Post/PostsSection";
 import { useEffect, useState } from "react";
 import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
-import CircularIndeterminate from "../shared/LoadingCircular";
+import CircularIndeterminate from "../shared/CircularIndeterminate";
 
 interface Props {
   pathname: string | undefined;

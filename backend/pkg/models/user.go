@@ -500,3 +500,22 @@ func (model *UserModel) GetStatus(myID int64) (bool, error) {
 
 	return status, nil
 }
+
+func (model *UserModel) UpdateAvatar(myID int64, newToken string) error {
+	user, err := model.GetByID(myID)
+	if err != nil {
+		return fmt.Errorf("User/UpdateAvatar1: %w", err)
+	}
+	oldToken := *user.Image
+	fileModel := MakeFileModel(model.db)
+	fileModel.Delete(oldToken)
+	
+	stmt := model.queries.Prepare("updateAvatar")
+
+	_, err = stmt.Exec(myID, newToken)
+	if err != nil {
+		return fmt.Errorf("User/UpdateAvatar2: %w", err)
+	}
+
+	return nil
+}

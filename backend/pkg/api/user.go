@@ -277,3 +277,35 @@ func UpdateStatus(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, status)
 }
+
+func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+	// Get new avatar from request
+	err := r.ParseMultipartForm(32 << 10)
+	if err != nil {
+		log.Println(err)
+		writeStatusError(w, http.StatusBadRequest)
+		return
+	}
+
+	// Save images
+	var token string
+	if len(r.MultipartForm.File["avatar"]) > 0 {
+		// Enforce the limit on the number of files.
+		if len(r.MultipartForm.File["avatar"]) > 1 {
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+		token, err = FileUpload(w, r, "avatar")
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}
+
+	err = Database.User.UpdateAvatar(session.UserID, token)
+	panicIfErr(err)
+
+	writeJSON(w, token)
+}

@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^2.2.3",
     "cookie": "^0.6.0",
     "dayjs": "^1.11.10",
+    "emoji-picker-react": "^4.9.3",
     "formik": "^2.4.6",
     "js-cookie": "^3.0.5",
     "luxon": "^3.4.4",

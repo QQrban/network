@@ -96,11 +96,11 @@ export default function MainScreen({ children }: { children: ReactNode }) {
             width: "5px",
           },
           "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#ccc",
+            backgroundColor: "#b0b0b0",
             borderRadius: "10px",
           },
           "&::-webkit-scrollbar-track": {
-            backgroundColor: "transparent",
+            backgroundColor: "#ccc",
           },
         }}
       >

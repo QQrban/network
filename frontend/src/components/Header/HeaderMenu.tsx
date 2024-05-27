@@ -16,15 +16,17 @@ export default function HeaderMenu() {
       }}
     >
       <TooltipStyled title="Chat">
-        <IconButton>
-          <Badge badgeContent={4} color="error">
-            <Image
-              style={{ width: "32px", height: "32px" }}
-              src={mailIcon}
-              alt="Profile"
-            />
-          </Badge>
-        </IconButton>
+        <Link href="/chat">
+          <IconButton>
+            <Badge badgeContent={4} color="error">
+              <Image
+                style={{ width: "32px", height: "32px" }}
+                src={mailIcon}
+                alt="Profile"
+              />
+            </Badge>
+          </IconButton>
+        </Link>
       </TooltipStyled>
       <TooltipStyled title="Notifications">
         <Link href={`/notifications/`}>

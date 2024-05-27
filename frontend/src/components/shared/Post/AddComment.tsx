@@ -1,14 +1,12 @@
 import { Box, IconButton, styled } from "@mui/material";
-import Image from "next/image";
-import noPhoto from "../../../../public/icons/profile.svg";
 import confirmBtn from "../../../../public/icons/confirmButton.svg";
-import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { useState } from "react";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import { fetchFromServer } from "@/lib/api";
 import { CommentProps } from "@/types/types";
 import { useSelector } from "react-redux";
 import ProfileImage from "../ProfileImage";
+import { TextareaAutosize } from "../styles";
 
 interface AddCommentProps {
   inputRef: React.RefObject<HTMLTextAreaElement>;
@@ -90,32 +88,3 @@ export default function AddComment({
     </Box>
   );
 }
-
-const TextareaAutosize = styled(BaseTextareaAutosize)(
-  () => `
-  box-sizing: border-box;
-  width: 100%;
-  font-family: 'Comic Neue', sans-serif;
-  font-size: 15px;
-  resize: none;
-  line-height: 1.5;
-  padding: 8px 75px 8px 12px;
-  border-radius: 8px;
-  color: #1C2025;
-  background: #fff;
-  border: 2px solid #868686;
-  box-shadow: 0px 2px 2px #F3F6F9;
-  &:hover {
-    border-color: #3399FF;
-  }
-  &:focus {
-    border-color: #3399FF;
-    box-shadow: 0 0 0 3px #80BFFF;
-  }
-
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`
-);

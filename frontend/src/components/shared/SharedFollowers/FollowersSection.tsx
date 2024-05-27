@@ -38,6 +38,7 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
           }
         );
         const data = await response.json();
+
         if (activeTab === "Followers") {
           const people = data.filter((item: any) => {
             const { youToMePending } = item.followInfo;
@@ -45,11 +46,16 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
           });
           setPeopleList(people);
         } else if (activeTab === "Following") {
-          const people = data.filter((item: any) => {
-            const { youToMePending, meToYouPending, meToYou } = item.followInfo;
-            return (youToMePending && !meToYouPending) || meToYou;
-          });
-          setPeopleList(people);
+          if (profileId === id) {
+            const people = data.filter((item: any) => {
+              const { youToMePending, meToYouPending, meToYou } =
+                item.followInfo;
+              return (youToMePending && !meToYouPending) || meToYou;
+            });
+            setPeopleList(people);
+          } else {
+            setPeopleList(data);
+          }
         } else if (activeTab === "Requests") {
           const people = data.filter((item: any) => {
             return item.followInfo.youToMePending;
@@ -59,7 +65,7 @@ export default function FollowersSection({ activeTab, profileId }: Props) {
       }
     };
     getFollowers();
-  }, [profileId, activeTab]);
+  }, [profileId, activeTab, id]);
 
   const unfollowHandler = async (
     event: React.MouseEvent,

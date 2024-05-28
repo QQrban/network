@@ -33,8 +33,13 @@ func main() {
 
 	go CleanupDB(db)
 
+	// Create a root ctx and a CancelFunc which can be used to cancel retentionMap goroutine
+	//rootCtx := context.Background()
+	//ctx, cancel := context.WithCancel(rootCtx)
+
+	//defer cancel()
 	rtr := router.New()
-	prepare(&rtr)
+	prepare(&rtr) //, ctx
 
 	log.Println("Backend listening on http://localhost:8888")
 	log.Panic(http.ListenAndServe(":8888", CORS(router.ApplyMiddleware(

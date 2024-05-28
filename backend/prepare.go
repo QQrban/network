@@ -1,12 +1,15 @@
 package main
 
 import (
+	"net/http"
 	"social-network/pkg/api"
 	"social-network/pkg/router"
 )
 
 // Prepare sets up the router with checks and routes.
-func prepare(rtr *router.Router) {
+func prepare(rtr *router.Router) { //, ctx context.Context
+	// Create a Manager instance used to handle WebSocket Connections
+	//manager := api.NewManager(ctx)
 
 	rtr.Get("/check-auth", api.EnsureAuth(api.CheckAuth))
 	rtr.Get("/user/known", api.EnsureAuth(api.GetKnownUsers))
@@ -75,10 +78,17 @@ func prepare(rtr *router.Router) {
 	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages)) // NB! What's this about?
 	rtr.Get("/notifications", api.EnsureAuth(api.GetNotifications))
 	rtr.Get("/notifications/all", api.EnsureAuth(api.GetAllNotifications))
+	rtr.Get("/ws", api.EnsureAuth(api.WSHandler)) //(manager.ServeWS)) //
+	//rtr.Post("/localLogin", api.EnsureAuth(manager.LoginHandler))
 
 	rtr.Get("/stats", api.EnsureAuth(api.GetStats))
 	rtr.Get("/stats/user/([0-9]+)", api.EnsureAuth(api.GetUserStats))
 	rtr.Get("/stats/group/([0-9]+)", api.EnsureAuth(api.GetGroupStats))
 	rtr.Get("/stats/event/([0-9]+)", api.EnsureAuth(api.GetEventStats))
 
+	rtr.Get("/", Index)
+}
+
+func Index(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "index.html")
 }

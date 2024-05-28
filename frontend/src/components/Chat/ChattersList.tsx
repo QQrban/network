@@ -7,7 +7,11 @@ import { ListItemIcon, Typography } from "@mui/material";
 import ProfileAvatar from "../Profile/ProfileCard/ProfileAvatar";
 import ProfileImage from "../shared/ProfileImage";
 
-export default function PeopleList() {
+interface ChattersListProps {
+  content: string;
+}
+
+export default function ChattersList({ content }: ChattersListProps) {
   return (
     <List aria-label="contacts">
       <Item radius="8px">
@@ -19,7 +23,7 @@ export default function PeopleList() {
             <ListItemText
               primary={
                 <Typography sx={{ fontFamily: "Gloria Hallelujah !important" }}>
-                  Firstname Lastname
+                  {content === "private" ? "Firstname Lastname" : "Groupname"}
                 </Typography>
               }
             />
@@ -35,7 +39,7 @@ export default function PeopleList() {
             <ListItemText
               primary={
                 <Typography sx={{ fontFamily: "Gloria Hallelujah !important" }}>
-                  Firstname Lastname
+                  {content === "private" ? "Firstname Lastname" : "Groupname"}
                 </Typography>
               }
             />

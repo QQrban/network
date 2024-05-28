@@ -71,6 +71,23 @@ export default function MainScreen({ children }: { children: ReactNode }) {
     fetchSuggestions();
   }, [auth, dispatch]);
 
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8888/ws");
+    console.log(socket);
+
+    socket.onopen = () => {
+      console.log("Connected to WebSocket server");
+    };
+
+    socket.onclose = () => {
+      console.log("Disconnected from WebSocket server");
+    };
+
+    return () => {
+      socket.close();
+    };
+  }, []);
+  
   if (showLoading) {
     return <LoadingScreen />;
   }

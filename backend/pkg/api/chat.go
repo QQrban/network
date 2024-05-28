@@ -23,7 +23,7 @@ var (
 
 func checkOrigin(r *http.Request) bool {
 	origin := r.Header.Get("Origin")
-	fmt.Println("origin", origin)
+	//fmt.Println("origin", origin)
 
 	switch origin {
 	case "http://localhost:3000":
@@ -48,11 +48,46 @@ func NewManager() *Manager {
 	return m
 }
 
+const (
+	EventSendMessage = "send_message"
+	EventNewMessage = "new_message"
+)
+
 func (m *Manager) setupEventHandlers() {
-	m.handlers[EventSendMessage] = func(e Event, c *Client) error {
-		fmt.Println(e)
-		return nil
+	m.handlers[EventSendMessage] = SendMessageHandler
+}
+
+// SendMessageHandler will send out a message to all other participants in the chat
+func SendMessageHandler(event Event, c *Client) error {
+	// Marshal Payload into wanted format
+	var chatevent SendMessageEvent
+	if err := json.Unmarshal(event.Payload, &chatevent); err != nil {
+		return fmt.Errorf("bad payload in request: %v", err)
 	}
+
+	// Prepare an Outgoing Message to others
+	var broadMessage NewMessageEvent
+
+	broadMessage.Sent = time.Now()
+	broadMessage.Message = chatevent.Message
+	broadMessage.From = chatevent.From
+
+	data, err := json.Marshal(broadMessage)
+	if err != nil {
+		return fmt.Errorf("failed to marshal broadcast message: %v", err)
+	}
+
+	// Place payload into an Event
+	var outgoingEvent Event
+	outgoingEvent.Payload = data
+	outgoingEvent.Type = EventNewMessage
+	// Broadcast to all other Clients
+	for client := range c.manager.clients {
+		client.egress <- outgoingEvent
+	}
+
+	return nil
+
 }
 
 func (m *Manager) routeEvent(event Event, c *Client) error {
@@ -64,6 +99,11 @@ func (m *Manager) routeEvent(event Event, c *Client) error {
 	} else {
 		return ErrEventNotSupported
 	}
+}
+
+func WSHandler(w http.ResponseWriter, r *http.Request) {
+	manager := NewManager()
+	manager.ServeWS(w, r)
 }
 
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
@@ -187,11 +227,6 @@ func (c *Client) write(messageType int, data []byte) error {
 	return c.connection.WriteMessage(messageType, data)
 }
 
-func WSHandler(w http.ResponseWriter, r *http.Request) {
-	manager := NewManager()
-	manager.ServeWS(w, r)
-}
-
 var (
 	pongWait     = 10 * time.Second
 	pingInterval = (pongWait * 9) / 10
@@ -204,13 +239,14 @@ type Event struct {
 
 type EventHandler func(event Event, c *Client) error
 
-const (
-	EventSendMessage = "send_message"
-)
-
 type SendMessageEvent struct {
 	Message string `json:"message"`
 	From    string `json:"from"`
+}
+
+type NewMessageEvent struct {
+	SendMessageEvent
+	Sent time.Time `json:"sent"`
 }
 
 /*

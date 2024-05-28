@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,7 +9,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -69,8 +67,6 @@ func (m *Manager) routeEvent(event Event, c *Client) error {
 }
 
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("here")
-
 	log.Println("New connection")
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -118,7 +114,6 @@ func NewClient(conn *websocket.Conn, manager *Manager) *Client {
 }
 
 func (c *Client) readMessages() {
-	fmt.Println("reading messages1")
 	defer func() {
 		c.manager.removeClient(c)
 	}()
@@ -149,7 +144,7 @@ func (c *Client) readMessages() {
 }
 
 func (c *Client) pongHandler(pongMsg string) error {
-	log.Println("pong")
+	//log.Println("pong")
 	return c.connection.SetReadDeadline(time.Now().Add(pongWait))
 }
 
@@ -177,7 +172,7 @@ func (c *Client) writeMessages() {
 			}
 			log.Println("sent message")
 		case <-ticker.C:
-			log.Println("ping")
+			//log.Println("ping")
 			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
 				log.Println("writemsg: ", err)
 				return
@@ -218,6 +213,7 @@ type SendMessageEvent struct {
 	From    string `json:"from"`
 }
 
+/*
 type OTP struct {
 	Key     string
 	Created time.Time
@@ -263,3 +259,4 @@ func (rm RetentionMap) Retention(ctx context.Context, retentionPeriod time.Durat
 		}
 	}
 }
+*/

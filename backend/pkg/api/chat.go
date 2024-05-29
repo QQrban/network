@@ -50,7 +50,7 @@ func NewManager() *Manager {
 
 const (
 	EventSendMessage = "send_message"
-	EventNewMessage = "new_message"
+	EventNewMessage  = "new_message"
 )
 
 func (m *Manager) setupEventHandlers() {
@@ -107,14 +107,15 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
-	log.Println("New connection")
+	session := getSession(r)
+	log.Printf("New connection for userID %v\n", session.UserID)
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	client := NewClient(conn, m)
+	client := NewClient(conn, m, session.Token, session.UserID)
 	m.addClient(client)
 
 	go client.readMessages()
@@ -142,14 +143,18 @@ type Client struct {
 	connection *websocket.Conn
 	manager    *Manager
 	egress     chan Event
+	session    string
+	userID     int64
 	writeMutex sync.Mutex
 }
 
-func NewClient(conn *websocket.Conn, manager *Manager) *Client {
+func NewClient(conn *websocket.Conn, manager *Manager, session string, userID int64) *Client {
 	return &Client{
 		connection: conn,
 		manager:    manager,
 		egress:     make(chan Event),
+		session:    session,
+		userID:     userID,
 	}
 }
 

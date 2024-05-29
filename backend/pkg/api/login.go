@@ -51,6 +51,8 @@ func doLogin(w http.ResponseWriter, user *models.User) {
 		panic(err)
 	}
 
+	// Make websocket connection
+
 	cookie := newSessionCookie(token, time.Now().Add(sessionDuration))
 	http.SetCookie(w, cookie)
 }

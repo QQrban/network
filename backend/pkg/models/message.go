@@ -95,6 +95,33 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 	return messages, nil
 }
 
+func (model *MessageModel) GetMessageContacts(userID int64) ([]*UserLimited, error) {
+	stmt := model.queries.Prepare("getMessageContacts")
+
+	rows, err := stmt.Query(userID)
+	if err != nil {
+		return nil, fmt.Errorf("Message/GetMessageContacts1: %w", err)
+	}
+	defer rows.Close()
+
+	contacts := make([]*UserLimited, 0)
+
+	for rows.Next() {
+		user := &UserLimited{}
+		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Nickname, &user.Image)
+
+		if err != nil {
+			return nil, fmt.Errorf("Message/GetMessageContacts2: %w", err)
+		}
+
+		contacts = append(contacts, user)
+	}
+
+	return contacts, nil
+}
+
+//func (model *MessageModel) GetGroupContacts(userID )
+
 func (model *MessageModel) GetNotifications(userID int64) ([]*Message, error) {
 	stmt := model.queries.Prepare("getNotifications")
 

@@ -57,6 +57,26 @@ func GetMessages(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, messages)
 }
 
+func GetMessageContacts(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	contacts, err := Database.Message.GetMessageContacts(session.UserID)
+	panicIfErr(err)
+
+	writeJSON(w, contacts)
+}
+
+func GetMessageGroups(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	groups, err := Database.Group.GetMyGroups(session.UserID)
+	if err != nil {
+		panic(err)
+	}
+
+	writeJSON(w, groups)
+}
+
 func GetNotifications(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 

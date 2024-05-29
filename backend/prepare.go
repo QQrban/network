@@ -74,7 +74,9 @@ func prepare(rtr *router.Router) { //, ctx context.Context
 	rtr.Get("/events", api.EnsureAuth(api.GetMyEvents))
 
 	rtr.Post("/message/send", api.EnsureAuth(api.SendMessage))
-	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages)) // NB! What's this about?
+	rtr.Post("/message/history", api.EnsureAuth(api.GetMessages))
+	rtr.Get("/message/contacts", api.EnsureAuth(api.GetMessageContacts))
+	rtr.Get("/message/groups", api.EnsureAuth(api.GetMessageGroups))
 	rtr.Get("/notifications", api.EnsureAuth(api.GetNotifications))
 	rtr.Get("/notifications/all", api.EnsureAuth(api.GetAllNotifications))
 	rtr.Get("/ws", api.EnsureAuth(api.WSHandler))

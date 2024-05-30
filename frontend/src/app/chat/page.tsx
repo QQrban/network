@@ -63,7 +63,7 @@ export default function Chat() {
       const response = await fetchFromServer(`/message/send`, {
         method: "POST",
         credentials: "include",
-        body: JSON.stringify({ receiverID: receiverID, content: text }),
+        body: JSON.stringify({ receiverID: receiverID, content: text.trim() }),
       });
       if (response.ok) {
         setText("");
@@ -72,6 +72,15 @@ export default function Chat() {
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (text.trim() !== "") {
+        sendMessage();
+      }
     }
   };
 
@@ -102,6 +111,8 @@ export default function Chat() {
         });
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
+
           setMessages(data);
         }
       } catch (error) {
@@ -240,7 +251,7 @@ export default function Chat() {
             flexDirection: "column",
             gap: "20px",
             p: "80px 10px",
-            height: "560px",
+            height: "90%",
             overflowY: "scroll",
             "&::-webkit-scrollbar": {
               width: "5px",
@@ -275,6 +286,7 @@ export default function Chat() {
         >
           <TextareaAutosize
             value={text}
+            onKeyDown={handleKeyPress}
             onChange={handleTextChange}
             placeholder="Type Something..."
             sx={{ maxHeight: "250px", fontSize: "18px" }}

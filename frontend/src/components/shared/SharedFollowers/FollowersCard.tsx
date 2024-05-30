@@ -13,6 +13,7 @@ import errorBtn from "../../../../public/icons/errorBtn.svg";
 import ConfirmBtn from "../ConfirmBtn";
 import { ContactsProps } from "@/types/types";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Props {
   peopleList: ContactsProps[];
@@ -29,6 +30,7 @@ export default function FollowersCard({
   unfollowHandler,
   follow,
 }: Props) {
+  const router = useRouter();
   return (
     <>
       {peopleList?.length ? (
@@ -77,6 +79,7 @@ export default function FollowersCard({
                 }}
               >
                 <SpeedDialAction
+                  onClick={() => router.push(`/chat/${follower.ID}`)}
                   icon={
                     <Image
                       style={{ width: "25px", height: "25px" }}
@@ -91,7 +94,7 @@ export default function FollowersCard({
                         fontSize: "18px",
                       }}
                     >
-                      Send Email
+                      Send Message
                     </Typography>
                   }
                 />

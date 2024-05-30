@@ -1,5 +1,6 @@
 export interface ContactsProps {
   ID: number;
+  access: boolean;
   firstName: string;
   lastName: string;
   nickname: string;

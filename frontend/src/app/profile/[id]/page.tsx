@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { putProfile } from "@/redux/features/profile/profileSlice";
 import { PostProps } from "@/types/types";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const [posts, setPosts] = useState<PostProps[]>([]);
@@ -22,6 +23,8 @@ export default function ProfilePage() {
   const [hasAccess, setHasAccess] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+
+  const router = useRouter();
 
   const id = useSelector((state: any) => state.authReducer.value.id);
   const pathname = usePathname().split("/").pop();
@@ -34,6 +37,11 @@ export default function ProfilePage() {
         const getUser = await fetchFromServer(`/user/${pathname}`, {
           credentials: "include",
         });
+        if (!getUser.ok) {
+          router.push(`/profile`);
+          return;
+        }
+
         const userData = await getUser.json();
         console.log(userData);
 
@@ -66,7 +74,7 @@ export default function ProfilePage() {
     };
 
     fetchData();
-  }, [pathname, dispatch]);
+  }, [pathname, dispatch, router]);
 
   useEffect(() => {
     setProfilePosts(posts);

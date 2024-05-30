@@ -5,30 +5,27 @@ import ListItemText from "@mui/material/ListItemText";
 import { ListItemIcon, Typography } from "@mui/material";
 import ProfileImage from "../shared/ProfileImage";
 import { ContactsProps } from "@/types/types";
-import { useSelector } from "react-redux";
 
 interface ChattersListProps {
   content: string;
   chatters: ContactsProps[];
-  setReceiverID: React.Dispatch<number>;
-  setActiveChatName: React.Dispatch<string>;
+  receiverID: number | undefined;
+  handleClick: (chatterID: number, chatName: string) => void;
 }
 
 export default function ChattersList({
   content,
   chatters,
-  setReceiverID,
-  setActiveChatName,
+  handleClick,
+  receiverID,
 }: ChattersListProps) {
-  const handleClick = (chatterID: number, chatName: string) => {
-    setReceiverID(chatterID);
-    setActiveChatName(chatName);
-  };
-
   return (
     <List aria-label="contacts">
       {chatters.map((chatter) => (
         <ListItem
+          sx={{
+            outline: receiverID === chatter.ID ? "2px solid #b0b0b0" : null,
+          }}
           onClick={() =>
             handleClick(chatter.ID, `${chatter.firstName} ${chatter.lastName}`)
           }

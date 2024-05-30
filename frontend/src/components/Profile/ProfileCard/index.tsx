@@ -9,15 +9,17 @@ import {
 } from "@mui/material";
 import ProfileAvatar from "./ProfileAvatar";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import successBtn from "../../../../public/icons/successBtn.svg";
+import confirmBtn from "../../../../public/icons/confirmButton.svg";
 import errorBtn from "../../../../public/icons/errorBtn.svg";
 import lockedIcon from "../../../../public/icons/locked.svg";
 import unlockedIcon from "../../../../public/icons/unlocked.svg";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { fetchFromServer } from "@/lib/api";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const tabStyle = (isActive: boolean) => ({
   pb: "11px",
@@ -48,12 +50,19 @@ export default function ProfileCard({
   const [followValue, setFollowValue] = useState<string>("");
 
   const profile = useSelector((state: any) => state.profileReducer.value);
+  const dispatch = useDispatch();
+
+  const router = useRouter();
 
   const { meToYou, meToYouPending, youToMePending } = profile.followInfo;
 
   const handleTabClick = (tabName: String) => {
     setActiveTab(tabName);
     setSelectedTab(tabName);
+  };
+
+  const handleMessageClick = (profileId: number) => {
+    router.push(`/chat/${profileId}`);
   };
 
   useEffect(() => {
@@ -213,9 +222,18 @@ export default function ProfileCard({
         {!isYourProfile && (
           <Box
             sx={{
-              width: "130px",
+              mt: "10px",
+              display: "flex",
+              gap: "20px",
             }}
           >
+            {(!privateProfile || hasAccess) && (
+              <ConfirmBtn
+                onClick={() => handleMessageClick(profile.id)}
+                backgroundImage={confirmBtn.src}
+                text="Message"
+              />
+            )}
             <ConfirmBtn
               onClick={followHandler}
               text={followValue}

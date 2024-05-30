@@ -11,8 +11,8 @@ type PostLiked struct {
 	post  *models.Post
 }
 
-func (n Notifier) PostLiked(liker *models.User, post *models.Post) {
-	n.notify(PostLiked{
+func (n Notifier) PostLiked(liker *models.User, post *models.Post) ([]byte, []int64) {
+	return n.notify(PostLiked{
 		liker: liker,
 		post:  post,
 	})

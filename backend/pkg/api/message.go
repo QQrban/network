@@ -11,7 +11,7 @@ import (
 func SendMessage(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 
-	message := models.Message{}
+	message := &models.Message{}
 
 	err := json.NewDecoder(r.Body).Decode(&message)
 	if err != nil {
@@ -22,7 +22,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	message.SenderID = session.UserID
 
-	id, err := Database.Message.SendMessage(message)
+	id, err := Database.Message.SendMessage(*message)
 	panicIfErr(err)
 
 	message.ID = id
@@ -33,8 +33,15 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		panicIfErr(err)
 		message.SenderData = u.Limited()
 	}
-
-	writeJSON(w, message)
+	//
+	done := make(chan bool)
+	go func() {
+		defer close(done)
+		//Notify.SendMessage(message, session.UserID, Database)
+	}()
+	<-done
+	//
+	writeJSON(w, *message)
 }
 
 func GetMessages(w http.ResponseWriter, r *http.Request) {

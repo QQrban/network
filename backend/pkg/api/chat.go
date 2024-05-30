@@ -19,18 +19,20 @@ var (
 		CheckOrigin:     checkOrigin,
 	}
 	ErrEventNotSupported = errors.New("this event type is not supported")
+	ChatManager          *Manager
 )
 
 func checkOrigin(r *http.Request) bool {
-	origin := r.Header.Get("Origin")
+	//origin := r.Header.Get("Origin")
 	//fmt.Println("origin", origin)
 
-	switch origin {
+	/*switch origin {
 	case "http://localhost:3000":
 		return true
 	default:
 		return false
-	}
+	}*/
+	return true
 }
 
 type Manager struct {
@@ -57,53 +59,13 @@ func (m *Manager) setupEventHandlers() {
 	m.handlers[EventSendMessage] = SendMessageHandler
 }
 
-// SendMessageHandler will send out a message to all other participants in the chat
-func SendMessageHandler(event Event, c *Client) error {
-	// Marshal Payload into wanted format
-	var chatevent SendMessageEvent
-	if err := json.Unmarshal(event.Payload, &chatevent); err != nil {
-		return fmt.Errorf("bad payload in request: %v", err)
-	}
+/*func WSHandler(w http.ResponseWriter, r *http.Request) {
+	chatManager := NewManager()
+	chatManager.ServeWS(w, r)
+}*/
 
-	// Prepare an Outgoing Message to others
-	var broadMessage NewMessageEvent
-
-	broadMessage.Sent = time.Now()
-	broadMessage.Message = chatevent.Message
-	broadMessage.From = chatevent.From
-
-	data, err := json.Marshal(broadMessage)
-	if err != nil {
-		return fmt.Errorf("failed to marshal broadcast message: %v", err)
-	}
-
-	// Place payload into an Event
-	var outgoingEvent Event
-	outgoingEvent.Payload = data
-	outgoingEvent.Type = EventNewMessage
-	// Broadcast to all other Clients
-	for client := range c.manager.clients {
-		client.egress <- outgoingEvent
-	}
-
-	return nil
-
-}
-
-func (m *Manager) routeEvent(event Event, c *Client) error {
-	if handler, ok := m.handlers[event.Type]; ok {
-		if err := handler(event, c); err != nil {
-			return err
-		}
-		return nil
-	} else {
-		return ErrEventNotSupported
-	}
-}
-
-func WSHandler(w http.ResponseWriter, r *http.Request) {
-	manager := NewManager()
-	manager.ServeWS(w, r)
+func (m *Manager) WSHandler(w http.ResponseWriter, r *http.Request) {
+	m.ServeWS(w, r)
 }
 
 func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
@@ -137,167 +99,100 @@ func (m *Manager) removeClient(client *Client) {
 	}
 }
 
-type ClientList map[*Client]bool
-
-type Client struct {
-	connection *websocket.Conn
-	manager    *Manager
-	egress     chan Event
-	session    string
-	userID     int64
-	writeMutex sync.Mutex
-}
-
-func NewClient(conn *websocket.Conn, manager *Manager, session string, userID int64) *Client {
-	return &Client{
-		connection: conn,
-		manager:    manager,
-		egress:     make(chan Event),
-		session:    session,
-		userID:     userID,
+func (m *Manager) broadcast(event ChatEvent, ids []int64) {
+	fmt.Println("online", m.OnlineUsers())
+	m.RLock()
+	defer m.RUnlock()
+	for client := range m.clients {
+		// If no ids are provided, broadcast to all clients
+		if len(ids) == 0 {
+			client.egress <- event
+			continue
+		}
+		for _, id := range ids {
+			if client.userID == id {
+				client.egress <- event
+			}
+		}
 	}
 }
 
-func (c *Client) readMessages() {
-	defer func() {
-		c.manager.removeClient(c)
-	}()
-	c.connection.SetReadLimit(512)
-	if err := c.connection.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		log.Println(err)
+func BroadcastToAll(message string, from string) {
+	payload, err := json.Marshal(NewMessageEvent{
+		SendMessageEvent: SendMessageEvent{
+			Message: message,
+			From:    from,
+		},
+		Sent: time.Now(),
+	})
+	if err != nil {
+		log.Printf("failed to marshal broadcast message: %v", err)
 		return
 	}
-	c.connection.SetPongHandler(c.pongHandler)
 
-	for {
-		_, payload, err := c.connection.ReadMessage()
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error reading message: %v", err)
-			}
-			break
-		}
-		var request Event
-		if err := json.Unmarshal(payload, &request); err != nil {
-			log.Printf("error marshalling message: %v", err)
-			break
-		}
-		if err := c.manager.routeEvent(request, c); err != nil {
-			log.Println("Error handeling Message: ", err)
-		}
+	event := ChatEvent{
+		Type:    EventNewMessage,
+		Payload: payload,
 	}
+
+	ChatManager.broadcast(event, nil)
 }
 
-func (c *Client) pongHandler(pongMsg string) error {
-	//log.Println("pong")
-	return c.connection.SetReadDeadline(time.Now().Add(pongWait))
-}
-
-func (c *Client) writeMessages() {
-	ticker := time.NewTicker(pingInterval)
-	defer func() {
-		ticker.Stop()
-		c.manager.removeClient(c)
-	}()
-
-	for {
-		select {
-		case message, ok := <-c.egress:
-			if !ok {
-				c.write(websocket.CloseMessage, nil)
-				return
-			}
-			data, err := json.Marshal(message)
-			if err != nil {
-				log.Println(err)
-				return
-			}
-			if err := c.write(websocket.TextMessage, data); err != nil {
-				log.Println(err)
-			}
-			log.Println("sent message")
-		case <-ticker.C:
-			//log.Println("ping")
-			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
-				log.Println("writemsg: ", err)
-				return
-			}
+func (m *Manager) OnlineUsers() []int64 {
+	// Return a list of unique user ids
+	m.RLock()
+	defer m.RUnlock()
+	users := []int64{}
+	umap := map[int64]bool{}
+	for client := range m.clients {
+		id := client.userID
+		if _, ok := umap[id]; !ok {
+			umap[id] = true
+			users = append(users, id)
 		}
 	}
+	return users
 }
 
-func (c *Client) write(messageType int, data []byte) error {
-	c.writeMutex.Lock()
-	defer c.writeMutex.Unlock()
-	return c.connection.WriteMessage(messageType, data)
-}
-
-var (
-	pongWait     = 10 * time.Second
-	pingInterval = (pongWait * 9) / 10
-)
-
-type Event struct {
-	Type    string          `json:"type"`
-	Payload json.RawMessage `json:"payload"`
-}
-
-type EventHandler func(event Event, c *Client) error
-
-type SendMessageEvent struct {
-	Message string `json:"message"`
-	From    string `json:"from"`
-}
-
-type NewMessageEvent struct {
-	SendMessageEvent
-	Sent time.Time `json:"sent"`
-}
-
-/*
-type OTP struct {
-	Key     string
-	Created time.Time
-}
-
-type RetentionMap map[string]OTP
-
-func NewRetentionMap(ctx context.Context, retentionPeriod time.Duration) RetentionMap {
-	rm := make(RetentionMap)
-	go rm.Retention(ctx, retentionPeriod)
-	return rm
-}
-
-func (rm RetentionMap) NewOTP() OTP {
-	o := OTP{
-		Key:     uuid.NewString(),
-		Created: time.Now(),
-	}
-	rm[o.Key] = o
-	return o
-}
-
-func (rm RetentionMap) VerifyOTP(otp string) bool {
-	if _, ok := rm[otp]; !ok {
-		return false
-	}
-	delete(rm, otp)
-	return true
-}
-
-func (rm RetentionMap) Retention(ctx context.Context, retentionPeriod time.Duration) {
-	ticker := time.NewTicker(400 * time.Millisecond)
-	for {
-		select {
-		case <-ticker.C:
-			for _, otp := range rm {
-				if otp.Created.Add(retentionPeriod).Before(time.Now()) {
-					delete(rm, otp.Key)
-				}
-			}
-		case <-ctx.Done():
-			return
+func (m *Manager) routeEvent(event ChatEvent, c *Client) error {
+	if handler, ok := m.handlers[event.Type]; ok {
+		if err := handler(event, c); err != nil {
+			return err
 		}
+		return nil
 	}
+	return ErrEventNotSupported
 }
-*/
+
+// SendMessageHandler will send out a message to all other participants in the chat
+func SendMessageHandler(event ChatEvent, c *Client) error {
+	// Marshal Payload into wanted format
+	var chatevent SendMessageEvent
+	if err := json.Unmarshal(event.Payload, &chatevent); err != nil {
+		return fmt.Errorf("bad payload in request: %v", err)
+	}
+
+	// Prepare an Outgoing Message to others
+	var broadMessage NewMessageEvent
+
+	broadMessage.Sent = time.Now()
+	broadMessage.Message = chatevent.Message
+	broadMessage.From = chatevent.From
+
+	data, err := json.Marshal(broadMessage)
+	if err != nil {
+		return fmt.Errorf("failed to marshal broadcast message: %v", err)
+	}
+
+	// Place payload into an ChatEvent
+	var outgoingEvent ChatEvent
+	outgoingEvent.Payload = data
+	outgoingEvent.Type = EventNewMessage
+	// Broadcast to all other Clients
+	for client := range c.manager.clients {
+		client.egress <- outgoingEvent
+	}
+
+	return nil
+
+}

@@ -22,6 +22,10 @@ func (n Request) Targets() []int64 {
 	return []int64{n.group.OwnerID}
 }
 
+func (n Request) Sender() int64 {
+	return 0 //n.requester.ID
+}
+
 func (n Request) Message() string {
 	msg := MessageContent{
 		Type:     "group",

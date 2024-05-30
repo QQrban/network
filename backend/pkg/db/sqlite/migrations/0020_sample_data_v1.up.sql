@@ -83,11 +83,11 @@ INSERT INTO userMessage
 (senderID, receiverID, content, created)
 VALUES 
 (1, 2, 'Hello Kurb!', datetime(CURRENT_TIMESTAMP, "-1 days")),
-(2, 1, 'Hello Tom!', datetime(CURRENT_TIMESTAMP, "-10 hours")),
+(2, 1, 'Hello Tom! How it is going?', datetime(CURRENT_TIMESTAMP, "-10 hours")),
 (1, 3, 'Hello Nipi!', datetime(CURRENT_TIMESTAMP, "-8 hours")),
-(3, 1, 'Hello Tom!', datetime(CURRENT_TIMESTAMP, "-6 hours")),
-(2, 3, 'Hello Nipi!', datetime(CURRENT_TIMESTAMP, "-4 hours")),
-(3, 2, 'Hello Kurb!', datetime(CURRENT_TIMESTAMP, "-30 minutes"));
+(3, 1, 'Hello Tom! Long time no see :)', datetime(CURRENT_TIMESTAMP, "-6 hours")),
+(2, 3, 'Hi Nipi! How is your arm?', datetime(CURRENT_TIMESTAMP, "-4 hours")),
+(3, 2, 'Not too bad, thanks for asking', datetime(CURRENT_TIMESTAMP, "-30 minutes"));
 
 INSERT INTO post
 (authorID, groupID, content, status, images, aboutID, created)

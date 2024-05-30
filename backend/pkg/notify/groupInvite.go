@@ -22,6 +22,10 @@ func (n Invite) Targets() []int64 {
 	return []int64{n.target}
 }
 
+func (n Invite) Sender() int64 {
+	return 0 //n.requester
+}
+
 func (n Invite) Message() string {
 	msg := MessageContent{
 		Type:     "group",

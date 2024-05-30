@@ -37,6 +37,10 @@ func (n EventCreated) Targets() []int64 {
 	return ids
 }
 
+func (n EventCreated) Sender() int64 {
+	return 0 //n.creator.ID
+}
+
 func (n EventCreated) Message() string {
 	msg := MessageContent{
 		Type:     "event",

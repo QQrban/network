@@ -282,7 +282,12 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 				log.Println(err)
 			}
 
-			Notify.PostLiked(me, post)
+			message, targets := Notify.PostLiked(me, post)
+			event := ChatEvent{
+				Type:    "post_liked",
+				Payload: message,
+			}
+			ChatManager.broadcast(event, targets)
 		}()
 		<-done
 	}

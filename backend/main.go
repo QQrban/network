@@ -30,6 +30,7 @@ func main() {
 	db := database.NewDatabase("./persist/database.db")
 	api.Database = db
 	api.Notify = notify.NewNotifier(db)
+	api.ChatManager = api.NewManager()
 
 	go CleanupDB(db)
 

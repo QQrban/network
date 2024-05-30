@@ -11,8 +11,8 @@ type PostLiked struct {
 	post  *models.Post
 }
 
-func (n Notifier) PostLiked(liker *models.User, post *models.Post) {
-	n.notify(PostLiked{
+func (n Notifier) PostLiked(liker *models.User, post *models.Post) ([]byte, []int64) {
+	return n.notify(PostLiked{
 		liker: liker,
 		post:  post,
 	})
@@ -20,6 +20,10 @@ func (n Notifier) PostLiked(liker *models.User, post *models.Post) {
 
 func (f PostLiked) Targets() []int64 {
 	return []int64{f.post.AuthorID}
+}
+
+func (f PostLiked) Sender() int64 {
+	return 0 //f.liker.ID
 }
 
 func (f PostLiked) Message() string {

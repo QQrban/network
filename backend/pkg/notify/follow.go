@@ -22,6 +22,10 @@ func (f Follow) Targets() []int64 {
 	return []int64{f.following}
 }
 
+func (f Follow) Sender() int64 {
+	return 0 //f.follower.ID
+}
+
 func (f Follow) Message() string {
 	msg := MessageContent{
 		Type:     "follow",

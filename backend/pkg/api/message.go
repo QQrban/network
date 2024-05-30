@@ -39,7 +39,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		defer close(done)
 		message, targets := Notify.SendMessage(message, session.UserID, Database)
 		event := ChatEvent{
-			Type:    "post_liked",
+			Type:    "message_personal",
 			Payload: message,
 		}
 		ChatManager.broadcast(event, targets)

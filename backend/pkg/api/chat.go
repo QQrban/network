@@ -99,17 +99,17 @@ func (m *Manager) removeClient(client *Client) {
 	}
 }
 
-func (m *Manager) broadcast(event ChatEvent, ids []int64) {
-	fmt.Println("online", m.OnlineUsers())
+func (m *Manager) broadcast(event ChatEvent, targets []int64) {
+	//fmt.Println("online", m.OnlineUsers())
 	m.RLock()
 	defer m.RUnlock()
 	for client := range m.clients {
 		// If no ids are provided, broadcast to all clients
-		if len(ids) == 0 {
+		if len(targets) == 0 {
 			client.egress <- event
 			continue
 		}
-		for _, id := range ids {
+		for _, id := range targets {
 			if client.userID == id {
 				client.egress <- event
 			}

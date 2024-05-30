@@ -31,6 +31,7 @@ export default function Chat() {
   const [activeChatName, setActiveChatName] = useState<string>("");
 
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const authID = useSelector((state: any) => state.authReducer.value.id);
 
@@ -54,6 +55,7 @@ export default function Chat() {
       setOpenEmoji(false);
     }
   };
+
   const addNewMessage = (newMessage: MessageProps) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
@@ -128,6 +130,12 @@ export default function Chat() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   return (
     <Box
@@ -275,6 +283,7 @@ export default function Chat() {
                 />
               ) : null
             )}
+          <div ref={messagesEndRef} />
         </Box>
         <Box
           sx={{
@@ -322,7 +331,7 @@ export default function Chat() {
             </Typography>
             {text.trim().length > 0 && (
               <IconButton onClick={sendMessage}>
-                <Image width={25} height={25} src={sendIcon} alt="" />
+                <Image width={25} height={25} src={sendIcon} alt="send" />
               </IconButton>
             )}
           </Box>

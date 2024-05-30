@@ -86,3 +86,13 @@ export interface NotificationProps {
   senderData: ContactsProps | null;
   senderID: 0;
 }
+
+export interface MessageProps {
+  ID: number;
+  content: string;
+  created: string;
+  isGroup: boolean;
+  receiverID: number;
+  senderData: null;
+  senderID: 2;
+}

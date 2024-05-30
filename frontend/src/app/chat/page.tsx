@@ -1,36 +1,48 @@
 "use client";
 
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  SyntheticEvent,
+} from "react";
+import { Box, IconButton, Typography, Tab, Tabs } from "@mui/material";
+import Image from "next/image";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { useSelector } from "react-redux";
+
 import ChattersList from "@/components/Chat/ChattersList";
 import { Item } from "@/components/shared/Item";
 import ProfileImage from "@/components/shared/ProfileImage";
 import { TextareaAutosize } from "@/components/shared/styles";
-import { Box, IconButton, Typography } from "@mui/material";
-import Image from "next/image";
 import sendIcon from "../../../public/icons/send.svg";
-import { useState, useEffect, useRef } from "react";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
-
-import EmojiPicker from "emoji-picker-react";
-import { messages } from "@/components/Chat/mock";
-import dayjs from "dayjs";
+import { fetchFromServer } from "@/lib/api";
+import { ContactsProps, MessageProps } from "@/types/types";
+import MessageItem from "@/components/Chat/MessageItem";
 
 export default function Chat() {
-  const [value, setValue] = useState("private");
-
+  const [value, setValue] = useState<string>("private");
+  const [chatters, setChatters] = useState<ContactsProps[]>([]);
   const [text, setText] = useState<string>("");
   const [openEmoji, setOpenEmoji] = useState<boolean>(false);
+  const [receiverID, setReceiverID] = useState<number | null>(null);
+  const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [activeChatName, setActiveChatName] = useState<string>("");
+
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const authID = useSelector((state: any) => state.authReducer.value.id);
+
+  const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
-  const handleEmojiSelect = (emoji: any) => {
+  const handleEmojiSelect = (emoji: EmojiClickData) => {
     setText((prevText) => prevText + emoji.emoji);
   };
 
@@ -42,6 +54,62 @@ export default function Chat() {
       setOpenEmoji(false);
     }
   };
+  const addNewMessage = (newMessage: MessageProps) => {
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+  };
+
+  const sendMessage = async () => {
+    try {
+      const response = await fetchFromServer(`/message/send`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ receiverID: receiverID, content: text }),
+      });
+      if (response.ok) {
+        setText("");
+        const newMessage: MessageProps = await response.json();
+        addNewMessage(newMessage);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchChatters = async () => {
+      try {
+        const response = await fetchFromServer(`/message/contacts`, {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setChatters(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchChatters();
+  }, []);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await fetchFromServer(`/message/history`, {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({ receiverID: receiverID }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setMessages(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchHistory();
+  }, [receiverID]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -111,41 +179,61 @@ export default function Chat() {
             />
           </Tabs>
         </Box>
-        <ChattersList content={value} />
+        <ChattersList
+          setActiveChatName={setActiveChatName}
+          setReceiverID={setReceiverID}
+          chatters={chatters}
+          content={value}
+        />
       </Item>
       <Item
         radius="8px"
         sx={{ width: "100%", position: "relative", overflow: "hidden" }}
       >
-        <Box
-          sx={{
-            width: "100%",
-            position: "absolute",
-            zIndex: "555",
-            top: "0",
-            p: "10px",
-            backgroundColor: "white",
-            borderBottom: "2px solid #b0b0b0",
-          }}
-        >
+        {messages.length > 0 ? (
           <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
+              width: "100%",
+              position: "absolute",
+              zIndex: "555",
+              top: "0",
+              p: "10px",
+              backgroundColor: "white",
+              borderBottom: "2px solid #b0b0b0",
             }}
           >
-            <ProfileImage width={45} height={45} image="" />
-            <Typography
+            <Box
               sx={{
-                fontFamily: "Gloria Hallelujah !important",
-                fontSize: "20px",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
               }}
             >
-              {value === "private" ? "Firstname Lastname" : "Groupname"}
-            </Typography>
+              <ProfileImage width={45} height={45} image="" />
+              <Typography
+                sx={{
+                  fontFamily: "Gloria Hallelujah !important",
+                  fontSize: "20px",
+                }}
+              >
+                {activeChatName}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          <Typography
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontSize: "42px",
+              fontFamily: "SchoolBell !important",
+            }}
+          >
+            Please select a Chat
+          </Typography>
+        )}
         <Box
           sx={{
             display: "flex",
@@ -166,67 +254,16 @@ export default function Chat() {
             },
           }}
         >
-          {messages.map((message, index) =>
-            message.me ? (
-              <Box
-                sx={{
-                  alignSelf: "flex-start",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                }}
-                key={index}
-              >
-                <ProfileImage image="" width={30} height={30} />
-                <Typography
-                  sx={{
-                    p: "4px",
-                    borderRadius: "6px",
-                    bgcolor: "#dedede5d",
-                  }}
-                >
-                  {message.message}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "12px",
-                    color: "#a4a4a4",
-                  }}
-                >
-                  {dayjs(message.time).format("MMM DD, YYYY, hh:mm")}
-                </Typography>
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  alignSelf: "flex-end",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                }}
-                key={index}
-              >
-                <Typography
-                  sx={{
-                    fontSize: "12px",
-                    color: "#a4a4a4",
-                  }}
-                >
-                  {dayjs(message.time).format("MMM DD, YYYY, hh:mm")}
-                </Typography>
-                <Typography
-                  sx={{
-                    p: "4px",
-                    borderRadius: "6px",
-                    bgcolor: "#add5fd5d",
-                  }}
-                >
-                  {message.message}
-                </Typography>
-                <ProfileImage image="" width={30} height={30} />
-              </Box>
-            )
-          )}
+          {authID &&
+            messages?.map((message) =>
+              message.receiverID === authID || message.senderID === authID ? (
+                <MessageItem
+                  key={message.ID}
+                  message={message}
+                  authID={authID}
+                />
+              ) : null
+            )}
         </Box>
         <Box
           sx={{
@@ -271,8 +308,8 @@ export default function Chat() {
             >
               😀
             </Typography>
-            {text.length > 0 && (
-              <IconButton>
+            {text.trim().length > 0 && (
+              <IconButton onClick={sendMessage}>
                 <Image width={25} height={25} src={sendIcon} alt="" />
               </IconButton>
             )}

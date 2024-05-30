@@ -21,8 +21,10 @@ export default function NotificationsSection({
         return `/profile/${notification.content.userID}`;
       case "group":
         return `/groups/${notification.content.groupID}`;
+      case "event":
+        return "/groups/${notification.content.groupID}/events";
       case "post":
-        return `/post/${notification.content.eventID}`;
+        return `/post/${notification.content.postID}`;
       default:
         return "#";
     }

@@ -19,6 +19,20 @@ const validationSchema = Yup.object({
 export default function LoginContent({ setShowLoading }: LoginProps) {
   const dispatch = useDispatch();
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetchFromServer(`/notifications/all`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -52,6 +66,7 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
               image: data.image,
             })
           );
+          fetchNotifications();
         } else {
           console.error("Login failed");
         }

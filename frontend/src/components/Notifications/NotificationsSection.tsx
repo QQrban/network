@@ -6,6 +6,12 @@ import Image from "next/image";
 import eventBg from "../../../public/eventBG.svg";
 import Link from "next/link";
 import { NotificationProps } from "@/types/types";
+import like from "../../../public/icons/give-love.svg";
+import comment from "../../../public/icons/commenting.svg";
+import follow from "../../../public/icons/profile.svg";
+import followReq from "../../../public/icons/personAdd.svg";
+import followAcc from "../../../public/icons/contacts.svg";
+import { fetchFromServer } from "@/lib/api";
 
 interface NotificationSectionProps {
   notifications: NotificationProps[];
@@ -15,15 +21,47 @@ interface NotificationSectionProps {
 export default function NotificationsSection({
   notifications,
 }: NotificationSectionProps) {
+  let img = follow;
+  let msgVal = "";
   function getNotificationLink(notification: NotificationProps): string {
-    switch (notification.content.type) {
+    console.log(notification);
+    switch (notification.content.action) {
       case "follow":
+        msgVal = notification.content.userName + " followed you!";
         return `/profile/${notification.content.userID}`;
-      case "group":
-        return `/groups/${notification.content.groupID}`;
-      case "event":
-        return "/groups/${notification.content.groupID}/events";
-      case "post":
+      case "accept":
+        img = followAcc;
+        msgVal = notification.content.userName + " accepted your request!";
+        return `/profile/${notification.content.userID}`;
+      case "request":
+        if (notification.content.type === "follow") {
+          img = followReq;
+          msgVal = `${notification.content.userName} sent you a follow request!`;
+          return `/contacts`;
+        } else if (notification.content.type === "group") {
+          // Can't accept requests yet
+          img = followReq;
+          msgVal = `${notification.content.userName} wants to join your group!`;
+          try {
+            fetchFromServer(
+              `/groups/${notification.content.groupID}/accept/${notification.content.userID}`,
+              {
+                method: "PUT",
+                credentials: "include",
+              }
+            );
+            return `/groups/${notification.content.groupID}`;
+          } catch (error) {
+            console.error("Doesn't work: ", error);
+          }
+        }
+      case "invite":
+        // Can't accept invites yet
+        msgVal = notification.content.userName + " sent you a follow request!";
+        return `/groups/${notification.content.groupID}/accept/${notification.content.userID}`;
+      case "like":
+        img = like;
+        msgVal = notification.content.userName + " liked your post!";
         return `/post/${notification.content.postID}`;
       default:
         return "#";
@@ -48,21 +86,15 @@ export default function NotificationsSection({
           }}
           radius="12px"
         >
-          {/* type: "follow" | "event" | "group" | "post"; 
-          follow - should link to `/profile/${userID}`
-          event - forget about it for now
-          group - `/groups/${groupID}`
-          post - /post/${notification.postId}
-          */}
           <Link href={getNotificationLink(notification)}>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Box sx={{ display: "flex", flexDirection: "row", gap: "10px" }}>
-                {/* <Image
-                  src={`/icons/${notification.content.action}.svg`}
+                <Image
+                  src={img}
                   alt={notification.content.action}
                   width={28}
                   height={28}
-                /> */}
+                />
                 <Typography
                   sx={{
                     fontSize: "22px",
@@ -72,11 +104,9 @@ export default function NotificationsSection({
                   }}
                 >
                   {notification.content.action}
-                </Typography>
+                </Typography>{" "}
               </Box>
-              <Typography sx={{ fontSize: "16px" }}>
-                {notification.content.userName} {notification.content.action}
-              </Typography>
+              <Typography sx={{ fontSize: "16px" }}>{msgVal}</Typography>
             </Box>
           </Link>
         </Item>

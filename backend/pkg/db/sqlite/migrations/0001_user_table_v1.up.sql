@@ -20,4 +20,4 @@ CREATE TABLE `user`
 INSERT INTO user
 (ID, password, firstname, lastname, nickname, email)
 VALUES
-(0, 'zaq12wsx', 'System', 'User', 'sys', 'sys@kood.ee');
+(0, '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'System', 'User', 'sys', 'sys@kood.ee');

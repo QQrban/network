@@ -41,8 +41,8 @@ export default function AvatarUpload({ onChange }: AvatarUploadProps) {
             sx={{
               mt: "10px",
               border: "4px solid #4a4a4a",
-              width: 90,
-              height: 90,
+              width: 170,
+              height: 170,
               cursor: "pointer",
             }}
           />

@@ -79,10 +79,6 @@ export default function MainScreen({ children }: { children: ReactNode }) {
       console.log("Connected to WebSocket server");
     };
 
-    socket.onmessage = (message) => {
-      console.log("Message received from server:", message);
-    };
-
     socket.onclose = () => {
       console.log("Disconnected from WebSocket server");
     };
@@ -95,7 +91,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
       socket.close();
     };
   }, []);
-  
+
   if (showLoading) {
     return <LoadingScreen />;
   }

@@ -50,7 +50,6 @@ export default function ProfileCard({
   const [followValue, setFollowValue] = useState<string>("");
 
   const profile = useSelector((state: any) => state.profileReducer.value);
-  const dispatch = useDispatch();
 
   const router = useRouter();
 

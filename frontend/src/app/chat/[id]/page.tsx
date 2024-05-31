@@ -1,9 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Box, Typography } from "@mui/material";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { EmojiClickData } from "emoji-picker-react";
 import { useSelector } from "react-redux";
+import { useRouter, usePathname } from "next/navigation";
+
 import ChattersList from "@/components/Chat/ChattersList";
 import { Item } from "@/components/shared/Item";
 import { fetchFromServer } from "@/lib/api";
@@ -12,7 +19,13 @@ import MessageItem from "@/components/Chat/MessageItem";
 import ChatTabs from "@/components/Chat/ChatTabs";
 import ChatContentHeader from "@/components/Chat/ChatContentHeader";
 import ChatTextArea from "@/components/Chat/ChatTextArea";
-import { usePathname, useRouter } from "next/navigation";
+import {
+  CenterTextStyles,
+  ChatBoxStyles,
+  ChatContentStyles,
+  ErrorTextStyles,
+  ItemStyles,
+} from "@/components/Chat/styles";
 
 export default function Chat() {
   const [tabValue, setTabValue] = useState<string>("private");
@@ -24,13 +37,12 @@ export default function Chat() {
   const [activeChatName, setActiveChatName] = useState<string>("");
   const [initChat, setInitChat] = useState<ContactsProps>();
 
+  const socketRef = useRef<WebSocket | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const authID = useSelector((state: any) => state.authReducer.value.id);
-
   const pathname = usePathname().split("/").pop();
-
   const router = useRouter();
 
   const handleEmojiSelect = useCallback((emoji: EmojiClickData) => {
@@ -51,48 +63,68 @@ export default function Chat() {
     setActiveChatName(chatName);
   }, []);
 
-  useEffect(() => {
-    const fetchChatters = async () => {
-      try {
-        const response = await fetchFromServer(`/message/contacts`, {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setChatters(data);
-        }
-      } catch (error) {
-        console.error(error);
+  const fetchChatters = useCallback(async () => {
+    try {
+      const response = await fetchFromServer(`/message/contacts`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setChatters(data);
       }
-    };
-    fetchChatters();
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
 
-  useEffect(() => {
-    if (receiverID === undefined) return;
-    const fetchHistory = async () => {
-      try {
-        const response = await fetchFromServer(`/message/history`, {
-          method: "POST",
-          credentials: "include",
-          body: JSON.stringify({ receiverID }),
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setMessages(data);
-        }
-      } catch (error) {
-        console.error(error);
+  const fetchHistory = useCallback(async () => {
+    if (authID === receiverID) return;
+    try {
+      const response = await fetchFromServer(`/message/history`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ receiverID }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(data);
       }
-    };
+    } catch (error) {
+      console.error(error);
+    }
+  }, [receiverID, authID]);
 
-    fetchHistory();
+  const fetchUser = useCallback(async () => {
+    try {
+      const response = await fetchFromServer(`/user/${receiverID}`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const user: ContactsProps = await response.json();
+        setActiveChatName(`${user.firstName} ${user.lastName}`);
+        setInitChat(user);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }, [receiverID]);
 
   useEffect(() => {
+    fetchChatters();
+  }, [fetchChatters]);
+
+  useEffect(() => {
+    if (authID !== receiverID && receiverID !== undefined) {
+      fetchUser();
+      fetchHistory();
+    }
+  }, [fetchUser, authID, receiverID, fetchHistory]);
+
+  useEffect(() => {
     if (pathname) {
-      if (!isNaN(Number(pathname))) {
-        setReceiverID(Number(pathname));
+      const pathID = Number(pathname);
+      if (!isNaN(pathID)) {
+        setReceiverID(pathID);
       } else {
         router.push(`/chat`);
       }
@@ -100,22 +132,30 @@ export default function Chat() {
   }, [pathname, router]);
 
   useEffect(() => {
-    if (receiverID === undefined || authID === receiverID) return;
-    const fetchUser = async () => {
+    socketRef.current = new WebSocket("ws://localhost:8888/ws");
+
+    socketRef.current.onmessage = async (event) => {
       try {
-        const response = await fetchFromServer(`/user/${receiverID}`);
-        if (response.ok) {
-          const user: ContactsProps = await response.json();
-          setActiveChatName(`${user.firstName} ${user.lastName}`);
-          setInitChat(user);
-        }
+        const data = JSON.parse(event.data);
+        const newMessage = data.payload;
+        const lastIndex = messages[messages.length - 1].ID;
+        const messageWithID = { ...newMessage, ID: lastIndex + 1 };
+
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages, messageWithID];
+
+          console.log(updatedMessages);
+          return updatedMessages;
+        });
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchUser();
-  }, [receiverID, authID]);
+    return () => {
+      socketRef.current?.close();
+    };
+  }, [fetchHistory, messages]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -130,41 +170,33 @@ export default function Chat() {
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  const chatContent = useMemo(
+    () => (
+      <>
+        {authID &&
+          activeChatName &&
+          messages?.map((message, index) => (
+            <MessageItem
+              key={message.ID || index}
+              message={message}
+              authID={authID}
+            />
+          ))}
+        <div ref={messagesEndRef} />
+      </>
+    ),
+    [authID, activeChatName, messages]
+  );
+
   return (
-    <Box
-      sx={{
-        p: "30px",
-        gap: "40px",
-        display: "flex",
-        overflow: "hidden",
-        position: "relative",
-        justifyContent: "center",
-        width: "100%",
-        height: "calc(100vh - 160px)",
-      }}
-    >
-      <Item
-        radius="8px"
-        sx={{
-          p: "10px 30px",
-          bgcolor: "white",
-          zIndex: "4",
-          width: "460px",
-          overflowX: "none",
-          overflowY: "scroll",
-          pb: "23px",
-          "&::-webkit-scrollbar": {
-            width: "5px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#ccc",
-            borderRadius: "10px",
-          },
-          "&::-webkit-scrollbar-track": {
-            backgroundColor: "transparent",
-          },
-        }}
-      >
+    <ChatBoxStyles>
+      <ItemStyles radius="8px">
         <ChatTabs tabValue={tabValue} setTabValue={setTabValue} />
         <ChattersList
           receiverID={receiverID}
@@ -172,7 +204,7 @@ export default function Chat() {
           chatters={chatters}
           content={tabValue}
         />
-      </Item>
+      </ItemStyles>
       <Item
         radius="8px"
         sx={{ width: "100%", position: "relative", overflow: "hidden" }}
@@ -183,52 +215,9 @@ export default function Chat() {
             activeChatName={activeChatName}
           />
         ) : (
-          <Typography
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              fontSize: "42px",
-              fontFamily: "SchoolBell !important",
-            }}
-          >
-            Please select a Chat
-          </Typography>
+          <CenterTextStyles>Please select a Chat</CenterTextStyles>
         )}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-            p: "80px 10px",
-            height: "90%",
-            overflowY: "scroll",
-            "&::-webkit-scrollbar": {
-              width: "5px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "#d0d0d0",
-              borderRadius: "10px",
-            },
-            "&::-webkit-scrollbar-track": {
-              backgroundColor: "#dbdbdb",
-            },
-          }}
-        >
-          {authID &&
-            activeChatName &&
-            messages?.map((message) =>
-              message.receiverID === authID || message.senderID === authID ? (
-                <MessageItem
-                  key={message.ID}
-                  message={message}
-                  authID={authID}
-                />
-              ) : null
-            )}
-          <div ref={messagesEndRef} />
-        </Box>
+        <ChatContentStyles>{chatContent}</ChatContentStyles>
         {activeChatName && receiverID !== undefined && initChat?.access ? (
           <ChatTextArea
             initChat={initChat}
@@ -245,20 +234,13 @@ export default function Chat() {
           />
         ) : (
           authID !== Number(pathname) && (
-            <Typography
-              color="error"
-              sx={{
-                textAlign: "center",
-                fontSize: "22px",
-                fontFamily: "Gloria Hallelujah !important",
-              }}
-            >
+            <ErrorTextStyles color="error">
               This account is private. To send a message, you need to follow it
               first
-            </Typography>
+            </ErrorTextStyles>
           )
         )}
       </Item>
-    </Box>
+    </ChatBoxStyles>
   );
 }

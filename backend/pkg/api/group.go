@@ -103,7 +103,12 @@ func JoinGroup(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println(err)
 			}
-			Notify.Request(group.Group, user)
+			message, targets := Notify.Request(group.Group, user)
+			event := ChatEvent{
+				Type:    "group_request",
+				Payload: message,
+			}
+			ChatManager.broadcast(event, targets)
 		}()
 		<-done
 	}

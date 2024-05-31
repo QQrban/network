@@ -11,8 +11,8 @@ type Follow struct {
 	following int64
 }
 
-func (n Notifier) Follow(follower *models.User, following int64) {
-	n.notify(Follow{
+func (n Notifier) Follow(follower *models.User, following int64) ([]byte, []int64) {
+	return n.notify(Follow{
 		follower:  follower,
 		following: following,
 	})

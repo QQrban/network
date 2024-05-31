@@ -11,8 +11,8 @@ type FollowRequest struct {
 	target    int64
 }
 
-func (n Notifier) FollowRequest(requester *models.User, target int64) {
-	n.notify(FollowRequest{
+func (n Notifier) FollowRequest(requester *models.User, target int64) ([]byte, []int64) {
+	return n.notify(FollowRequest{
 		requester: requester,
 		target:    target,
 	})

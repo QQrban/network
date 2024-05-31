@@ -126,7 +126,12 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 				log.Println(err)
 			}
 
-			Notify.FollowRequest(me, targetID)
+			message, targets := Notify.FollowRequest(me, targetID)
+			event := ChatEvent{
+				Type:    "follow_request",
+				Payload: message,
+			}
+			ChatManager.broadcast(event, targets)
 		}()
 		<-done
 	} else {
@@ -143,11 +148,16 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println(err)
 			}
-			if target.Private {
-				Notify.FollowRequest(me, targetID)
-			} else {
-				Notify.Follow(me, targetID)
+			/*if target.Private {
+				message, targets = Notify.FollowRequest(me, targetID)
+			} else {*/
+			message, targets := Notify.Follow(me, targetID)
+			event := ChatEvent{
+				Type:    "follow_follow",
+				Payload: message,
 			}
+			ChatManager.broadcast(event, targets)
+			//}
 		}()
 		<-done
 	}
@@ -172,7 +182,12 @@ func UserAcceptFollow(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 
-		Notify.FollowAccepted(me, targetID)
+		message, targets := Notify.FollowAccepted(me, targetID)
+		event := ChatEvent{
+			Type:    "follow_accepted",
+			Payload: message,
+		}
+		ChatManager.broadcast(event, targets)
 	}()
 	<-done
 }

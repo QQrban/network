@@ -102,13 +102,13 @@ func (n Notifier) notify(msg Notification) ([]byte, []int64) {
 	targets := msg.Targets()
 	message.SenderID = msg.Sender()
 
-	/*for _, t := range targets {
+	for _, t := range targets {
 		message.ReceiverID = t
 		_, err := n.database.Message.SendMessage(*message)
 		if err != nil {
 			log.Printf("could not insert notification message for %v: %v\n", t, err)
 		}
-	}*/
+	}
 
 	/*payload := struct {
 		Targets []int64         `json:"targets"`

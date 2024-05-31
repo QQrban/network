@@ -18,8 +18,8 @@ func (n Notifier) EventCreated(
 	event *models.Event,
 	creator *models.User,
 	members []*models.User,
-) {
-	n.notify(EventCreated{
+) ([]byte, []int64) {
+	return n.notify(EventCreated{
 		group:   group,
 		event:   event,
 		creator: creator,

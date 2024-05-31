@@ -11,8 +11,8 @@ type FollowAccepted struct {
 	target   int64
 }
 
-func (n Notifier) FollowAccepted(accepter *models.User, target int64) {
-	n.notify(FollowAccepted{
+func (n Notifier) FollowAccepted(accepter *models.User, target int64) ([]byte, []int64) {
+	return n.notify(FollowAccepted{
 		accepter: accepter,
 		target:   target,
 	})

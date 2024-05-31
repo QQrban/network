@@ -11,8 +11,8 @@ type Request struct {
 	requester *models.User
 }
 
-func (n Notifier) Request(group *models.Group, requester *models.User) {
-	n.notify(Request{
+func (n Notifier) Request(group *models.Group, requester *models.User) ([]byte, []int64) {
+	return n.notify(Request{
 		group:     group,
 		requester: requester,
 	})

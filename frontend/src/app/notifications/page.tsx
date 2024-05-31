@@ -16,7 +16,7 @@ export default function Notifications() {
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const response = await fetchFromServer("/notifications/all", {
+      const response = await fetchFromServer("/notifications", {
         credentials: "include",
       });
       if (response.ok) {

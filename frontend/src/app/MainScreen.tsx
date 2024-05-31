@@ -89,6 +89,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
       if (!pathname.includes("chat")) {
         try {
           const data = JSON.parse(event.data);
+          console.log("Message:", data);
           if (data.type === "message_personal") {
             dispatch(addNewMessage({ senderId: data.payload.senderID }));
           } else if (data.type === "notification") {

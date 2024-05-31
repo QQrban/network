@@ -128,7 +128,7 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 
 			message, targets := Notify.FollowRequest(me, targetID)
 			event := ChatEvent{
-				Type:    "follow_request",
+				Type:    "notification",
 				Payload: message,
 			}
 			ChatManager.broadcast(event, targets)
@@ -153,7 +153,7 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			} else {*/
 			message, targets := Notify.Follow(me, targetID)
 			event := ChatEvent{
-				Type:    "follow_follow",
+				Type:    "notification",
 				Payload: message,
 			}
 			ChatManager.broadcast(event, targets)
@@ -184,7 +184,7 @@ func UserAcceptFollow(w http.ResponseWriter, r *http.Request) {
 
 		message, targets := Notify.FollowAccepted(me, targetID)
 		event := ChatEvent{
-			Type:    "follow_accepted",
+			Type:    "notification",
 			Payload: message,
 		}
 		ChatManager.broadcast(event, targets)

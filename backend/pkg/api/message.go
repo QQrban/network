@@ -22,10 +22,10 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	message.SenderID = session.UserID
 
-	id, err := Database.Message.SendMessage(*message)
-	panicIfErr(err)
+	//id, err := Database.Message.SendMessage(*message)
+	//panicIfErr(err)
 
-	message.ID = id
+	//message.ID = id
 	message.Created = time.Now()
 
 	if message.IsGroup {

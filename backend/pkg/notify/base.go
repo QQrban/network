@@ -104,7 +104,8 @@ func (n Notifier) notify(msg Notification) ([]byte, []int64) {
 
 	for _, t := range targets {
 		message.ReceiverID = t
-		_, err := n.database.Message.SendMessage(*message)
+		id, err := n.database.Message.SendMessage(*message)
+		message.ID = id
 		if err != nil {
 			log.Printf("could not insert notification message for %v: %v\n", t, err)
 		}

@@ -47,7 +47,7 @@ func (model *MessageModel) SendMessage(message Message) (int64, error) {
 	} else {
 		stmt = model.queries.Prepare("userSendMessage")
 	}
-	fmt.Println("message:", message)
+	//fmt.Println("message:", message)
 	res, err := stmt.Exec(
 		message.pointerSlice()[:4]...,
 	)

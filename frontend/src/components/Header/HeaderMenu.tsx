@@ -5,8 +5,17 @@ import mailIcon from "../../../public/icons/mail.svg";
 import notificationIcon from "../../../public/icons/bell.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 export default function HeaderMenu() {
+  const senderIds = useSelector(
+    (state: any) => state.notificationsReducer.senderIds
+  );
+  const hasNewMessage = senderIds.length > 0;
+  const hasNewNotification = useSelector(
+    (state: any) => state.notificationsReducer.hasNewNotification
+  );
+
   return (
     <Box
       sx={{
@@ -18,7 +27,7 @@ export default function HeaderMenu() {
       <TooltipStyled title="Chat">
         <Link href="/chat">
           <IconButton>
-            <Badge badgeContent={4} color="error">
+            <Badge badgeContent={hasNewMessage ? "!" : 0} color="error">
               <Image
                 style={{ width: "32px", height: "32px" }}
                 src={mailIcon}
@@ -31,7 +40,7 @@ export default function HeaderMenu() {
       <TooltipStyled title="Notifications">
         <Link href={`/notifications/`}>
           <IconButton>
-            <Badge badgeContent={999} color="error">
+            <Badge badgeContent={hasNewNotification ? "!" : 0} color="error">
               <Image
                 style={{ width: "32px", height: "32px" }}
                 src={notificationIcon}

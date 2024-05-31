@@ -13,6 +13,11 @@ import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
 import bgWall from "../../public/icons/wall.svg";
 import { setSuggestions } from "@/redux/features/suggestions/suggestionsSlice";
+import {
+  addNewMessage,
+  setNewNotification,
+} from "@/redux/features/notifications/notificationsSlice";
+import { usePathname } from "next/navigation";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
   const [showLoading, setShowLoading] = useState(true);
@@ -20,6 +25,8 @@ export default function MainScreen({ children }: { children: ReactNode }) {
 
   const auth = useSelector((state: any) => state.authReducer.value.isAuth);
   const dispatch = useDispatch();
+
+  const pathname = usePathname();
 
   useEffect(() => {
     async function fetchData() {
@@ -73,10 +80,24 @@ export default function MainScreen({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8888/ws");
-    console.log(socket);
 
     socket.onopen = () => {
       console.log("Connected to WebSocket server");
+    };
+
+    socket.onmessage = async (event) => {
+      if (!pathname.includes("chat")) {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "message_personal") {
+            dispatch(addNewMessage({ senderId: data.payload.senderID }));
+          } else if (data.type === "notification") {
+            dispatch(setNewNotification(true));
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
     };
 
     socket.onclose = () => {
@@ -90,7 +111,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
     return () => {
       socket.close();
     };
-  }, []);
+  }, [dispatch, pathname]);
 
   if (showLoading) {
     return <LoadingScreen />;

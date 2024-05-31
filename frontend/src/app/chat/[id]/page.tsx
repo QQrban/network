@@ -8,7 +8,7 @@ import React, {
   useMemo,
 } from "react";
 import { EmojiClickData } from "emoji-picker-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter, usePathname } from "next/navigation";
 
 import ChattersList from "@/components/Chat/ChattersList";
@@ -26,6 +26,13 @@ import {
   ErrorTextStyles,
   ItemStyles,
 } from "@/components/Chat/styles";
+import {
+  addNewMessage,
+  removeSenderId,
+  resetNewMessage,
+  setNewNotification,
+} from "@/redux/features/notifications/notificationsSlice";
+import { getLocalStorageItem } from "@/lib/getStorage";
 
 export default function Chat() {
   const [tabValue, setTabValue] = useState<string>("private");
@@ -42,6 +49,13 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const authID = useSelector((state: any) => state.authReducer.value.id);
+
+  const senderIds = useSelector(
+    (state: any) => state.notificationsReducer.senderIds
+  );
+
+  const dispatch = useDispatch();
+
   const pathname = usePathname().split("/").pop();
   const router = useRouter();
 
@@ -58,10 +72,19 @@ export default function Chat() {
     }
   }, []);
 
-  const handleClick = useCallback((chatterID: number, chatName: string) => {
-    setReceiverID(chatterID);
-    setActiveChatName(chatName);
-  }, []);
+  const handleClick = useCallback(
+    (chatterID: number, chatName: string) => {
+      setReceiverID(chatterID);
+      setActiveChatName(chatName);
+      dispatch(removeSenderId({ senderId: chatterID }));
+      if (senderIds) {
+        if (senderIds.length === 0) {
+          resetNewMessage();
+        }
+      }
+    },
+    [dispatch, senderIds]
+  );
 
   const fetchChatters = useCallback(async () => {
     try {
@@ -138,15 +161,28 @@ export default function Chat() {
       try {
         const data = JSON.parse(event.data);
         const newMessage = data.payload;
-        const lastIndex = messages[messages.length - 1].ID;
-        const messageWithID = { ...newMessage, ID: lastIndex + 1 };
 
-        setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages, messageWithID];
+        // Проверяем, относится ли сообщение к текущему открытому чату
+        if (data.type === "message_personal") {
+          if (
+            receiverID === data.payload.receiverID ||
+            receiverID === data.payload.senderID
+          ) {
+            const lastIndex = messages.length
+              ? messages[messages.length - 1].ID
+              : 0;
+            const messageWithID = { ...newMessage, ID: lastIndex + 1 };
 
-          console.log(updatedMessages);
-          return updatedMessages;
-        });
+            setMessages((prevMessages) => {
+              const updatedMessages = [...prevMessages, messageWithID];
+              return updatedMessages;
+            });
+          } else {
+            dispatch(addNewMessage({ senderId: data.payload.senderID }));
+          }
+        } else if (data.type === "notification") {
+          dispatch(setNewNotification(true));
+        }
       } catch (error) {
         console.error(error);
       }
@@ -155,7 +191,7 @@ export default function Chat() {
     return () => {
       socketRef.current?.close();
     };
-  }, [fetchHistory, messages]);
+  }, [fetchHistory, messages, activeChatName, dispatch, receiverID]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -163,12 +199,6 @@ export default function Chat() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [handleClickOutside]);
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
 
   useEffect(() => {
     if (messagesEndRef.current) {

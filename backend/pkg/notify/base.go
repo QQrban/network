@@ -21,6 +21,7 @@ type Notification interface {
 	Targets() []int64
 	Sender() int64
 	Message() string
+	isGroup() bool
 	Links() []Link
 }
 
@@ -85,31 +86,32 @@ func (m *MessageContent) JSON() string {
 }
 
 func (n Notifier) notify(msg Notification) ([]byte, []int64) {
-    content := fmt.Sprintf("%v", msg.Message())
-    message := &models.Message {
-        SenderID:   0,
-        ReceiverID: 0,
-        Content:    content,
-        Created:    time.Now(),
-    }
+	content := fmt.Sprintf("%v", msg.Message())
+	message := &models.Message{
+		SenderID:   0,
+		ReceiverID: 0,
+		Content:    content,
+		Created:    time.Now(),
+	}
 
 	targets := msg.Targets()
 	message.SenderID = msg.Sender()
+	message.IsGroup = msg.isGroup()
 
-    for _, t := range targets {
-        message.ReceiverID = t
-        id, err := n.database.Message.SendMessage(*message)
-        message.ID = id
-        if err != nil {
-            log.Printf("could not insert notification message for %v: %v\n", t, err)
-        }
-    }
+	for _, t := range targets {
+		message.ReceiverID = t
+		id, err := n.database.Message.SendMessage(*message)
+		message.ID = id
+		if err != nil {
+			log.Printf("could not insert notification message for %v: %v\n", t, err)
+		}
+	}
 
-    b, err := json.Marshal(message)
-    if err != nil {
-        log.Println(err)
-    }
-    return b, targets
+	b, err := json.Marshal(message)
+	if err != nil {
+		log.Println(err)
+	}
+	return b, targets
 }
 
 func userGetName(u *models.User) string {

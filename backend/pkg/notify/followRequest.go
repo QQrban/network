@@ -37,6 +37,10 @@ func (f FollowRequest) Message() string {
 	return fmt.Sprintf("%v", msg.JSON())
 }
 
+func (f FollowRequest) isGroup() bool {
+	return false
+}
+
 func (f FollowRequest) Links() []Link {
 	return []Link{
 		{

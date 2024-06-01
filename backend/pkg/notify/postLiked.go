@@ -39,6 +39,10 @@ func (f PostLiked) Message() string {
 	return fmt.Sprintf("%v", msg.JSON())
 }
 
+func (f PostLiked) isGroup() bool {
+	return false
+}
+
 func (f PostLiked) Links() []Link {
 	return []Link{
 		{

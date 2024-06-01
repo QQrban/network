@@ -41,6 +41,10 @@ func (n Invite) Message() string {
 	)
 }
 
+func (n Invite) isGroup() bool {
+	return false
+}
+
 func (n Invite) Links() []Link {
 	return []Link{
 		{

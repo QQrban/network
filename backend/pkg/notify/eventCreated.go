@@ -63,6 +63,10 @@ func (n EventCreated) Message() string {
 	)
 }
 
+func (n EventCreated) isGroup() bool {
+	return true
+}
+
 func (n EventCreated) Links() []Link {
 	return []Link{
 		{

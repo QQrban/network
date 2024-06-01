@@ -44,6 +44,10 @@ func (n Request) Message() string {
 	)
 }
 
+func (n Request) isGroup() bool {
+	return false
+}
+
 func (n Request) Links() []Link {
 	return []Link{
 		{

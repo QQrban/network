@@ -79,6 +79,7 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 		message := &Message{}
 		pointers := message.pointerSlice()
 		if messageOld.IsGroup {
+			message.IsGroup = true
 			user := &UserLimited{}
 			message.SenderData = user
 			pointers = append(pointers, &user.ID, &user.FirstName, &user.LastName, &user.Nickname, &user.Image)

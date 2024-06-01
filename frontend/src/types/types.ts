@@ -94,6 +94,6 @@ export interface MessageProps {
   created: string;
   isGroup: boolean;
   receiverID: number;
-  senderData: null;
+  senderData: ContactsProps | null;
   senderID: 2;
 }

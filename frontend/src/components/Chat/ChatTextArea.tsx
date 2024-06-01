@@ -58,10 +58,6 @@ const ChatTextArea = ({
         tabValue === "group"
           ? { receiverID: groupID, isGroup: true, content: text.trim() }
           : { receiverID: receiverID, content: text.trim() };
-      console.log("tabValue", tabValue);
-      console.log("groupID", groupID);
-      console.log("receiverID", receiverID);
-      console.log("text", text);
 
       const response = await fetchFromServer(`/message/send`, {
         method: "POST",
@@ -71,6 +67,8 @@ const ChatTextArea = ({
 
       if (response.ok) {
         setText("");
+        console.log(groupID);
+
         const newMessage: MessageProps = await response.json();
         addNewMessage(newMessage);
 

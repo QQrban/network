@@ -123,6 +123,8 @@ export default function Chat() {
       if (response.ok) {
         const data = await response.json();
         setMessages(data);
+        console.log(data);
+        console.log(groupID);
       }
     } catch (error) {
       console.error(error);
@@ -156,7 +158,7 @@ export default function Chat() {
     if (groupID !== 0) fetchHistory();
   }, [fetchUser, authID, receiverID, fetchHistory, groupID]);
 
-  const fetchGroups = async () => {
+  const fetchGroups = useCallback(async () => {
     try {
       const response = await fetchFromServer(`/message/groups`, {
         credentials: "include",
@@ -164,24 +166,11 @@ export default function Chat() {
       if (response.ok) {
         const data = await response.json();
         setGroupChats(data);
-        console.log(data);
       }
     } catch (error) {
       console.error(error);
     }
-  };
-
-  useEffect(() => {
-    if (tabValue === "group") {
-      fetchGroups();
-    } else if (tabValue === "private") {
-      fetchChatters();
-    }
-    setActiveChatName("");
-    setGroupID(0);
-    setReceiverID(undefined);
-    setInitChat(undefined);
-  }, [tabValue, fetchChatters]);
+  }, []);
 
   useEffect(() => {
     if (pathname) {
@@ -193,6 +182,12 @@ export default function Chat() {
       }
     }
   }, [pathname, router]);
+
+  useEffect(() => {
+    if (tabValue === "group") {
+      fetchGroups();
+    }
+  }, [tabValue, fetchGroups]);
 
   // Socket Handler
   useEffect(() => {
@@ -245,14 +240,13 @@ export default function Chat() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-    console.log(messages);
   }, [messages]);
 
   // Adding Messages
   const chatContent = useMemo(
     () => (
       <>
-        {authID && activeChatName && tabValue === "private"
+        {authID && activeChatName
           ? messages?.map((message, index) => (
               <MessageItem
                 key={message.ID || index}
@@ -264,7 +258,7 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </>
     ),
-    [authID, activeChatName, messages, tabValue]
+    [authID, activeChatName, messages]
   );
 
   const resetChatState = useCallback(() => {
@@ -273,7 +267,12 @@ export default function Chat() {
     setReceiverID(undefined);
     setInitChat(undefined);
     setMessages([]);
-  }, []);
+    if (tabValue === "group") {
+      fetchGroups();
+    } else if (tabValue === "private") {
+      fetchChatters();
+    }
+  }, [fetchChatters, fetchGroups, tabValue]);
 
   return (
     <ChatBoxStyles>

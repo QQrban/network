@@ -13,8 +13,8 @@ export default function ChatTabs({
   resetChatState,
 }: ChatTabsProps) {
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
-    setTabValue(newValue);
     resetChatState();
+    setTabValue(newValue);
   };
 
   return (

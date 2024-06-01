@@ -24,12 +24,12 @@ func (n Notifier) SendMessage(
 	})
 }
 
-func (sm SendMessage) Targets() []int64 {
+func (sm SendMessage) Targets() ([]int64, int64) {
 	if sm.message.IsGroup {
 		members, err := sm.db.Group.GetMembers(sm.message.ReceiverID)
 		if err != nil {
 			log.Println(err)
-			return nil
+			return nil, -1
 		}
 		ids := make([]int64, 0, len(members)-1)
 		for _, member := range members {
@@ -38,9 +38,9 @@ func (sm SendMessage) Targets() []int64 {
 			}
 		}
 
-		return ids
+		return ids, sm.message.ReceiverID
 	}
-	return []int64{sm.message.ReceiverID}
+	return []int64{sm.message.ReceiverID}, sm.message.ReceiverID
 }
 
 func (sm SendMessage) Sender() int64 {

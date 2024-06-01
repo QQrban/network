@@ -18,8 +18,8 @@ func (n Notifier) PostLiked(liker *models.User, post *models.Post) ([]byte, []in
 	})
 }
 
-func (f PostLiked) Targets() []int64 {
-	return []int64{f.post.AuthorID}
+func (f PostLiked) Targets() ([]int64, int64) {
+	return []int64{f.post.AuthorID}, f.post.AuthorID
 }
 
 func (f PostLiked) Sender() int64 {

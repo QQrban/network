@@ -18,8 +18,8 @@ func (n Notifier) Request(group *models.Group, requester *models.User) ([]byte, 
 	})
 }
 
-func (n Request) Targets() []int64 {
-	return []int64{n.group.OwnerID}
+func (n Request) Targets() ([]int64, int64) {
+	return []int64{n.group.OwnerID}, n.group.OwnerID
 }
 
 func (n Request) Sender() int64 {

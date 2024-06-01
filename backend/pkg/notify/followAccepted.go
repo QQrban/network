@@ -18,8 +18,8 @@ func (n Notifier) FollowAccepted(accepter *models.User, target int64) ([]byte, [
 	})
 }
 
-func (f FollowAccepted) Targets() []int64 {
-	return []int64{f.target}
+func (f FollowAccepted) Targets() ([]int64, int64) {
+	return []int64{f.target}, f.target
 }
 
 func (f FollowAccepted) Sender() int64 {

@@ -18,8 +18,8 @@ func (n Notifier) Invite(group *models.Group, target int64) {
 	})
 }
 
-func (n Invite) Targets() []int64 {
-	return []int64{n.target}
+func (n Invite) Targets() ([]int64, int64) {
+	return []int64{n.target}, n.target
 }
 
 func (n Invite) Sender() int64 {

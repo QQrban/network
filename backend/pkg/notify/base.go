@@ -18,7 +18,7 @@ import (
 var frontend_host = getFrontendHost()
 
 type Notification interface {
-	Targets() []int64
+	Targets() ([]int64, int64)
 	Sender() int64
 	Message() string
 	isGroup() bool
@@ -94,18 +94,24 @@ func (n Notifier) notify(msg Notification) ([]byte, []int64) {
 		Created:    time.Now(),
 	}
 
-	targets := msg.Targets()
+	targets, receiverID := msg.Targets()
 	message.SenderID = msg.Sender()
 	message.IsGroup = msg.isGroup()
-
-	for _, t := range targets {
-		message.ReceiverID = t
+	message.ReceiverID = receiverID 
+	//for _, t := range targets {
+	//	message.ReceiverID = t
 		id, err := n.database.Message.SendMessage(*message)
 		message.ID = id
 		if err != nil {
-			log.Printf("could not insert notification message for %v: %v\n", t, err)
+			who := ""
+			if message.IsGroup {
+				who = "group"
+			} else {
+				who = "user"
+			}
+			log.Printf("could not insert %v notification message for %v: %v\n", who, receiverID, err)
 		}
-	}
+	//}
 
 	b, err := json.Marshal(message)
 	if err != nil {

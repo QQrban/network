@@ -18,8 +18,8 @@ func (n Notifier) FollowRequest(requester *models.User, target int64) ([]byte, [
 	})
 }
 
-func (f FollowRequest) Targets() []int64 {
-	return []int64{f.target}
+func (f FollowRequest) Targets() ([]int64, int64) {
+	return []int64{f.target}, f.target
 }
 
 func (f FollowRequest) Sender() int64 {

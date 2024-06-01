@@ -27,14 +27,14 @@ func (n Notifier) EventCreated(
 	})
 }
 
-func (n EventCreated) Targets() []int64 {
+func (n EventCreated) Targets() ([]int64, int64) {
 	ids := make([]int64, 0, len(n.members)-1)
 	for _, member := range n.members {
 		if member.ID != n.creator.ID {
 			ids = append(ids, member.ID)
 		}
 	}
-	return ids
+	return ids, n.group.ID
 }
 
 func (n EventCreated) Sender() int64 {

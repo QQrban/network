@@ -85,56 +85,31 @@ func (m *MessageContent) JSON() string {
 }
 
 func (n Notifier) notify(msg Notification) ([]byte, []int64) {
-	content := fmt.Sprintf("%v", msg.Message())
-	//content += "\n<form style='display: flex; flex-direction: column; gap: 2px; margin-top: 3px'>"
-	/*for _, link := range msg.Links() {
-		content += "|" + link.String()
-	}*/
-	//content += "\n</form>"
-
-	message := &models.Message{
-		SenderID:   0,
-		ReceiverID: 0,
-		Content:    content,
-		Created:    time.Now(),
-	}
+    content := fmt.Sprintf("%v", msg.Message())
+    message := &models.Message {
+        SenderID:   0,
+        ReceiverID: 0,
+        Content:    content,
+        Created:    time.Now(),
+    }
 
 	targets := msg.Targets()
 	message.SenderID = msg.Sender()
 
-	for _, t := range targets {
-		message.ReceiverID = t
-		id, err := n.database.Message.SendMessage(*message)
-		message.ID = id
-		if err != nil {
-			log.Printf("could not insert notification message for %v: %v\n", t, err)
-		}
-	}
+    for _, t := range targets {
+        message.ReceiverID = t
+        id, err := n.database.Message.SendMessage(*message)
+        message.ID = id
+        if err != nil {
+            log.Printf("could not insert notification message for %v: %v\n", t, err)
+        }
+    }
 
-	/*payload := struct {
-		Targets []int64         `json:"targets"`
-		Message *models.Message `json:"message"`
-	}{
-		Targets: targets,
-		Message: message,
-	}*/
-	
-	//fmt.Println("payload:", payload.Targets, payload.Message.Content)
-	
-	//b := new(bytes.Buffer)
-	//err := json.NewEncoder(b).Encode(payload)
-	b, err := json.Marshal(message)
-	if err != nil {
-		log.Println(err)
-	}
-	return b, targets
-
-
-	/*_, err = http.Post(fmt.Sprintf("http://%v:8888/notify", frontend_host), "", b) //8080 
-	if err != nil {
-		log.Printf("could not notify notification: %v\n", err)
-	}
-	*/
+    b, err := json.Marshal(message)
+    if err != nil {
+        log.Println(err)
+    }
+    return b, targets
 }
 
 func userGetName(u *models.User) string {

@@ -103,7 +103,7 @@ export default function SearchBar() {
             overflowY: "scroll",
             border: "2px solid #4b4b4b",
             borderTop: "none",
-            top: 235,
+            top: 240,
             left: 144,
             padding: "10px",
             zIndex: 1,

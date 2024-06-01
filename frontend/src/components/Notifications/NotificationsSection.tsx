@@ -46,7 +46,7 @@ export default function NotificationsSection({
             fetchFromServer(
               `/groups/${notification.content.groupID}/accept/${notification.content.userID}`,
               {
-                method: "PUT",
+                method: "POST",
                 credentials: "include",
               }
             );

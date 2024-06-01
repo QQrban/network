@@ -86,7 +86,7 @@ export default function ChattersList({
               sx={{
                 outline: groupID === group.ID ? "2px solid #b0b0b0" : null,
               }}
-              onClick={() => handleGroupClick(group.ID, `${group.description}`)}
+              onClick={() => handleGroupClick(group.ID, `${group.title}`)}
               key={group.ID}
               disablePadding
             >
@@ -99,7 +99,7 @@ export default function ChattersList({
                     <Typography
                       sx={{ fontFamily: "Gloria Hallelujah !important" }}
                     >
-                      {group.description}
+                      {group.title}
                     </Typography>
                   }
                 />

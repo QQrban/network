@@ -9,8 +9,10 @@ import { ContactsProps, MessageProps } from "@/types/types";
 
 interface ChatTextAreaProps {
   text: string;
+  tabValue: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
   receiverID: number | undefined;
+  groupID: number;
   setMessages: React.Dispatch<React.SetStateAction<MessageProps[]>>;
   openEmoji: boolean;
   setOpenEmoji: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +31,8 @@ const ChatTextArea = ({
   setMessages,
   openEmoji,
   setOpenEmoji,
+  groupID,
+  tabValue,
   emojiPickerRef,
   chatters,
   initChat,
@@ -50,11 +54,21 @@ const ChatTextArea = ({
 
   const sendMessage = async () => {
     try {
+      const body =
+        tabValue === "group"
+          ? { receiverID: groupID, isGroup: true, content: text.trim() }
+          : { receiverID: receiverID, content: text.trim() };
+      console.log("tabValue", tabValue);
+      console.log("groupID", groupID);
+      console.log("receiverID", receiverID);
+      console.log("text", text);
+
       const response = await fetchFromServer(`/message/send`, {
         method: "POST",
         credentials: "include",
-        body: JSON.stringify({ receiverID, content: text.trim() }),
+        body: JSON.stringify(body),
       });
+
       if (response.ok) {
         setText("");
         const newMessage: MessageProps = await response.json();

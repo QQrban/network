@@ -32,7 +32,6 @@ import {
   resetNewMessage,
   setNewNotification,
 } from "@/redux/features/notifications/notificationsSlice";
-import { getLocalStorageItem } from "@/lib/getStorage";
 
 export default function Chat() {
   const [tabValue, setTabValue] = useState<string>("private");
@@ -110,11 +109,17 @@ export default function Chat() {
   const fetchHistory = useCallback(async () => {
     if (authID === receiverID) return;
     try {
+      const body =
+        tabValue === "group"
+          ? { receiverID: groupID, isGroup: true }
+          : { receiverID: receiverID };
+
       const response = await fetchFromServer(`/message/history`, {
         method: "POST",
         credentials: "include",
-        body: JSON.stringify({ receiverID }),
+        body: JSON.stringify(body),
       });
+
       if (response.ok) {
         const data = await response.json();
         setMessages(data);
@@ -122,7 +127,7 @@ export default function Chat() {
     } catch (error) {
       console.error(error);
     }
-  }, [receiverID, authID]);
+  }, [receiverID, authID, groupID, tabValue]);
 
   const fetchUser = useCallback(async () => {
     try {
@@ -148,7 +153,8 @@ export default function Chat() {
       fetchUser();
       fetchHistory();
     }
-  }, [fetchUser, authID, receiverID, fetchHistory]);
+    if (groupID !== 0) fetchHistory();
+  }, [fetchUser, authID, receiverID, fetchHistory, groupID]);
 
   const fetchGroups = async () => {
     try {
@@ -158,6 +164,7 @@ export default function Chat() {
       if (response.ok) {
         const data = await response.json();
         setGroupChats(data);
+        console.log(data);
       }
     } catch (error) {
       console.error(error);
@@ -167,11 +174,14 @@ export default function Chat() {
   useEffect(() => {
     if (tabValue === "group") {
       fetchGroups();
+    } else if (tabValue === "private") {
+      fetchChatters();
     }
     setActiveChatName("");
     setGroupID(0);
     setReceiverID(undefined);
-  }, [tabValue]);
+    setInitChat(undefined);
+  }, [tabValue, fetchChatters]);
 
   useEffect(() => {
     if (pathname) {
@@ -184,6 +194,7 @@ export default function Chat() {
     }
   }, [pathname, router]);
 
+  // Socket Handler
   useEffect(() => {
     socketRef.current = new WebSocket("ws://localhost:8888/ws");
 
@@ -229,6 +240,7 @@ export default function Chat() {
     };
   }, [handleClickOutside]);
 
+  // Smooth Scroll
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -236,6 +248,7 @@ export default function Chat() {
     console.log(messages);
   }, [messages]);
 
+  // Adding Messages
   const chatContent = useMemo(
     () => (
       <>
@@ -254,10 +267,22 @@ export default function Chat() {
     [authID, activeChatName, messages, tabValue]
   );
 
+  const resetChatState = useCallback(() => {
+    setActiveChatName("");
+    setGroupID(0);
+    setReceiverID(undefined);
+    setInitChat(undefined);
+    setMessages([]);
+  }, []);
+
   return (
     <ChatBoxStyles>
       <ItemStyles radius="8px">
-        <ChatTabs tabValue={tabValue} setTabValue={setTabValue} />
+        <ChatTabs
+          resetChatState={resetChatState}
+          tabValue={tabValue}
+          setTabValue={setTabValue}
+        />
         <ChattersList
           groupID={groupID}
           tabValue={tabValue}
@@ -285,6 +310,7 @@ export default function Chat() {
         {tabValue === "private" ? (
           activeChatName && receiverID !== undefined && initChat?.access ? (
             <ChatTextArea
+              tabValue={tabValue}
               initChat={initChat}
               text={text}
               setText={setText}
@@ -292,6 +318,7 @@ export default function Chat() {
               messages={messages}
               setChatters={setChatters}
               receiverID={receiverID}
+              groupID={groupID}
               setMessages={setMessages}
               openEmoji={openEmoji}
               setOpenEmoji={setOpenEmoji}
@@ -299,7 +326,8 @@ export default function Chat() {
               handleEmojiSelect={handleEmojiSelect}
             />
           ) : (
-            authID !== Number(pathname) && (
+            authID !== Number(pathname) &&
+            activeChatName && (
               <ErrorTextStyles color="error">
                 This account is private. To send a message, you need to follow
                 it first
@@ -309,6 +337,7 @@ export default function Chat() {
         ) : (
           activeChatName && (
             <ChatTextArea
+              tabValue={tabValue}
               initChat={initChat}
               text={text}
               setText={setText}
@@ -316,6 +345,7 @@ export default function Chat() {
               chatters={chatters}
               setChatters={setChatters}
               receiverID={receiverID}
+              groupID={groupID}
               setMessages={setMessages}
               openEmoji={openEmoji}
               setOpenEmoji={setOpenEmoji}

@@ -3,12 +3,18 @@ import { SyntheticEvent } from "react";
 
 interface ChatTabsProps {
   tabValue: string;
-  setTabValue: React.Dispatch<string>;
+  setTabValue: React.Dispatch<React.SetStateAction<string>>;
+  resetChatState: () => void;
 }
 
-export default function ChatTabs({ tabValue, setTabValue }: ChatTabsProps) {
+export default function ChatTabs({
+  tabValue,
+  setTabValue,
+  resetChatState,
+}: ChatTabsProps) {
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
+    resetChatState();
   };
 
   return (

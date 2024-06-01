@@ -14,7 +14,7 @@ import { useRouter, usePathname } from "next/navigation";
 import ChattersList from "@/components/Chat/ChattersList";
 import { Item } from "@/components/shared/Item";
 import { fetchFromServer } from "@/lib/api";
-import { ContactsProps, MessageProps } from "@/types/types";
+import { ContactsProps, GroupProps, MessageProps } from "@/types/types";
 import MessageItem from "@/components/Chat/MessageItem";
 import ChatTabs from "@/components/Chat/ChatTabs";
 import ChatContentHeader from "@/components/Chat/ChatContentHeader";
@@ -37,9 +37,11 @@ import { getLocalStorageItem } from "@/lib/getStorage";
 export default function Chat() {
   const [tabValue, setTabValue] = useState<string>("private");
   const [chatters, setChatters] = useState<ContactsProps[]>([]);
+  const [groupChats, setGroupChats] = useState<GroupProps[]>([]);
   const [text, setText] = useState<string>("");
   const [openEmoji, setOpenEmoji] = useState<boolean>(false);
   const [receiverID, setReceiverID] = useState<number | undefined>(undefined);
+  const [groupID, setGroupID] = useState<number>(0);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [activeChatName, setActiveChatName] = useState<string>("");
   const [initChat, setInitChat] = useState<ContactsProps>();
@@ -85,6 +87,11 @@ export default function Chat() {
     },
     [dispatch, senderIds]
   );
+
+  const handleGroupClick = (groupID: number, groupChatName: string) => {
+    setGroupID(groupID);
+    setActiveChatName(groupChatName);
+  };
 
   const fetchChatters = useCallback(async () => {
     try {
@@ -143,6 +150,29 @@ export default function Chat() {
     }
   }, [fetchUser, authID, receiverID, fetchHistory]);
 
+  const fetchGroups = async () => {
+    try {
+      const response = await fetchFromServer(`/message/groups`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setGroupChats(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (tabValue === "group") {
+      fetchGroups();
+    }
+    setActiveChatName("");
+    setGroupID(0);
+    setReceiverID(undefined);
+  }, [tabValue]);
+
   useEffect(() => {
     if (pathname) {
       const pathID = Number(pathname);
@@ -162,7 +192,6 @@ export default function Chat() {
         const data = JSON.parse(event.data);
         const newMessage = data.payload;
 
-        // Проверяем, относится ли сообщение к текущему открытому чату
         if (data.type === "message_personal") {
           if (
             receiverID === data.payload.receiverID ||
@@ -204,24 +233,25 @@ export default function Chat() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
+    console.log(messages);
   }, [messages]);
 
   const chatContent = useMemo(
     () => (
       <>
-        {authID &&
-          activeChatName &&
-          messages?.map((message, index) => (
-            <MessageItem
-              key={message.ID || index}
-              message={message}
-              authID={authID}
-            />
-          ))}
+        {authID && activeChatName && tabValue === "private"
+          ? messages?.map((message, index) => (
+              <MessageItem
+                key={message.ID || index}
+                message={message}
+                authID={authID}
+              />
+            ))
+          : ""}
         <div ref={messagesEndRef} />
       </>
     ),
-    [authID, activeChatName, messages]
+    [authID, activeChatName, messages, tabValue]
   );
 
   return (
@@ -229,8 +259,12 @@ export default function Chat() {
       <ItemStyles radius="8px">
         <ChatTabs tabValue={tabValue} setTabValue={setTabValue} />
         <ChattersList
+          groupID={groupID}
+          tabValue={tabValue}
+          groups={groupChats}
           receiverID={receiverID}
           handleClick={handleClick}
+          handleGroupClick={handleGroupClick}
           chatters={chatters}
           content={tabValue}
         />
@@ -248,26 +282,46 @@ export default function Chat() {
           <CenterTextStyles>Please select a Chat</CenterTextStyles>
         )}
         <ChatContentStyles>{chatContent}</ChatContentStyles>
-        {activeChatName && receiverID !== undefined && initChat?.access ? (
-          <ChatTextArea
-            initChat={initChat}
-            text={text}
-            setText={setText}
-            chatters={chatters}
-            setChatters={setChatters}
-            receiverID={receiverID}
-            setMessages={setMessages}
-            openEmoji={openEmoji}
-            setOpenEmoji={setOpenEmoji}
-            emojiPickerRef={emojiPickerRef}
-            handleEmojiSelect={handleEmojiSelect}
-          />
+        {tabValue === "private" ? (
+          activeChatName && receiverID !== undefined && initChat?.access ? (
+            <ChatTextArea
+              initChat={initChat}
+              text={text}
+              setText={setText}
+              chatters={chatters}
+              messages={messages}
+              setChatters={setChatters}
+              receiverID={receiverID}
+              setMessages={setMessages}
+              openEmoji={openEmoji}
+              setOpenEmoji={setOpenEmoji}
+              emojiPickerRef={emojiPickerRef}
+              handleEmojiSelect={handleEmojiSelect}
+            />
+          ) : (
+            authID !== Number(pathname) && (
+              <ErrorTextStyles color="error">
+                This account is private. To send a message, you need to follow
+                it first
+              </ErrorTextStyles>
+            )
+          )
         ) : (
-          authID !== Number(pathname) && (
-            <ErrorTextStyles color="error">
-              This account is private. To send a message, you need to follow it
-              first
-            </ErrorTextStyles>
+          activeChatName && (
+            <ChatTextArea
+              initChat={initChat}
+              text={text}
+              setText={setText}
+              messages={messages}
+              chatters={chatters}
+              setChatters={setChatters}
+              receiverID={receiverID}
+              setMessages={setMessages}
+              openEmoji={openEmoji}
+              setOpenEmoji={setOpenEmoji}
+              emojiPickerRef={emojiPickerRef}
+              handleEmojiSelect={handleEmojiSelect}
+            />
           )
         )}
       </Item>

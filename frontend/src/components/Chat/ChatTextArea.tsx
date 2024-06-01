@@ -19,6 +19,7 @@ interface ChatTextAreaProps {
   chatters: ContactsProps[];
   initChat: ContactsProps | undefined;
   setChatters: React.Dispatch<React.SetStateAction<ContactsProps[]>>;
+  messages: MessageProps[];
 }
 
 const ChatTextArea = ({
@@ -39,7 +40,12 @@ const ChatTextArea = ({
   };
 
   const addNewMessage = (newMessage: MessageProps) => {
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setMessages((prevMessages) => {
+      const lastID =
+        prevMessages.length > 0 ? prevMessages[prevMessages.length - 1].ID : 0;
+      const newID = lastID + 1;
+      return [...prevMessages, { ...newMessage, ID: newID }];
+    });
   };
 
   const sendMessage = async () => {

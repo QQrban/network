@@ -59,7 +59,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 
 		message, targets := Notify.EventCreated(group.Group, event, creator, members)
 		event := ChatEvent{
-			Type:    "event_created",
+			Type:    "notification",
 			Payload: message,
 		}
 		ChatManager.broadcast(event, targets)

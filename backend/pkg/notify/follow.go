@@ -39,7 +39,7 @@ func (f Follow) Message() string {
 	return fmt.Sprintf("%v", msg.JSON())
 }
 
-func (f Follow) isGroup() bool {
+func (f Follow) IsGroup() bool {
 	return false
 }
 

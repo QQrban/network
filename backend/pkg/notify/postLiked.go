@@ -39,7 +39,7 @@ func (f PostLiked) Message() string {
 	return fmt.Sprintf("%v", msg.JSON())
 }
 
-func (f PostLiked) isGroup() bool {
+func (f PostLiked) IsGroup() bool {
 	return false
 }
 

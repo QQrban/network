@@ -44,7 +44,7 @@ func (n Request) Message() string {
 	)
 }
 
-func (n Request) isGroup() bool {
+func (n Request) IsGroup() bool {
 	return false
 }
 

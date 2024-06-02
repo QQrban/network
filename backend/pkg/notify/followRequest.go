@@ -37,7 +37,7 @@ func (f FollowRequest) Message() string {
 	return fmt.Sprintf("%v", msg.JSON())
 }
 
-func (f FollowRequest) isGroup() bool {
+func (f FollowRequest) IsGroup() bool {
 	return false
 }
 

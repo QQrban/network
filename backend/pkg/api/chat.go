@@ -91,7 +91,6 @@ func (m *Manager) removeClient(client *Client) {
 }
 
 func (m *Manager) broadcast(event ChatEvent, targets []int64) {
-	//fmt.Println("online", m.OnlineUsers())
 	m.RLock()
 	defer m.RUnlock()
 	for client := range m.clients {

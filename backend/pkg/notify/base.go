@@ -21,7 +21,7 @@ type Notification interface {
 	Targets() ([]int64, int64)
 	Sender() int64
 	Message() string
-	isGroup() bool
+	IsGroup() bool
 	Links() []Link
 }
 
@@ -96,8 +96,9 @@ func (n Notifier) notify(msg Notification) ([]byte, []int64) {
 
 	targets, receiverID := msg.Targets()
 	message.SenderID = msg.Sender()
-	message.IsGroup = msg.isGroup()
+	message.IsGroup = msg.IsGroup()
 	message.ReceiverID = receiverID 
+
 	//for _, t := range targets {
 	//	message.ReceiverID = t
 		id, err := n.database.Message.SendMessage(*message)

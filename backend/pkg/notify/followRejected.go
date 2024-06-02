@@ -30,7 +30,7 @@ func (f FollowRejected) Message() string {
 	return fmt.Sprintf("Your request to follow <strong>%v</strong> got rejected!", html.EscapeString(userGetName(f.rejecter)))
 }
 
-func (f FollowRejected) isGroup() bool {
+func (f FollowRejected) IsGroup() bool {
 	return false
 }
 

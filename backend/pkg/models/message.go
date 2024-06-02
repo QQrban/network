@@ -80,10 +80,10 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 		pointers := message.pointerSlice()
 		if messageOld.IsGroup {
 			message.IsGroup = true
-			user := &UserLimited{}
-			message.SenderData = user
-			pointers = append(pointers, &user.ID, &user.FirstName, &user.LastName, &user.Nickname, &user.Image)
 		}
+		user := &UserLimited{}
+		message.SenderData = user
+		pointers = append(pointers, &user.ID, &user.FirstName, &user.LastName, &user.Nickname, &user.Image)
 		err = rows.Scan(pointers...)
 
 		if err != nil {

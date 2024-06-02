@@ -51,7 +51,7 @@ func (sm SendMessage) Message() string {
 	return sm.message.Content
 }
 
-func (sm SendMessage) isGroup() bool {
+func (sm SendMessage) IsGroup() bool {
 	return sm.message.IsGroup
 }
 

@@ -41,7 +41,7 @@ func (n Invite) Message() string {
 	)
 }
 
-func (n Invite) isGroup() bool {
+func (n Invite) IsGroup() bool {
 	return false
 }
 

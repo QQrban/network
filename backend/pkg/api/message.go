@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -27,19 +28,26 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	//message.ID = id
 	message.Created = time.Now()
+	msgType := "message_personal"
 
-	if message.IsGroup {
+	if message.SenderID == 0 {
+		msgType = "notification"
+	} else {
 		u, err := Database.User.GetByID(message.SenderID)
 		panicIfErr(err)
 		message.SenderData = u.Limited()
 	}
-	//
+	if message.IsGroup {
+		msgType = "message_group"
+	}
+	fmt.Printf("MsgType: %v\nMessage: %v\n", msgType, message)
+
 	done := make(chan bool)
 	go func() {
 		defer close(done)
 		message, targets := Notify.SendMessage(message, session.UserID, Database)
 		event := ChatEvent{
-			Type:    "message_personal",
+			Type:    msgType,
 			Payload: message,
 		}
 		ChatManager.broadcast(event, targets)

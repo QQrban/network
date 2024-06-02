@@ -4,12 +4,12 @@ import Link from "next/link";
 
 interface ChatContentHeaderProps {
   activeChatName: string;
-  receiverID: number | undefined;
+  chatReceiverID: number | undefined;
 }
 
 export default function ChatContentHeader({
   activeChatName,
-  receiverID,
+  chatReceiverID,
 }: ChatContentHeaderProps) {
   return (
     <Box
@@ -23,7 +23,7 @@ export default function ChatContentHeader({
         borderBottom: "2px solid #b0b0b0",
       }}
     >
-      {receiverID ? (
+      {chatReceiverID ? (
         <Box
           sx={{
             display: "flex",
@@ -31,7 +31,7 @@ export default function ChatContentHeader({
             gap: "10px",
           }}
         >
-          <Link href={`/profile/${receiverID}`}>
+          <Link href={`/profile/${chatReceiverID}`}>
             <ProfileImage width={45} height={45} image="" />
           </Link>
           <Typography

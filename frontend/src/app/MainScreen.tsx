@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, ReactNode, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCookie } from "./getCookie";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
@@ -18,6 +18,7 @@ import {
   setNewNotification,
 } from "@/redux/features/notifications/notificationsSlice";
 import { usePathname } from "next/navigation";
+import { Screen } from "@/components/Main/styles";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
   const [showLoading, setShowLoading] = useState(true);
@@ -27,6 +28,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
   const dispatch = useDispatch();
 
   const pathname = usePathname();
+  const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -79,39 +81,24 @@ export default function MainScreen({ children }: { children: ReactNode }) {
   }, [auth, dispatch]);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8888/ws");
+    if (!socketRef.current) {
+      socketRef.current = new WebSocket("ws://localhost:8888/ws");
 
-    socket.onopen = () => {
-      console.log("Connected to WebSocket server");
-    };
-
-    socket.onmessage = async (event) => {
-      if (!pathname.includes("chat")) {
-        try {
-          const data = JSON.parse(event.data);
-          console.log("Message:", data);
-          if (data.type === "message_personal") {
-            dispatch(addNewMessage({ senderId: data.payload.senderID }));
-          } else if (data.type === "notification") {
-            dispatch(setNewNotification(true));
+      socketRef.current.onmessage = async (event) => {
+        if (!pathname.includes("chat")) {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === "message_personal" && !data.payload.isGroup) {
+              dispatch(addNewMessage({ senderId: data.payload.senderID }));
+            } else if (data.type === "notification") {
+              dispatch(setNewNotification(true));
+            }
+          } catch (error) {
+            console.error(error);
           }
-        } catch (error) {
-          console.error(error);
         }
-      }
-    };
-
-    socket.onclose = () => {
-      console.log("Disconnected from WebSocket server");
-    };
-
-    socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    return () => {
-      socket.close();
-    };
+      };
+    }
   }, [dispatch, pathname]);
 
   if (showLoading) {
@@ -121,32 +108,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
   return (
     <>
       {auth && <NavigationMenu />}
-      <Item
-        radius="8px"
-        sx={{
-          border: "4px solid #4a4a4a",
-          backgroundImage: `url(${bgWall.src})`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          width: "100%",
-          height: "calc(100vh - 40px)",
-          m: "0 auto",
-          overflowX: "none",
-          overflowY: "scroll",
-          pb: "23px",
-          "&::-webkit-scrollbar": {
-            width: "5px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#b0b0b0",
-            borderRadius: "10px",
-          },
-          "&::-webkit-scrollbar-track": {
-            backgroundColor: "#ccc",
-          },
-        }}
-      >
+      <Screen radius="8px">
         {auth ? <Header /> : ""}
         {authChecked &&
           (auth ? (
@@ -166,7 +128,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
               />
             </Box>
           ))}
-      </Item>
+      </Screen>
     </>
   );
 }

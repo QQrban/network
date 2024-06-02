@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./global.css";
 import { ReduxProvider } from "@/redux/provider";
 import MainScreen from "./MainScreen";
+import { WebSocketProvider } from "@/context/WebSocketContext";
 
 export const metadata: Metadata = {
   title: "SketchSphere",
@@ -26,7 +27,9 @@ export default function RootLayout({
         component="body"
       >
         <ReduxProvider>
-          <MainScreen>{children}</MainScreen>
+          <WebSocketProvider>
+            <MainScreen>{children}</MainScreen>
+          </WebSocketProvider>
         </ReduxProvider>
       </Box>
     </html>

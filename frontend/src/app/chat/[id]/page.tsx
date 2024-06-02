@@ -32,6 +32,7 @@ import {
   resetNewMessage,
   setNewNotification,
 } from "@/redux/features/notifications/notificationsSlice";
+import { useWebSocket } from "@/context/WebSocketContext";
 
 export default function Chat() {
   const [tabValue, setTabValue] = useState<string>("private");
@@ -39,13 +40,14 @@ export default function Chat() {
   const [groupChats, setGroupChats] = useState<GroupProps[]>([]);
   const [text, setText] = useState<string>("");
   const [openEmoji, setOpenEmoji] = useState<boolean>(false);
-  const [receiverID, setReceiverID] = useState<number | undefined>(undefined);
+  const [chatReceiverID, setChatReceiverID] = useState<number | undefined>(
+    undefined
+  );
   const [groupID, setGroupID] = useState<number>(0);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [activeChatName, setActiveChatName] = useState<string>("");
   const [initChat, setInitChat] = useState<ContactsProps>();
 
-  const socketRef = useRef<WebSocket | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -59,6 +61,9 @@ export default function Chat() {
 
   const pathname = usePathname().split("/").pop();
   const router = useRouter();
+
+  const socket = useWebSocket();
+  const socketRef = useRef<WebSocket | null>(null);
 
   const handleEmojiSelect = useCallback((emoji: EmojiClickData) => {
     setText((prevText) => prevText + emoji.emoji);
@@ -75,7 +80,7 @@ export default function Chat() {
 
   const handleClick = useCallback(
     (chatterID: number, chatName: string) => {
-      setReceiverID(chatterID);
+      setChatReceiverID(chatterID);
       setActiveChatName(chatName);
       dispatch(removeSenderId({ senderId: chatterID }));
       if (senderIds) {
@@ -107,12 +112,12 @@ export default function Chat() {
   }, []);
 
   const fetchHistory = useCallback(async () => {
-    if (authID === receiverID) return;
+    if (authID === chatReceiverID) return;
     try {
       const body =
         tabValue === "group"
           ? { receiverID: groupID, isGroup: true }
-          : { receiverID: receiverID };
+          : { receiverID: chatReceiverID };
 
       const response = await fetchFromServer(`/message/history`, {
         method: "POST",
@@ -123,17 +128,15 @@ export default function Chat() {
       if (response.ok) {
         const data = await response.json();
         setMessages(data);
-        console.log(data);
-        console.log(groupID);
       }
     } catch (error) {
       console.error(error);
     }
-  }, [receiverID, authID, groupID, tabValue]);
+  }, [chatReceiverID, authID, groupID, tabValue]);
 
   const fetchUser = useCallback(async () => {
     try {
-      const response = await fetchFromServer(`/user/${receiverID}`, {
+      const response = await fetchFromServer(`/user/${chatReceiverID}`, {
         credentials: "include",
       });
       if (response.ok) {
@@ -144,19 +147,19 @@ export default function Chat() {
     } catch (error) {
       console.error(error);
     }
-  }, [receiverID]);
+  }, [chatReceiverID]);
 
   useEffect(() => {
     fetchChatters();
   }, [fetchChatters]);
 
   useEffect(() => {
-    if (authID !== receiverID && receiverID !== undefined) {
+    if (authID !== chatReceiverID && chatReceiverID !== undefined) {
       fetchUser();
       fetchHistory();
     }
     if (groupID !== 0) fetchHistory();
-  }, [fetchUser, authID, receiverID, fetchHistory, groupID]);
+  }, [fetchUser, authID, chatReceiverID, fetchHistory, groupID]);
 
   const fetchGroups = useCallback(async () => {
     try {
@@ -176,7 +179,8 @@ export default function Chat() {
     if (pathname) {
       const pathID = Number(pathname);
       if (!isNaN(pathID)) {
-        setReceiverID(pathID);
+        setChatReceiverID(pathID);
+        console.log("pathID", pathID);
       } else {
         router.push(`/chat`);
       }
@@ -189,44 +193,40 @@ export default function Chat() {
     }
   }, [tabValue, fetchGroups]);
 
-  // Socket Handler
   useEffect(() => {
     socketRef.current = new WebSocket("ws://localhost:8888/ws");
 
-    socketRef.current.onmessage = async (event) => {
+    socketRef.current.onmessage = async (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
-        const newMessage = data.payload;
+        console.log("Received WebSocket message:", data);
 
         if (data.type === "message_personal") {
-          if (
-            receiverID === data.payload.receiverID ||
-            receiverID === data.payload.senderID
-          ) {
-            const lastIndex = messages.length
-              ? messages[messages.length - 1].ID
-              : 0;
-            const messageWithID = { ...newMessage, ID: lastIndex + 1 };
+          const newMessage = data.payload;
+          const { receiverID, senderID, ID } = newMessage;
+          if (chatReceiverID === receiverID || chatReceiverID === senderID) {
+            const messageWithID = { ...newMessage, ID: ID };
 
             setMessages((prevMessages) => {
               const updatedMessages = [...prevMessages, messageWithID];
               return updatedMessages;
             });
+            console.log(messages);
           } else {
-            dispatch(addNewMessage({ senderId: data.payload.senderID }));
+            dispatch(addNewMessage({ senderId: newMessage.senderID }));
           }
         } else if (data.type === "notification") {
           dispatch(setNewNotification(true));
         }
       } catch (error) {
-        console.error(error);
+        console.error("Error parsing message data:", error);
       }
     };
 
     return () => {
       socketRef.current?.close();
     };
-  }, [fetchHistory, messages, activeChatName, dispatch, receiverID]);
+  }, [dispatch, authID, chatReceiverID, groupID, messages]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -240,15 +240,17 @@ export default function Chat() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
+    console.log(messages);
   }, [messages]);
 
   // Adding Messages
-  const chatContent = useMemo(
-    () => (
+  const chatContent = useMemo(() => {
+    return (
       <>
         {authID && activeChatName
           ? messages?.map((message, index) => (
               <MessageItem
+                tabValue={tabValue}
                 key={message.ID || index}
                 message={message}
                 authID={authID}
@@ -257,14 +259,13 @@ export default function Chat() {
           : ""}
         <div ref={messagesEndRef} />
       </>
-    ),
-    [authID, activeChatName, messages]
-  );
+    );
+  }, [authID, activeChatName, messages, tabValue]);
 
   const resetChatState = useCallback(() => {
     setActiveChatName("");
     setGroupID(0);
-    setReceiverID(undefined);
+    setChatReceiverID(undefined);
     setInitChat(undefined);
     setMessages([]);
     if (tabValue === "group") {
@@ -286,7 +287,7 @@ export default function Chat() {
           groupID={groupID}
           tabValue={tabValue}
           groups={groupChats}
-          receiverID={receiverID}
+          chatReceiverID={chatReceiverID}
           handleClick={handleClick}
           handleGroupClick={handleGroupClick}
           chatters={chatters}
@@ -299,15 +300,21 @@ export default function Chat() {
       >
         {activeChatName ? (
           <ChatContentHeader
-            receiverID={receiverID}
+            chatReceiverID={chatReceiverID}
             activeChatName={activeChatName}
           />
         ) : (
           <CenterTextStyles>Please select a Chat</CenterTextStyles>
         )}
-        <ChatContentStyles>{chatContent}</ChatContentStyles>
+        <ChatContentStyles
+          sx={{
+            mt: tabValue === "group" ? "12px" : "0px",
+          }}
+        >
+          {chatContent}
+        </ChatContentStyles>
         {tabValue === "private" ? (
-          activeChatName && receiverID !== undefined && initChat?.access ? (
+          activeChatName && chatReceiverID !== undefined && initChat?.access ? (
             <ChatTextArea
               tabValue={tabValue}
               initChat={initChat}
@@ -316,7 +323,7 @@ export default function Chat() {
               chatters={chatters}
               messages={messages}
               setChatters={setChatters}
-              receiverID={receiverID}
+              chatReceiverID={chatReceiverID}
               groupID={groupID}
               setMessages={setMessages}
               openEmoji={openEmoji}
@@ -343,7 +350,7 @@ export default function Chat() {
               messages={messages}
               chatters={chatters}
               setChatters={setChatters}
-              receiverID={receiverID}
+              chatReceiverID={chatReceiverID}
               groupID={groupID}
               setMessages={setMessages}
               openEmoji={openEmoji}

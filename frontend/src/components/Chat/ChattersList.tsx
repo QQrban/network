@@ -14,7 +14,7 @@ interface ChattersListProps {
   content: string;
   chatters: ContactsProps[];
   groups: GroupProps[];
-  receiverID: number | undefined;
+  chatReceiverID: number | undefined;
   groupID: number;
   handleClick: (chatterID: number, chatName: string) => void;
   handleGroupClick: (groupID: number, groupChatName: string) => void;
@@ -27,7 +27,7 @@ export default function ChattersList({
   handleClick,
   handleGroupClick,
   groups,
-  receiverID,
+  chatReceiverID,
   groupID,
 }: ChattersListProps) {
   const newMessageSenderIds = useSelector(
@@ -40,7 +40,8 @@ export default function ChattersList({
         ? chatters.map((chatter) => (
             <ListItem
               sx={{
-                outline: receiverID === chatter.ID ? "2px solid #b0b0b0" : null,
+                outline:
+                  chatReceiverID === chatter.ID ? "2px solid #b0b0b0" : null,
               }}
               onClick={() =>
                 handleClick(

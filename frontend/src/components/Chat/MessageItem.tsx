@@ -6,10 +6,11 @@ import { MessageProps } from "@/types/types";
 
 interface MessageItemProps {
   message: MessageProps;
+  tabValue: string;
   authID: number;
 }
 
-const MessageItem = ({ message, authID }: MessageItemProps) => {
+const MessageItem = ({ message, authID, tabValue }: MessageItemProps) => {
   const isSent = message.senderID === authID;
 
   return (
@@ -18,10 +19,25 @@ const MessageItem = ({ message, authID }: MessageItemProps) => {
         alignSelf: isSent ? "flex-end" : "flex-start",
         display: "flex",
         alignItems: "center",
+        position: "relative",
         gap: "12px",
       }}
       key={message.ID}
     >
+      {message.isGroup && (
+        <Box
+          sx={{
+            position: "absolute",
+            right: isSent ? "43px" : "",
+            left: !isSent ? "43px" : "",
+            top: "-17px",
+            fontSize: "12px",
+            color: "#565656",
+          }}
+        >
+          {message.senderData?.firstName} {message.senderData?.lastName}
+        </Box>
+      )}
       {!isSent && <ProfileImage image="" width={30} height={30} />}
       {isSent && (
         <Typography

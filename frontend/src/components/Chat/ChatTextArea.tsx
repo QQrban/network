@@ -11,7 +11,7 @@ interface ChatTextAreaProps {
   text: string;
   tabValue: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
-  receiverID: number | undefined;
+  chatReceiverID: number | undefined;
   groupID: number;
   setMessages: React.Dispatch<React.SetStateAction<MessageProps[]>>;
   openEmoji: boolean;
@@ -27,7 +27,7 @@ interface ChatTextAreaProps {
 const ChatTextArea = ({
   text,
   setText,
-  receiverID,
+  chatReceiverID,
   setMessages,
   openEmoji,
   setOpenEmoji,
@@ -57,7 +57,7 @@ const ChatTextArea = ({
       const body =
         tabValue === "group"
           ? { receiverID: groupID, isGroup: true, content: text.trim() }
-          : { receiverID: receiverID, content: text.trim() };
+          : { receiverID: chatReceiverID, content: text.trim() };
 
       const response = await fetchFromServer(`/message/send`, {
         method: "POST",
@@ -72,9 +72,9 @@ const ChatTextArea = ({
         const newMessage: MessageProps = await response.json();
         addNewMessage(newMessage);
 
-        if (receiverID) {
+        if (chatReceiverID) {
           const receiverExists = chatters.some(
-            (chatter) => chatter.ID === receiverID
+            (chatter) => chatter.ID === chatReceiverID
           );
           if (!receiverExists && initChat) {
             setChatters((prevChatters) => [initChat, ...prevChatters]);

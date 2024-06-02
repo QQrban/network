@@ -43,13 +43,10 @@ export default function NotificationsSection({
           img = followReq;
           msgVal = `${notification.content.userName} wants to join your group!`;
           try {
-            fetchFromServer(
-              `/groups/${notification.content.groupID}/accept/${notification.content.userID}`,
-              {
-                method: "POST",
-                credentials: "include",
-              }
-            );
+            fetchFromServer(`/groups/${notification.content.groupID}/accept/`, {
+              method: "POST",
+              credentials: "include",
+            });
             return `/groups/${notification.content.groupID}`;
           } catch (error) {
             console.error("Doesn't work: ", error);
@@ -57,8 +54,16 @@ export default function NotificationsSection({
         }
       case "invite":
         // Can't accept invites yet
-        msgVal = notification.content.userName + " sent you a follow request!";
-        return `/groups/${notification.content.groupID}/accept/${notification.content.userID}`;
+        msgVal = notification.content.userName + " invited you to their group!";
+        try {
+          fetchFromServer(`/groups/${notification.content.groupID}/accept/`, {
+            method: "POST",
+            credentials: "include",
+          });
+          return `/groups/${notification.content.groupID}`;
+        } catch (error) {
+          console.error("Doesn't work: ", error);
+        }
       case "like":
         img = like;
         msgVal = notification.content.userName + " liked your post!";

@@ -22,11 +22,6 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	message.SenderID = session.UserID
-
-	//id, err := Database.Message.SendMessage(*message)
-	//panicIfErr(err)
-
-	//message.ID = id
 	message.Created = time.Now()
 	msgType := "message_personal"
 
@@ -40,8 +35,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 	if message.IsGroup {
 		msgType = "message_group"
 	}
-	fmt.Printf("MsgType: %v\nMessage: %v\n", msgType, message)
-
+	
 	done := make(chan bool)
 	go func() {
 		defer close(done)

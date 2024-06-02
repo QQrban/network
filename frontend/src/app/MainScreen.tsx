@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, ReactNode, useRef } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCookie } from "./getCookie";
 import { loginSuccess } from "@/redux/features/auth/authSlice";
@@ -9,9 +9,7 @@ import LoadingScreen from "@/components/shared/LoadingScreen";
 import Login from "@/components/Login/index";
 import Header from "@/components/Header";
 import NavigationMenu from "@/components/NavigationMenu";
-import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
-import bgWall from "../../public/icons/wall.svg";
 import { setSuggestions } from "@/redux/features/suggestions/suggestionsSlice";
 import {
   addNewMessage,
@@ -19,6 +17,7 @@ import {
 } from "@/redux/features/notifications/notificationsSlice";
 import { usePathname } from "next/navigation";
 import { Screen } from "@/components/Main/styles";
+import { useWebSocketContext } from "@/context/WebSocketContext";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
   const [showLoading, setShowLoading] = useState(true);
@@ -26,9 +25,9 @@ export default function MainScreen({ children }: { children: ReactNode }) {
 
   const auth = useSelector((state: any) => state.authReducer.value.isAuth);
   const dispatch = useDispatch();
-
   const pathname = usePathname();
-  const socketRef = useRef<WebSocket | null>(null);
+
+  const { lastMessage, connectionStatus } = useWebSocketContext();
 
   useEffect(() => {
     async function fetchData() {
@@ -81,25 +80,21 @@ export default function MainScreen({ children }: { children: ReactNode }) {
   }, [auth, dispatch]);
 
   useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = new WebSocket("ws://localhost:8888/ws");
-
-      socketRef.current.onmessage = async (event) => {
-        if (!pathname.includes("chat")) {
-          try {
-            const data = JSON.parse(event.data);
-            if (data.type === "message_personal" && !data.payload.isGroup) {
-              dispatch(addNewMessage({ senderId: data.payload.senderID }));
-            } else if (data.type === "notification") {
-              dispatch(setNewNotification(true));
-            }
-          } catch (error) {
-            console.error(error);
+    if (lastMessage) {
+      if (!pathname.includes("chat")) {
+        try {
+          const data = JSON.parse(lastMessage.data);
+          if (data.type === "message_personal" && !data.payload.isGroup) {
+            dispatch(addNewMessage({ senderId: data.payload.senderID }));
+          } else if (data.type === "notification") {
+            dispatch(setNewNotification(true));
           }
+        } catch (error) {
+          console.error(error);
         }
-      };
+      }
     }
-  }, [dispatch, pathname]);
+  }, [lastMessage, dispatch, pathname]);
 
   if (showLoading) {
     return <LoadingScreen />;

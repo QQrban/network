@@ -32,7 +32,7 @@ import {
   resetNewMessage,
   setNewNotification,
 } from "@/redux/features/notifications/notificationsSlice";
-import { useWebSocket } from "@/context/WebSocketContext";
+import { useWebSocketContext } from "@/context/WebSocketContext";
 
 export default function Chat() {
   const [tabValue, setTabValue] = useState<string>("private");
@@ -52,18 +52,15 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const authID = useSelector((state: any) => state.authReducer.value.id);
-
   const senderIds = useSelector(
     (state: any) => state.notificationsReducer.senderIds
   );
-
   const dispatch = useDispatch();
 
   const pathname = usePathname().split("/").pop();
   const router = useRouter();
 
-  const socket = useWebSocket();
-  const socketRef = useRef<WebSocket | null>(null);
+  const { lastMessage } = useWebSocketContext();
 
   const handleEmojiSelect = useCallback((emoji: EmojiClickData) => {
     setText((prevText) => prevText + emoji.emoji);
@@ -83,10 +80,8 @@ export default function Chat() {
       setChatReceiverID(chatterID);
       setActiveChatName(chatName);
       dispatch(removeSenderId({ senderId: chatterID }));
-      if (senderIds) {
-        if (senderIds.length === 0) {
-          resetNewMessage();
-        }
+      if (senderIds && senderIds.length === 0) {
+        resetNewMessage();
       }
     },
     [dispatch, senderIds]
@@ -194,11 +189,10 @@ export default function Chat() {
   }, [tabValue, fetchGroups]);
 
   useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:8888/ws");
-
-    socketRef.current.onmessage = async (event: MessageEvent) => {
+    if (lastMessage) {
       try {
-        const data = JSON.parse(event.data);
+        console.log(lastMessage);
+        const data = JSON.parse(lastMessage.data);
         console.log("Received WebSocket message:", data);
 
         if (data.type === "message_personal") {
@@ -207,26 +201,27 @@ export default function Chat() {
           if (chatReceiverID === receiverID || chatReceiverID === senderID) {
             const messageWithID = { ...newMessage, ID: ID };
 
-            setMessages((prevMessages) => {
-              const updatedMessages = [...prevMessages, messageWithID];
-              return updatedMessages;
-            });
-            console.log(messages);
+            setMessages((prevMessages) => [...prevMessages, messageWithID]);
           } else {
-            dispatch(addNewMessage({ senderId: newMessage.senderID }));
+            // dispatch(addNewMessage({ senderId: newMessage.senderID }));
           }
-        } else if (data.type === "notification") {
-          dispatch(setNewNotification(true));
+        } else if (data.type === "message_group") {
+          console.log(data);
+          const newMessage = data.payload;
+          const { receiverID, senderID, ID } = newMessage;
+          if (groupID === receiverID || groupID === senderID) {
+            const messageWithID = { ...newMessage, ID: ID };
+
+            setMessages((prevMessages) => [...prevMessages, messageWithID]);
+          } else {
+            console.log(groupID, ":1", receiverID, ":2", senderID, ":3");
+          }
         }
       } catch (error) {
         console.error("Error parsing message data:", error);
       }
-    };
-
-    return () => {
-      socketRef.current?.close();
-    };
-  }, [dispatch, authID, chatReceiverID, groupID, messages]);
+    }
+  }, [lastMessage, dispatch, authID, chatReceiverID, groupID]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -240,7 +235,6 @@ export default function Chat() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-    console.log(messages);
   }, [messages]);
 
   // Adding Messages
@@ -251,7 +245,7 @@ export default function Chat() {
           ? messages?.map((message, index) => (
               <MessageItem
                 tabValue={tabValue}
-                key={message.ID || index}
+                key={`${message.ID}-${index}`}
                 message={message}
                 authID={authID}
               />

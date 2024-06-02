@@ -1,51 +1,27 @@
 "use client";
 
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, ReactNode } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 
 interface WebSocketProviderProps {
   children: ReactNode;
 }
 
-const WebSocketContext = createContext<WebSocket | null>(null);
+const WebSocketContext = createContext<any>(null);
 
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   children,
 }) => {
-  const socketRef = useRef<WebSocket | null>(null);
-
-  useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:8888/ws");
-
-    socketRef.current.onopen = () => {
-      console.log("WebSocket connected");
-    };
-
-    socketRef.current.onclose = () => {
-      console.log("WebSocket disconnected");
-    };
-
-    socketRef.current.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    return () => {
-      socketRef.current?.close();
-    };
-  }, []);
+  const socketUrl = "ws://localhost:8888/ws";
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
   return (
-    <WebSocketContext.Provider value={socketRef.current}>
+    <WebSocketContext.Provider value={{ sendMessage, lastMessage, readyState }}>
       {children}
     </WebSocketContext.Provider>
   );
 };
 
-export const useWebSocket = () => {
+export const useWebSocketContext = () => {
   return useContext(WebSocketContext);
 };

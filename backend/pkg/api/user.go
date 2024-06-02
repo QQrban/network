@@ -318,7 +318,6 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-
 	err = Database.User.UpdateAvatar(session.UserID, token)
 	panicIfErr(err)
 

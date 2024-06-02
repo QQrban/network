@@ -55,6 +55,10 @@ func (sm SendMessage) IsGroup() bool {
 	return sm.message.IsGroup
 }
 
+func (sm SendMessage) SenderData() *models.UserLimited {
+	return sm.message.SenderData
+}
+
 func (sm SendMessage) Links() []Link {
 	return nil
 }

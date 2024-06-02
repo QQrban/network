@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -34,7 +35,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 	if message.IsGroup {
 		msgType = "message_group"
 	}
-
+	
 	done := make(chan bool)
 	go func() {
 		defer close(done)

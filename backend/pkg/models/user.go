@@ -506,16 +506,16 @@ func (model *UserModel) UpdateAvatar(myID int64, newToken string) error {
 	if err != nil {
 		return fmt.Errorf("User/UpdateAvatar1: %w", err)
 	}
-	oldToken := *user.Image
-	fileModel := MakeFileModel(model.db)
-	fileModel.Delete(oldToken)
-	
+	oldToken := user.Image
+	if oldToken != nil {
+		fileModel := MakeFileModel(model.db)
+		fileModel.Delete(*oldToken)
+	}
 	stmt := model.queries.Prepare("updateAvatar")
-
 	_, err = stmt.Exec(myID, newToken)
 	if err != nil {
 		return fmt.Errorf("User/UpdateAvatar2: %w", err)
 	}
-
+	
 	return nil
 }

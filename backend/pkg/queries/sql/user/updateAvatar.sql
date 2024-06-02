@@ -1,1 +1,1 @@
-UPDATE user SET avatar = ?2 WHERE ID = ?1;
+UPDATE user SET image = ?2 WHERE ID = ?1;

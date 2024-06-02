@@ -26,6 +26,10 @@ func (n Request) Sender() int64 {
 	return 0 //n.requester.ID
 }
 
+func (n Request) SenderData() *models.UserLimited {
+	return n.requester.Limited()
+}
+
 func (n Request) Message() string {
 	msg := MessageContent{
 		Type:     "group",

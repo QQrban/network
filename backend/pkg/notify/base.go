@@ -22,6 +22,7 @@ type Notification interface {
 	Sender() int64
 	Message() string
 	IsGroup() bool
+	SenderData() *models.UserLimited
 	Links() []Link
 }
 
@@ -92,6 +93,7 @@ func (n Notifier) notify(msg Notification) ([]byte, []int64) {
 		ReceiverID: 0,
 		Content:    content,
 		Created:    time.Now(),
+		SenderData: msg.SenderData(),
 	}
 
 	targets, receiverID := msg.Targets()

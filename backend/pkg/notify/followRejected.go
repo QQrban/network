@@ -26,6 +26,10 @@ func (f FollowRejected) Sender() int64 {
 	return 0 //f.rejecter.ID
 }
 
+func (f FollowRejected) SenderData() *models.UserLimited {
+	return f.rejecter.Limited()
+}
+
 func (f FollowRejected) Message() string {
 	return fmt.Sprintf("Your request to follow <strong>%v</strong> got rejected!", html.EscapeString(userGetName(f.rejecter)))
 }

@@ -26,6 +26,10 @@ func (f PostLiked) Sender() int64 {
 	return 0 //f.liker.ID
 }
 
+func (f PostLiked) SenderData() *models.UserLimited {
+	return f.liker.Limited()
+}
+
 func (f PostLiked) Message() string {
 	msg := MessageContent{
 		Type:        "post",

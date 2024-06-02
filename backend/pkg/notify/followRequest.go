@@ -26,6 +26,10 @@ func (f FollowRequest) Sender() int64 {
 	return 0 //f.requester.ID
 }
 
+func (f FollowRequest) SenderData() *models.UserLimited {
+	return f.requester.Limited()
+}
+
 func (f FollowRequest) Message() string {
 	msg := MessageContent{
 		Type:     "follow",

@@ -97,10 +97,24 @@ func (n Notifier) notify(msg Notification) ([]byte, []int64) {
 	targets, receiverID := msg.Targets()
 	message.SenderID = msg.Sender()
 	message.IsGroup = msg.IsGroup()
-	message.ReceiverID = receiverID 
-
-	//for _, t := range targets {
-	//	message.ReceiverID = t
+	message.ReceiverID = receiverID
+	links := msg.Links()
+	if len(links) > 0 && links[0].name == "Show event" {
+		for _, t := range targets {
+			message.ReceiverID = t
+			id, err := n.database.Message.SendMessage(*message)
+			message.ID = id
+			if err != nil {
+				who := ""
+				if message.IsGroup {
+					who = "group"
+				} else {
+					who = "user"
+				}
+				log.Printf("could not insert %v notification message for %v: %v\n", who, t, err)
+			}
+		}
+	} else {
 		id, err := n.database.Message.SendMessage(*message)
 		message.ID = id
 		if err != nil {
@@ -112,7 +126,7 @@ func (n Notifier) notify(msg Notification) ([]byte, []int64) {
 			}
 			log.Printf("could not insert %v notification message for %v: %v\n", who, receiverID, err)
 		}
-	//}
+	}
 
 	b, err := json.Marshal(message)
 	if err != nil {

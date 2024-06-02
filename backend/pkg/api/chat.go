@@ -59,16 +59,7 @@ func (m *Manager) setupEventHandlers() {
 	m.handlers[EventSendMessage] = SendMessageHandler
 }
 
-/*func WSHandler(w http.ResponseWriter, r *http.Request) {
-	chatManager := NewManager()
-	chatManager.ServeWS(w, r)
-}*/
-
 func (m *Manager) WSHandler(w http.ResponseWriter, r *http.Request) {
-	m.ServeWS(w, r)
-}
-
-func (m *Manager) ServeWS(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 	log.Printf("New connection for userID %v\n", session.UserID)
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)

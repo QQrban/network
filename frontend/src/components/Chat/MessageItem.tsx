@@ -46,7 +46,7 @@ const MessageItem = ({ message, authID, tabValue }: MessageItemProps) => {
             color: "#a4a4a4",
           }}
         >
-          {dayjs(message.created).format("MMM DD, YYYY, hh:mm")}
+          {dayjs(message.created).format("MMM DD, YYYY, h:mm A")}
         </Typography>
       )}
       <Typography

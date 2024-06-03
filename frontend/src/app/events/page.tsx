@@ -5,6 +5,7 @@ import EventSection from "@/components/Events/EventSection";
 import { useEffect, useState } from "react";
 import { EventProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
+import { wrap } from "module";
 
 interface Props {
   groupID: number;
@@ -56,7 +57,9 @@ export default function Events({ groupID }: Props) {
         Your Events
       </Typography>
       {events.length > 0 ? (
-        <Box sx={{ mt: "23px", display: "flex", gap: "23px" }}>
+        <Box
+          sx={{ mt: "23px", display: "flex", gap: "23px", flexWrap: "wrap" }}
+        >
           <EventSection
             statusHandler={statusHandler}
             groupID={groupID}

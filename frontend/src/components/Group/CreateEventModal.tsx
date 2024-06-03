@@ -39,7 +39,7 @@ const initialValues: FormValues = {
 
 const validationSchema = Yup.object({
   title: Yup.string().min(5).required("Required field"),
-  description: Yup.string().min(40).required("Required field"),
+  description: Yup.string().min(10).required("Required field"),
   time: Yup.string().required("Required field"),
 });
 

@@ -1,6 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import noPhoto from "../../../../public/icons/profile.svg";
-import Image from "next/image";
 import { Item } from "@/components/shared/Item";
 import { useSelector } from "react-redux";
 import Link from "next/link";

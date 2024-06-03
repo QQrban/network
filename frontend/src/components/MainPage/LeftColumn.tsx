@@ -82,47 +82,6 @@ export default function LeftColumn() {
           <StatisticsItemNumber>191</StatisticsItemNumber>
         </StatisticsItemsContainer>
       </Box>
-      <Divider />
-      <Box>
-        <Typography
-          sx={{
-            textAlign: "left",
-            p: "10px 50px 5px 50px",
-            fontFamily: "Comic Neue",
-            fontWeight: 600,
-            fontSize: "18px",
-          }}
-        >
-          Your shortcuts
-        </Typography>
-        <Box
-          sx={{
-            p: "0 50px 0 50px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: "18px",
-              color: "#6495ED",
-              fontFamily: "Schoolbell",
-            }}
-          >
-            Ctrl + Alt + Delete Club
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: "18px",
-              color: "#6495ED",
-              fontFamily: "Schoolbell",
-            }}
-          >
-            JS Gladiators
-          </Typography>
-        </Box>
-      </Box>
     </Item>
   );
 }

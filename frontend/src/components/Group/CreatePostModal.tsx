@@ -123,6 +123,7 @@ export default function CreatePostModal({
             minRows={5}
             maxRows={6}
             maxLength={600}
+            autoFocus
             name="content"
             aria-label="empty textarea"
             placeholder="Share your thoughts..."

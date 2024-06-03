@@ -41,59 +41,6 @@ export default function GroupAddInfo({
         gap: "23px",
       }}
     >
-      {isMember && (
-        <Item
-          sx={{
-            position: "sticky",
-            top: "90px",
-            alignSelf: "flex-start",
-            width: "100%",
-            p: "14px",
-          }}
-          radius="8px"
-        >
-          <StyledTypography>Top Group Members</StyledTypography>
-          {[0, 1, 2].map((_, index) => (
-            <Link key={index} href="#">
-              <Box
-                sx={{
-                  mt: "12px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "4px",
-                  "&:hover": {
-                    backgroundColor: "#cacaca49",
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    width: "45px",
-                    height: "45px",
-                    borderRadius: "50%",
-                    overflow: "hidden",
-                    border: "2px solid #cacacac9",
-                  }}
-                >
-                  <Image src={profileIcon} alt="profile" />
-                </Box>
-                <Box>
-                  <Typography
-                    sx={{
-                      fontFamily: "Schoolbell !important",
-                      fontWeight: 600,
-                      fontSize: "17px",
-                    }}
-                  >
-                    Albert Einstein
-                  </Typography>
-                </Box>
-              </Box>
-            </Link>
-          ))}
-        </Item>
-      )}
       <Item
         sx={{
           p: "14px",
@@ -133,7 +80,7 @@ export default function GroupAddInfo({
         }}
         radius="8px"
       >
-        <StyledTypography>Admins</StyledTypography>
+        <StyledTypography>Admin</StyledTypography>
         <Link href={`/profile/${owner.ID}`}>
           <Box
             sx={{
@@ -162,6 +109,21 @@ export default function GroupAddInfo({
           </Box>
         </Link>
       </Item>
+      {isMember && (
+        <Item
+          sx={{
+            position: "sticky",
+            top: "90px",
+            alignSelf: "flex-start",
+            width: "100%",
+            p: "14px",
+          }}
+          radius="8px"
+        >
+          <StyledTypography>Advertisement</StyledTypography>
+          <Box>Advertisement</Box>
+        </Item>
+      )}
     </Box>
   );
 }

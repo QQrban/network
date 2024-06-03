@@ -6,6 +6,7 @@ import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
 import { StyledTextField } from "./styles";
 import { SuccessBtn } from "../shared/styles";
+import { useRouter } from "next/navigation";
 
 interface LoginProps {
   setShowLoading: React.Dispatch<boolean>;
@@ -18,6 +19,7 @@ const validationSchema = Yup.object({
 
 export default function LoginContent({ setShowLoading }: LoginProps) {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const fetchNotifications = async () => {
     try {
@@ -67,6 +69,7 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
             })
           );
           fetchNotifications();
+          router.push("/");
         } else {
           console.error("Login failed");
         }

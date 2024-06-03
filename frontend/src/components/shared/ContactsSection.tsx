@@ -47,17 +47,11 @@ export default function ContactsSection() {
               <ListItem disablePadding>
                 <ListItemButton>
                   <ListItemAvatar>
-                    <StyledBadge
-                      overlap="circular"
-                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                      variant="dot"
-                    >
-                      <ProfileImage
-                        width={30}
-                        height={30}
-                        image={suggestion.image}
-                      />
-                    </StyledBadge>
+                    <ProfileImage
+                      width={30}
+                      height={30}
+                      image={suggestion.image}
+                    />
                   </ListItemAvatar>
                   <ListItemText
                     sx={{

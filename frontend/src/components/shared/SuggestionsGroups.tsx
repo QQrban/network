@@ -21,7 +21,7 @@ export default function SuggestionGroups() {
           sx={{ color: "#2a2a2a", fontFamily: "Schoolbell", fontSize: "26px" }}
           variant="h5"
         >
-          This Groups might interest you
+          These Groups might interest you
         </Typography>
         <Item
           sx={{

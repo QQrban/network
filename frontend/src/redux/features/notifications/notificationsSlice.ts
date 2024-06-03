@@ -24,6 +24,7 @@ const initialState = {
   hasNewMessage: getLocalStorageItem("hasNewMessage") ?? false,
   hasNewNotification: getLocalStorageItem("hasNewNotification") ?? false,
   senderIds: getLocalStorageItem("senderIds") ?? [],
+  groupIds: getLocalStorageItem("groupIds") ?? [],
 };
 
 const notificationsSlice = createSlice({
@@ -32,12 +33,19 @@ const notificationsSlice = createSlice({
   reducers: {
     addNewMessage: (state, action) => {
       state.hasNewMessage = true;
-      if (!state.senderIds.includes(action.payload.senderId)) {
-        state.senderIds.push(action.payload.senderId);
+      if (action.payload.isGroup) {
+        if (!state.groupIds.includes(action.payload.senderId)) {
+          state.groupIds.push(action.payload.senderId);
+        }
+      } else {
+        if (!state.senderIds.includes(action.payload.senderId)) {
+          state.senderIds.push(action.payload.senderId);
+        }
       }
       if (isBrowser) {
         localStorage.setItem("hasNewMessage", JSON.stringify(true));
         localStorage.setItem("senderIds", JSON.stringify(state.senderIds));
+        localStorage.setItem("groupIds", JSON.stringify(state.groupIds));
       }
     },
     setNewNotification: (state, action) => {
@@ -52,21 +60,33 @@ const notificationsSlice = createSlice({
     resetNewMessage: (state) => {
       state.hasNewMessage = false;
       state.senderIds = [];
+      state.groupIds = [];
       if (isBrowser) {
         localStorage.setItem("hasNewMessage", JSON.stringify(false));
         localStorage.setItem("senderIds", JSON.stringify([]));
+        localStorage.setItem("groupIds", JSON.stringify([]));
       }
     },
     removeSenderId: (state, action) => {
-      state.senderIds = state.senderIds.filter(
-        (id: number) => id !== action.payload.senderId
-      );
-      if (state.senderIds.length === 0) {
-        state.hasNewMessage = false;
+      if (action.payload.isGroup) {
+        state.groupIds = state.groupIds.filter(
+          (id: number) => id !== action.payload.senderId
+        );
+        if (state.groupIds.length === 0 && state.senderIds.length === 0) {
+          state.hasNewMessage = false;
+        }
+      } else {
+        state.senderIds = state.senderIds.filter(
+          (id: number) => id !== action.payload.senderId
+        );
+        if (state.senderIds.length === 0 && state.groupIds.length === 0) {
+          state.hasNewMessage = false;
+        }
       }
       if (isBrowser) {
         localStorage.setItem("senderIds", JSON.stringify(state.senderIds));
-        if (state.senderIds.length === 0) {
+        localStorage.setItem("groupIds", JSON.stringify(state.groupIds));
+        if (state.senderIds.length === 0 && state.groupIds.length === 0) {
           localStorage.setItem("hasNewMessage", JSON.stringify(false));
         }
       }

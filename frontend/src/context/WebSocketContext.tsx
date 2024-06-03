@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
 interface WebSocketProviderProps {
@@ -14,9 +14,18 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 }) => {
   const socketUrl = "ws://localhost:8888/ws";
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const [processedMessage, setProcessedMessage] = useState<any>(null);
 
   return (
-    <WebSocketContext.Provider value={{ sendMessage, lastMessage, readyState }}>
+    <WebSocketContext.Provider
+      value={{
+        sendMessage,
+        lastMessage,
+        readyState,
+        processedMessage,
+        setProcessedMessage,
+      }}
+    >
       {children}
     </WebSocketContext.Provider>
   );

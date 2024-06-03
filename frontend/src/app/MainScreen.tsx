@@ -27,7 +27,8 @@ export default function MainScreen({ children }: { children: ReactNode }) {
   const dispatch = useDispatch();
   const pathname = usePathname();
 
-  const { lastMessage, connectionStatus } = useWebSocketContext();
+  const { lastMessage, processedMessage, setProcessedMessage } =
+    useWebSocketContext();
 
   useEffect(() => {
     async function fetchData() {
@@ -80,21 +81,28 @@ export default function MainScreen({ children }: { children: ReactNode }) {
   }, [auth, dispatch]);
 
   useEffect(() => {
-    if (lastMessage) {
+    if (lastMessage && lastMessage !== processedMessage) {
       if (!pathname.includes("chat")) {
         try {
           const data = JSON.parse(lastMessage.data);
+
           if (data.type === "message_personal" && !data.payload.isGroup) {
-            dispatch(addNewMessage({ senderId: data.payload.senderID }));
+            dispatch(
+              addNewMessage({
+                senderId: data.payload.senderID,
+                isGroup: false,
+              })
+            );
           } else if (data.type === "notification") {
             dispatch(setNewNotification(true));
           }
         } catch (error) {
           console.error(error);
         }
+        setProcessedMessage(lastMessage);
       }
     }
-  }, [lastMessage, dispatch, pathname]);
+  }, [lastMessage, dispatch, pathname, processedMessage, setProcessedMessage]);
 
   if (showLoading) {
     return <LoadingScreen />;

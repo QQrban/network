@@ -10,15 +10,17 @@ import (
 )
 
 type Event struct {
-	ID          int64     `json:"ID"`
-	GroupID     int64     `json:"groupID"`
-	AuthorID    int64     `json:"authorID"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Time        time.Time `json:"time"`
-	Options     string    `json:"options,omitempty"`
-	Created     time.Time `json:"created"`
-	MyStatus    *string   `json:"myStatus,omitempty"`
+	ID          int64        `json:"ID"`
+	GroupID     int64        `json:"groupID"`
+	Group       *GroupPlus   `json:"group"`
+	AuthorID    int64        `json:"authorID"`
+	Author      *UserLimited `json:"author"`
+	Title       string       `json:"title"`
+	Description string       `json:"description"`
+	Time        time.Time    `json:"time"`
+	Options     string       `json:"options,omitempty"`
+	Created     time.Time    `json:"created"`
+	MyStatus    *string      `json:"myStatus,omitempty"`
 }
 
 type EventMembers struct {
@@ -100,10 +102,30 @@ func (model EventModel) GetByGroup(groupID, myID int64) ([]*Event, error) {
 		}
 		myStatus, _ := strconv.Atoi(*event.MyStatus)
 		event.MyStatus = getStatus(event.Options, myStatus-1)
+		group, err := getGroup(model.db, event.GroupID, myID)
+		if err != nil {
+			return nil, fmt.Errorf("Event/GetByGroup: %w", err)
+		}
+		event.Group = group
+		author, err := getAuthor(model.db, event.AuthorID)
+		if err != nil {
+			return nil, fmt.Errorf("Event/GetByGroup: %w", err)
+		}
+		event.Author = author.Limited()
 		events = append(events, event)
 	}
 
 	return events, nil
+}
+
+func getGroup(db *sql.DB, groupID, myID int64) (*GroupPlus, error) {
+	groupModel := MakeGroupModel(db)
+	return groupModel.GetByID(groupID, myID)
+}
+
+func getAuthor(db *sql.DB, authorID int64) (*User, error) {
+	authorModel := MakeUserModel(db)
+	return authorModel.GetByID(authorID)
 }
 
 func (model EventModel) GetByUser(userID int64) ([]*Event, error) {
@@ -127,6 +149,18 @@ func (model EventModel) GetByUser(userID int64) ([]*Event, error) {
 		}
 		statusInt, _ := strconv.Atoi(status)
 		event.MyStatus = getStatus(event.Options, statusInt-1)
+	
+		group, err := getGroup(model.db, event.GroupID, userID)
+		if err != nil {
+			return nil, fmt.Errorf("Event/GetByUser: %w", err)
+		}
+		event.Group = group
+	
+		author, err := getAuthor(model.db, event.AuthorID)
+		if err != nil {
+			return nil, fmt.Errorf("Event/GetByUser: %w", err)
+		}
+		event.Author = author.Limited()
 
 		events = append(events, event)
 	}

@@ -54,7 +54,7 @@ export default function AddComment({
           gap: "10px",
         }}
       >
-        <ProfileImage width={40} height={40} image={userImage} />
+        <ProfileImage width={35} height={35} image={userImage} />
         <Box
           sx={{
             width: "100%",

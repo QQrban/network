@@ -4,15 +4,12 @@ import { Item } from "@/components/shared/Item";
 import {
   Box,
   Divider,
-  IconButton,
   SpeedDial,
   SpeedDialAction,
   Typography,
 } from "@mui/material";
-
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CommentsPost from "./CommentsPost";
-
 import AddComment from "./AddComment";
 import { createRef, useRef, useState } from "react";
 import { CommentProps, ContactsProps, PostProps } from "@/types/types";
@@ -23,7 +20,6 @@ import Link from "next/link";
 import Image from "next/image";
 import deleteIcon from "../../../../public/icons/delete.svg";
 import copyIcon from "../../../../public/icons/copy.svg";
-
 import ProfileImage from "../ProfileImage";
 import { useSelector } from "react-redux";
 import GiveLike from "./GiveLike";
@@ -83,6 +79,12 @@ export default function PostsSection({
   const openModal = (postID: number) => {
     setPostID(postID);
     setOpen(true);
+  };
+
+  const focusInput = (postID: number) => {
+    if (inputRefs.current[postID]?.current) {
+      inputRefs.current[postID].current?.focus();
+    }
   };
 
   return (
@@ -283,7 +285,11 @@ export default function PostsSection({
                   )}
                 </Box>
               )}
-              <GiveLike addLikeToPost={addLikeToPost} post={post} />
+              <GiveLike
+                addLikeToPost={addLikeToPost}
+                post={post}
+                focusInput={focusInput}
+              />
               <Divider />
               <CommentsPost comments={post.comments} />
               <AddComment

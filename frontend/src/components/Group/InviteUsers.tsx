@@ -15,6 +15,8 @@ import { Item } from "../shared/Item";
 import ConfirmBtn from "../shared/ConfirmBtn";
 import confirmBtn from "../../../public/icons/confirmButton.svg";
 import CircularIndeterminate from "../shared/CircularIndeterminate";
+import { ContactsProps } from "@/types/types";
+import _ from "lodash";
 
 const CustomDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialog-paper": {
@@ -44,21 +46,17 @@ interface InviteUsersProps {
   groupID: number;
   openInviteModal: boolean;
   setOpenInviteModal: React.Dispatch<boolean>;
-}
-
-interface FollowersData {
-  firstName: string;
-  lastName: string;
-  profileID: number;
+  members: ContactsProps[];
 }
 
 export default function InviteUsers({
   openInviteModal,
   setOpenInviteModal,
   groupID,
+  members,
 }: InviteUsersProps) {
   const [waiting, setWaiting] = useState<boolean>(false);
-  const [followersList, setFollowersList] = useState<FollowersData[]>([]);
+  const [followersList, setFollowersList] = useState<ContactsProps[] | any>([]);
 
   const id = useSelector((state: any) => state.authReducer.value.id);
 
@@ -74,15 +72,10 @@ export default function InviteUsers({
         });
         if (response.ok) {
           const data = await response.json();
-          const filteredData = data.map((follower: any) => ({
-            firstName: follower.firstName,
-            lastName: follower.lastName,
-            profileID: follower.ID,
-          }));
-          setFollowersList(filteredData);
-          setLeft(
-            filteredData.map((follower: FollowersData) => follower.profileID)
-          );
+
+          const notMembers = _.differenceBy(data, members, "ID");
+          setFollowersList(notMembers);
+          setLeft(data.map((follower: ContactsProps) => follower.ID));
           setRight([]);
         }
       } catch (error) {
@@ -90,7 +83,7 @@ export default function InviteUsers({
       }
     };
     getUsers();
-  }, [id]);
+  }, [id, members]);
   const [checked, setChecked] = useState<readonly number[]>([]);
   const [left, setLeft] = useState<readonly number[]>([]);
   const [right, setRight] = useState<readonly number[]>([]);
@@ -165,9 +158,9 @@ export default function InviteUsers({
   const customList = (items: readonly number[]) => (
     <CustomPaper radius="8px">
       <List dense component="div" role="list">
-        {items.map((profileID: number) => {
+        {items.map((profileID: number, index) => {
           const user = followersList.find(
-            (follower) => follower.profileID === profileID
+            (follower: any) => follower.ID === profileID
           );
           const labelId = `transfer-list-item-${profileID}-label`;
 
@@ -175,7 +168,7 @@ export default function InviteUsers({
 
           return (
             <ListItemButton
-              key={profileID}
+              key={`${profileID}-${index}`}
               role="listitem"
               onClick={handleToggle(profileID)}
               sx={{ py: 1 }}
@@ -214,89 +207,105 @@ export default function InviteUsers({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <Grid container spacing={2} justifyContent="center" alignItems="center">
-        <Grid item>{customList(left)}</Grid>
-        <Grid item>
-          <Grid container direction="column" alignItems="center">
-            <Button
-              sx={{ my: 0.5 }}
-              variant="outlined"
-              size="small"
-              onClick={handleAllRight}
-              disabled={left.length === 0}
-              aria-label="move all right"
-            >
-              ≫
-            </Button>
-            <Button
-              sx={{ my: 0.5 }}
-              variant="outlined"
-              size="small"
-              onClick={handleCheckedRight}
-              disabled={leftChecked.length === 0}
-              aria-label="move selected right"
-            >
-              &gt;
-            </Button>
-            <Button
-              sx={{ my: 0.5 }}
-              variant="outlined"
-              size="small"
-              onClick={handleCheckedLeft}
-              disabled={rightChecked.length === 0}
-              aria-label="move selected left"
-            >
-              &lt;
-            </Button>
-            <Button
-              sx={{ my: 0.5 }}
-              variant="outlined"
-              size="small"
-              onClick={handleAllLeft}
-              disabled={right.length === 0}
-              aria-label="move all left"
-            >
-              ≪
-            </Button>
+      {followersList.length > 0 ? (
+        <>
+          <Grid
+            container
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid item>{customList(left)}</Grid>
+            <Grid item>
+              <Grid container direction="column" alignItems="center">
+                <Button
+                  sx={{ my: 0.5 }}
+                  variant="outlined"
+                  size="small"
+                  onClick={handleAllRight}
+                  disabled={left.length === 0}
+                  aria-label="move all right"
+                >
+                  ≫
+                </Button>
+                <Button
+                  sx={{ my: 0.5 }}
+                  variant="outlined"
+                  size="small"
+                  onClick={handleCheckedRight}
+                  disabled={leftChecked.length === 0}
+                  aria-label="move selected right"
+                >
+                  &gt;
+                </Button>
+                <Button
+                  sx={{ my: 0.5 }}
+                  variant="outlined"
+                  size="small"
+                  onClick={handleCheckedLeft}
+                  disabled={rightChecked.length === 0}
+                  aria-label="move selected left"
+                >
+                  &lt;
+                </Button>
+                <Button
+                  sx={{ my: 0.5 }}
+                  variant="outlined"
+                  size="small"
+                  onClick={handleAllLeft}
+                  disabled={right.length === 0}
+                  aria-label="move all left"
+                >
+                  ≪
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid item>{customList(right)}</Grid>
           </Grid>
-        </Grid>
-        <Grid item>{customList(right)}</Grid>
-      </Grid>
-      {right.length > 0 && (
-        <Box
-          sx={{
-            width: "120px",
-            m: "0 auto",
-          }}
+          {right.length > 0 && (
+            <Box
+              sx={{
+                width: "120px",
+                m: "0 auto",
+              }}
+            >
+              <ConfirmBtn
+                onClick={() => sendInvitation(right)}
+                text="Invite"
+                backgroundImage={confirmBtn.src}
+              />
+            </Box>
+          )}
+          {waiting && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "21px",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "absolute",
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0,
+                bgcolor: "#6868686f",
+              }}
+            >
+              <CircularIndeterminate />
+              <Typography fontWeight={600} color="primary" fontSize={24}>
+                {`Please Wait... Don't Close Dialog`}
+              </Typography>
+            </Box>
+          )}
+        </>
+      ) : (
+        <Typography
+          color="primary"
+          sx={{ fontFamily: "Gloria Hallelujah !important", fontSize: "29px" }}
         >
-          <ConfirmBtn
-            onClick={() => sendInvitation(right)}
-            text="Invite"
-            backgroundImage={confirmBtn.src}
-          />
-        </Box>
-      )}
-      {waiting && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "21px",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "absolute",
-            left: 0,
-            top: 0,
-            right: 0,
-            bottom: 0,
-            bgcolor: "#6868686f",
-          }}
-        >
-          <CircularIndeterminate />
-          <Typography fontWeight={600} color="primary" fontSize={24}>
-            {`Please Wait... Don't Close Dialog`}
-          </Typography>
-        </Box>
+          All followers are already group members!
+        </Typography>
       )}
     </CustomDialog>
   );

@@ -22,7 +22,7 @@ import EventSection from "../Events/EventSection";
 import GroupPostsSection from "./GroupPostsSection";
 import { useEffect, useState } from "react";
 import CreateEventModal from "./CreateEventModal";
-import { EventProps } from "@/types/types";
+import { ContactsProps, EventProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
 import InviteUsers from "./InviteUsers";
 
@@ -43,7 +43,7 @@ interface GroupCardProps {
   activeTab: string;
   setActiveTab: React.Dispatch<string>;
   setOpenPostModal: React.Dispatch<boolean>;
-  members: number;
+  members: ContactsProps[];
   pathName: string | undefined;
   groupID: number;
 }
@@ -123,7 +123,7 @@ export default function GroupCard({
         >
           <StyledTypography>{groupTitle}</StyledTypography>
           <Typography sx={{ color: "#979797" }}>
-            {members} {`member${members > 1 ? "s" : ""}`}
+            {members.length} {`member${members.length > 1 ? "s" : ""}`}
           </Typography>
           <Box
             sx={{
@@ -262,6 +262,7 @@ export default function GroupCard({
         setOpenEventModal={setOpenEventModal}
       />
       <InviteUsers
+        members={members}
         groupID={groupID}
         openInviteModal={openInviteModal}
         setOpenInviteModal={setOpenInviteModal}

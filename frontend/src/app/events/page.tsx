@@ -5,7 +5,6 @@ import EventSection from "@/components/Events/EventSection";
 import { useEffect, useState } from "react";
 import { EventProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
-import { wrap } from "module";
 
 interface Props {
   groupID: number;

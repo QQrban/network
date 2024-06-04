@@ -87,6 +87,8 @@ function EventItem({ event, myStatusHandler }: EventItemProps) {
         justifyContent: "space-between",
         p: "10px",
         position: "relative",
+        minWidth: "350px",
+        maxWidth: "350px",
       }}
       radius="12px"
     >

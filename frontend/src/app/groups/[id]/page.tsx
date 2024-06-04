@@ -6,7 +6,7 @@ import profileIcon from "../../../../public/icons/profile.svg";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { fetchFromServer } from "@/lib/api";
-import { GroupProps } from "@/types/types";
+import { ContactsProps, GroupProps } from "@/types/types";
 
 import GroupCard from "@/components/Group/GroupCard";
 import GroupAddInfo from "@/components/Group/GroupAddInfo";
@@ -14,7 +14,7 @@ import JoinGroupCard from "@/components/Group/JoinGroupCard";
 
 export default function GroupPage() {
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
-  const [membersNumber, setMembersNumber] = useState<number>(0);
+  const [members, setMembers] = useState<ContactsProps[]>([]);
 
   const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
@@ -46,7 +46,7 @@ export default function GroupPage() {
           );
           if (groupMembers.ok) {
             const membersData = await groupMembers.json();
-            setMembersNumber(membersData.length);
+            setMembers(membersData);
           }
         }
       } catch (error) {
@@ -72,7 +72,7 @@ export default function GroupPage() {
             <>
               <GroupCard
                 openPostModal={openPostModal}
-                members={membersNumber}
+                members={members}
                 setOpenPostModal={setOpenPostModal}
                 groupTitle={mainInfo.title}
                 activeTab={activeTab}

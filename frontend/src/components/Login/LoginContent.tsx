@@ -55,21 +55,10 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
         });
 
         if (response.ok) {
-          const data = await response.json();
-          dispatch(
-            loginSuccess({
-              id: data.ID,
-              email: data.email,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              nickname: data.nickname,
-              birthday: data.birthday,
-              country: data.country,
-              image: data.image,
-            })
-          );
-          fetchNotifications();
           router.push("/");
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
         } else {
           console.error("Login failed");
         }

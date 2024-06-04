@@ -1,23 +1,21 @@
 import { fetchFromServer } from "@/lib/api";
 import { ContactsProps, PostProps } from "@/types/types";
-import { useRef, useState } from "react";
 import Image from "next/image";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ReactionToPost from "./ReactionToPost";
 import likeIcon from "../../../../public/icons/like.svg";
 import commentIcon from "../../../../public/icons/comment.svg";
 import { Box, Divider, Typography } from "@mui/material";
+import { useState } from "react";
 
 interface Props {
   addLikeToPost: (postID: number, like: ContactsProps) => void;
   post: PostProps;
+  focusInput: (postID: number) => void;
 }
 
-export default function GiveLike({ addLikeToPost, post }: Props) {
+export default function GiveLike({ addLikeToPost, post, focusInput }: Props) {
   const [likesAmount, setLikesAmount] = useState<{ [key: number]: number }>({});
-  const inputRefs = useRef<{
-    [key: number]: React.RefObject<HTMLTextAreaElement>;
-  }>({});
 
   const giveLike = async (postID: number) => {
     try {
@@ -35,12 +33,6 @@ export default function GiveLike({ addLikeToPost, post }: Props) {
       }
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const focusInput = (postID: number) => {
-    if (inputRefs.current[postID]?.current) {
-      inputRefs.current[postID].current?.focus();
     }
   };
 

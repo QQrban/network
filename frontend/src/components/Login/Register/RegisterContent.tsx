@@ -23,6 +23,7 @@ import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
 import { StyledTextArea, StyledTextField } from "../styles";
 import { SuccessBtn } from "@/components/shared/styles";
+import { useRouter } from "next/navigation";
 
 interface RegisterProps {
   setShowLoading: React.Dispatch<boolean>;
@@ -58,7 +59,7 @@ const initialValues: FormValues = {
 export default function RegisterContent({ setShowLoading }: RegisterProps) {
   const [avatar, setAvatar] = useState<File | null>(null);
 
-  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleAvatarChange = (file: File | null) => {
     setAvatar(file);
@@ -90,20 +91,10 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
           body: formData,
         });
         if (response.ok) {
-          resetForm();
-          const data = await response.json();
-          dispatch(
-            loginSuccess({
-              id: data.ID,
-              email: data.email,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              nickname: data.nickname,
-              birthday: data.birthday,
-              country: data.country,
-              image: data.image,
-            })
-          );
+          router.push("/");
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
         } else {
           console.error("Registration failed");
         }

@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const isBrowser = typeof window !== "undefined";
 
 const getLocalStorageItem = (key: string) => {
-  if (typeof window === "undefined") {
+  if (!isBrowser) {
     return null;
   }
 
@@ -72,16 +72,13 @@ const notificationsSlice = createSlice({
         state.groupIds = state.groupIds.filter(
           (id: number) => id !== action.payload.senderId
         );
-        if (state.groupIds.length === 0 && state.senderIds.length === 0) {
-          state.hasNewMessage = false;
-        }
       } else {
         state.senderIds = state.senderIds.filter(
           (id: number) => id !== action.payload.senderId
         );
-        if (state.senderIds.length === 0 && state.groupIds.length === 0) {
-          state.hasNewMessage = false;
-        }
+      }
+      if (state.groupIds.length === 0 && state.senderIds.length === 0) {
+        state.hasNewMessage = false;
       }
       if (isBrowser) {
         localStorage.setItem("senderIds", JSON.stringify(state.senderIds));

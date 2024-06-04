@@ -33,6 +33,9 @@ export default function ChattersList({
   const newMessageSenderIds = useSelector(
     (state: any) => state.notificationsReducer.senderIds
   );
+  const newMessageGroupIds = useSelector(
+    (state: any) => state.notificationsReducer.groupIds
+  );
 
   return (
     <List aria-label="contacts">
@@ -104,6 +107,14 @@ export default function ChattersList({
                     </Typography>
                   }
                 />
+                {newMessageGroupIds.includes(group.ID) && (
+                  <Image
+                    width={30}
+                    height={30}
+                    src={attentionIcon}
+                    alt="new message"
+                  />
+                )}
               </ListItemButton>
             </ListItem>
           ))}

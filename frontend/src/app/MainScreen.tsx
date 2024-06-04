@@ -85,7 +85,6 @@ export default function MainScreen({ children }: { children: ReactNode }) {
       if (!pathname.includes("chat")) {
         try {
           const data = JSON.parse(lastMessage.data);
-
           if (data.type === "message_personal" && !data.payload.isGroup) {
             dispatch(
               addNewMessage({
@@ -93,8 +92,13 @@ export default function MainScreen({ children }: { children: ReactNode }) {
                 isGroup: false,
               })
             );
-          } else if (data.type === "notification") {
-            dispatch(setNewNotification(true));
+          } else if (data.type === "message_group" && data.payload.isGroup) {
+            dispatch(
+              addNewMessage({
+                senderId: data.payload.receiverID,
+                isGroup: true,
+              })
+            );
           }
         } catch (error) {
           console.error(error);

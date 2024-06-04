@@ -1,4 +1,4 @@
-import { Badge, Box, IconButton, Tooltip } from "@mui/material";
+import { Badge, Box, IconButton } from "@mui/material";
 import TooltipStyled from "../shared/TooltipStyled";
 import ProfileMenu from "./ProfileMenu";
 import mailIcon from "../../../public/icons/mail.svg";
@@ -11,10 +11,10 @@ export default function HeaderMenu() {
   const senderIds = useSelector(
     (state: any) => state.notificationsReducer.senderIds
   );
-  const hasNewMessage = senderIds.length > 0;
-  const hasNewNotification = useSelector(
-    (state: any) => state.notificationsReducer.hasNewNotification
+  const groupIds = useSelector(
+    (state: any) => state.notificationsReducer.groupIds
   );
+  const hasNewMessage = senderIds.length > 0 || groupIds.length > 0;
 
   return (
     <Box
@@ -40,7 +40,7 @@ export default function HeaderMenu() {
       <TooltipStyled title="Notifications">
         <Link href={`/notifications/`}>
           <IconButton>
-            <Badge badgeContent={hasNewNotification ? "!" : 0} color="error">
+            <Badge badgeContent={0} color="error">
               <Image
                 style={{ width: "32px", height: "32px" }}
                 src={notificationIcon}

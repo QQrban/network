@@ -60,7 +60,8 @@ export default function Chat() {
   const pathname = usePathname().split("/").pop();
   const router = useRouter();
 
-  const { lastMessage } = useWebSocketContext();
+  const { lastMessage, processedMessage, setProcessedMessage } =
+    useWebSocketContext();
 
   const handleEmojiSelect = useCallback((emoji: EmojiClickData) => {
     setText((prevText) => prevText + emoji.emoji);
@@ -90,6 +91,7 @@ export default function Chat() {
   const handleGroupClick = (groupID: number, groupChatName: string) => {
     setGroupID(groupID);
     setActiveChatName(groupChatName);
+    dispatch(removeSenderId({ senderId: groupID, isGroup: true }));
   };
 
   const fetchChatters = useCallback(async () => {
@@ -189,39 +191,54 @@ export default function Chat() {
   }, [tabValue, fetchGroups]);
 
   useEffect(() => {
-    if (lastMessage) {
+    if (lastMessage && lastMessage !== processedMessage) {
       try {
-        console.log(lastMessage);
         const data = JSON.parse(lastMessage.data);
-        console.log("Received WebSocket message:", data);
-
         if (data.type === "message_personal") {
           const newMessage = data.payload;
           const { receiverID, senderID, ID } = newMessage;
           if (chatReceiverID === receiverID || chatReceiverID === senderID) {
             const messageWithID = { ...newMessage, ID: ID };
-
             setMessages((prevMessages) => [...prevMessages, messageWithID]);
           } else {
-            // dispatch(addNewMessage({ senderId: newMessage.senderID }));
+            dispatch(
+              addNewMessage({
+                senderId: data.payload.senderID,
+                isGroup: false,
+              })
+            );
           }
         } else if (data.type === "message_group") {
-          console.log(data);
           const newMessage = data.payload;
           const { receiverID, senderID, ID } = newMessage;
           if (groupID === receiverID || groupID === senderID) {
             const messageWithID = { ...newMessage, ID: ID };
-
             setMessages((prevMessages) => [...prevMessages, messageWithID]);
           } else {
-            console.log(groupID, ":1", receiverID, ":2", senderID, ":3");
+            if (receiverID !== groupID) {
+              dispatch(
+                addNewMessage({
+                  senderId: data.payload.receiverID,
+                  isGroup: true,
+                })
+              );
+            }
           }
         }
       } catch (error) {
         console.error("Error parsing message data:", error);
       }
+      setProcessedMessage(lastMessage);
     }
-  }, [lastMessage, dispatch, authID, chatReceiverID, groupID]);
+  }, [
+    lastMessage,
+    dispatch,
+    authID,
+    chatReceiverID,
+    groupID,
+    processedMessage,
+    setProcessedMessage,
+  ]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);

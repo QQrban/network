@@ -1,16 +1,14 @@
 import { Box, Typography } from "@mui/material";
-import Image from "next/image";
-import noPhoto from "../../../../public/icons/profile.svg";
 import { CommentProps } from "@/types/types";
 import dayjs from "dayjs";
 import ProfileImage from "../ProfileImage";
+import Link from "next/link";
 
 interface CommentPostProps {
   comments: CommentProps[];
 }
 
 export default function CommentsPost({ comments }: CommentPostProps) {
-
   return (
     <>
       {comments?.map((comment) => (
@@ -27,7 +25,14 @@ export default function CommentsPost({ comments }: CommentPostProps) {
               gap: "5px",
             }}
           >
-            <ProfileImage image={comment.author.image} width={36} height={36} />
+            <Link href={`/profile/${comment.authorID}`}>
+              <ProfileImage
+                image={comment.author.image}
+                width={36}
+                height={36}
+              />
+            </Link>
+
             <Box
               sx={{
                 display: "flex",
@@ -35,16 +40,18 @@ export default function CommentsPost({ comments }: CommentPostProps) {
                 gap: "2px",
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: "16px",
-                  fontWeight: 700,
-                }}
-              >
-                {comment.author
-                  ? `${comment.author.firstName} ${comment.author.lastName}`
-                  : "Unknown Author"}
-              </Typography>
+              <Link href={`/profile/${comment.authorID}`}>
+                <Typography
+                  sx={{
+                    fontSize: "16px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {comment.author
+                    ? `${comment.author.firstName} ${comment.author.lastName}`
+                    : "Unknown Author"}
+                </Typography>
+              </Link>
             </Box>
           </Box>
           <Box

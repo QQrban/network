@@ -2,10 +2,7 @@
 
 import { Box, Typography } from "@mui/material";
 import NotificationsSection from "@/components/Notifications/NotificationsSection";
-import {
-  Notification,
-  yourNotifications,
-} from "@/components/Notifications/mock";
+
 import { useEffect, useState } from "react";
 import { fetchFromServer } from "@/lib/api";
 import { NotificationProps } from "@/types/types";
@@ -16,7 +13,7 @@ export default function Notifications() {
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const response = await fetchFromServer("/notifications", {
+      const response = await fetchFromServer("/notifications/all", {
         credentials: "include",
       });
       if (response.ok) {

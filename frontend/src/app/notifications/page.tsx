@@ -31,6 +31,27 @@ export default function Notifications() {
     fetchNotifications();
   }, []);
 
+  const deleteNotification = async (notificationID: number) => {
+    try {
+      const response = await fetchFromServer(
+        `/notification/${notificationID}`,
+        {
+          credentials: "include",
+          method: "DELETE",
+        }
+      );
+      if (response.ok) {
+        setINotifications((prevNotifications) =>
+          prevNotifications.filter(
+            (notification) => notification.ID !== notificationID
+          )
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   console.log(iNotifications);
 
   return (
@@ -58,7 +79,10 @@ export default function Notifications() {
             width: "700px",
           }}
         >
-          <NotificationsSection notifications={iNotifications} />
+          <NotificationsSection
+            deleteNotification={deleteNotification}
+            notifications={iNotifications}
+          />
         </Box>
       ) : (
         <Typography sx={{ fontSize: "30px" }}>

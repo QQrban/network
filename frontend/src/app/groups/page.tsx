@@ -3,7 +3,7 @@
 import Box from "@mui/material/Box";
 import { Item } from "@/components/shared/Item";
 import GroupItem from "@/components/Groups/GroupItem";
-import { Divider, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import SearchBar from "@/components/Groups/SearchBar";
 import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
@@ -26,11 +26,26 @@ export default function Groups() {
       if (response.ok) {
         const data = await response.json();
         setGroups(data);
+        console.log(data);
       } else {
         throw new Error("Failed to fetch groups");
       }
     } catch (error) {
       console.error("Failed to fetch groups:", error);
+    }
+  };
+
+  const leaveGroup = async (groupID: number) => {
+    try {
+      const response = await fetchFromServer(`/group/${groupID}/leave`, {
+        credentials: "include",
+        method: "POST",
+      });
+      if (response.ok) {
+        fetchGroups();
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -109,6 +124,8 @@ export default function Groups() {
           {groups.length > 0 ? (
             groups.map((group) => (
               <GroupItem
+                leaveGroup={leaveGroup}
+                ownerID={group.owner.ID}
                 key={group.ID}
                 groupId={group.ID}
                 title={group.title}

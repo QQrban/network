@@ -3,7 +3,7 @@
 import { IconButton, InputBase, Box } from "@mui/material";
 import search from "../../../public/icons/search.svg";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchFromServer } from "@/lib/api";
 import Link from "next/link";
 
@@ -20,6 +20,7 @@ export default function SearchHeader() {
   const [searching, setSearching] = useState<boolean>(false);
   const [allUsers, setAllUsers] = useState<AllUsers[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<AllUsers[]>([]);
+  const searchBoxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchPeople = async () => {
@@ -71,8 +72,26 @@ export default function SearchHeader() {
     setFilteredUsers([]);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      searchBoxRef.current &&
+      !searchBoxRef.current.contains(event.target as Node)
+    ) {
+      setSearching(false);
+      setFilteredUsers([]);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <Box
+      ref={searchBoxRef}
       component="form"
       sx={{
         p: "2px 4px",

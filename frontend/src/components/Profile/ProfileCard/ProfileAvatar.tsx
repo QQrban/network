@@ -1,84 +1,77 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import noPhoto from "../../../../public/icons/profile.svg";
 import cameraIcon from "../../../../public/icons/photo.svg";
 import Image from "next/image";
-import AvatarUpload from "@/components/Login/AvatarUpload";
-import { useState } from "react";
-import { fetchFromServer } from "@/lib/api";
+import TooltipStyled from "@/components/shared/TooltipStyled";
+
 interface ProfileAvatarProps {
   avatar: string;
   isYourProfile: boolean;
+  handleAvatarChange: (file: File | null) => void;
 }
+
 export default function ProfileAvatar({
   avatar,
   isYourProfile,
+  handleAvatarChange,
 }: ProfileAvatarProps) {
-  const [avatarUpload, setAvatar] = useState<File | null>(null);
-  const handleAvatarChange = (file: File | null) => {
-    setAvatar(file);
-  };
-
-  const handleSubmitAvatar = async () => {
-    if (!avatarUpload) {
-      console.log("No file selected.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("avatar", avatarUpload);
-    console.log("FormData entries:", formData);
-    try {
-      const response = await fetchFromServer("/user/avatar", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Avatar updated successfully:", data);
-      } else {
-        throw new Error("Failed to update avatar.");
-      }
-    } catch (error) {
-      console.error("Error updating avatar:", error);
-    }
-  };
-
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       {isYourProfile ? (
-        <Box
-          sx={{
-            position: "relative",
-          }}
-        >
-          <AvatarUpload onChange={handleAvatarChange} />
+        <TooltipStyled title="Change Avatar">
           <Box
             sx={{
-              position: "absolute",
-              bgcolor: "white",
-              p: "6px",
-              right: "5px",
-              bottom: "-5px",
-              border: "2px solid grey",
+              position: "relative",
+              width: "170px",
+              height: "170px",
               borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "45px",
-              height: "45px",
+              backgroundImage: avatar
+                ? `url(http://localhost:8888/file/${avatar})`
+                : `url(${noPhoto.src})`,
+              backgroundSize: "cover",
+              backgroundColor: "#fff",
+              backgroundRepeat: "no-repeat",
+              border: "6px solid #408ac7",
+              backgroundPosition: "center",
+              cursor: "pointer",
             }}
+            onClick={() => document.getElementById("avatar-upload")?.click()}
           >
-            <Image
-              width={40}
-              height={40}
-              src={cameraIcon}
-              alt=""
-              onClick={handleSubmitAvatar}
+            <input
+              type="file"
+              id="avatar-upload"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                handleAvatarChange(file);
+              }}
             />
+            <Box
+              sx={{
+                position: "absolute",
+                bgcolor: "white",
+                p: "6px",
+                right: "5px",
+                bottom: "-5px",
+                border: "2px solid grey",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "45px",
+                height: "45px",
+              }}
+            >
+              <Image
+                width={40}
+                height={40}
+                src={cameraIcon}
+                alt="Camera icon"
+              />
+            </Box>
           </Box>
-        </Box>
+        </TooltipStyled>
       ) : (
         <Box
           sx={{

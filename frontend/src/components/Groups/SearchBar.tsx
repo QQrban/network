@@ -2,7 +2,7 @@ import { Box, InputBase, IconButton } from "@mui/material";
 import Image from "next/image";
 import searchIcon from "../../../public/icons/search.svg";
 import { fetchFromServer } from "@/lib/api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 
 interface AllGroups {
@@ -16,6 +16,7 @@ export default function SearchBar() {
   const [searching, setSearching] = useState<boolean>(false);
   const [allGroups, setAllGroups] = useState<AllGroups[]>([]);
   const [filteredGroups, setFilteredGroups] = useState<AllGroups[]>([]);
+  const searchBoxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchPeople = async () => {
@@ -55,13 +56,32 @@ export default function SearchBar() {
     };
   }, [searchText, allGroups]);
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      searchBoxRef.current &&
+      !searchBoxRef.current.contains(event.target as Node)
+    ) {
+      setSearching(false);
+      setFilteredGroups([]);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const clickedLink = () => {
     setSearchText("");
     setSearching(false);
     setFilteredGroups([]);
   };
+
   return (
     <Box
+      ref={searchBoxRef}
       component="form"
       sx={{
         p: "2px 4px",
@@ -69,7 +89,8 @@ export default function SearchBar() {
         alignItems: "center",
         width: 300,
         border: "2px solid #4a4a4a",
-        borderRadius: "16px",
+        borderRadius: searching ? "16px 16px 0 0" : "16px",
+        position: "relative",
       }}
     >
       <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
@@ -103,8 +124,8 @@ export default function SearchBar() {
             overflowY: "scroll",
             border: "2px solid #4b4b4b",
             borderTop: "none",
-            top: 240,
-            left: 144,
+            top: 40,
+            left: "-2px",
             padding: "10px",
             zIndex: 1,
           }}

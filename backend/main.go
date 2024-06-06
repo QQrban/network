@@ -138,6 +138,7 @@ func prepare(rtr *router.Router) { //, ctx context.Context
 	rtr.Get("/message/groups", api.EnsureAuth(api.GetMessageGroups))
 	rtr.Get("/notifications", api.EnsureAuth(api.GetNotifications))
 	rtr.Get("/notifications/all", api.EnsureAuth(api.GetAllNotifications))
+	rtr.Delete("/notification/([0-9]+)", api.EnsureAuth(api.DeleteNotification))
 	rtr.Get("/ws", api.EnsureAuth(api.ChatManager.WSHandler))
 
 	rtr.Get("/stats", api.EnsureAuth(api.GetStats))

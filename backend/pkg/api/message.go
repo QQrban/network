@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"social-network/pkg/models"
+	"social-network/pkg/router"
+	"strconv"
 	"time"
 )
 
@@ -106,4 +108,14 @@ func GetAllNotifications(w http.ResponseWriter, r *http.Request) {
 	panicIfErr(err)
 
 	writeJSON(w, notifications)
+}
+
+func DeleteNotification(w http.ResponseWriter, r *http.Request) {
+	slug := router.GetSlug(r, 0)
+	targetID, _ := strconv.ParseInt(slug, 10, 64)
+
+	err := Database.Message.DeleteNotification(targetID)
+	panicIfErr(err)
+
+	writeStatus(w, http.StatusOK)
 }

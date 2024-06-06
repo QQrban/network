@@ -1,0 +1,1 @@
+DELETE FROM userMessage WHERE ID = ?1;

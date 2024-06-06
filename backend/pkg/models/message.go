@@ -190,3 +190,14 @@ func (model *MessageModel) GetAllNotifications(userID int64) ([]*Message, error)
 
 	return messages, nil
 }
+
+func (model *MessageModel) DeleteNotification(messageID int64) error {
+	stmt := model.queries.Prepare("deleteNotification")
+
+	_, err := stmt.Exec(messageID)
+	if err != nil {
+		return fmt.Errorf("Message/DeleteNotification: %w", err)
+	}
+
+	return nil
+}

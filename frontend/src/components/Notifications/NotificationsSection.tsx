@@ -12,15 +12,18 @@ import follow from "../../../public/icons/profile.svg";
 import followReq from "../../../public/icons/personAdd.svg";
 import followAcc from "../../../public/icons/contacts.svg";
 import groupReq from "../../../public/icons/groups.svg";
+import cross from "../../../public/icons/cross.svg";
 import { fetchFromServer } from "@/lib/api";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { setNewNotification } from "@/redux/features/notifications/notificationsSlice";
 import ConfirmBtn from "../shared/ConfirmBtn";
 import confirmBtn from "../../../public/icons/confirmButton.svg";
+import TooltipStyled from "../shared/TooltipStyled";
 
 interface NotificationSectionProps {
   notifications: NotificationProps[];
+  deleteNotification: (notificationID: number) => void;
 }
 
 const getNotificationDetails = (notification: NotificationProps) => {
@@ -65,6 +68,7 @@ const getNotificationDetails = (notification: NotificationProps) => {
 
 export default function NotificationsSection({
   notifications,
+  deleteNotification,
 }: NotificationSectionProps) {
   const dispatch = useDispatch();
 
@@ -208,6 +212,19 @@ export default function NotificationsSection({
                 </Box>
               </Box>
             )}
+            <TooltipStyled title="Delete Notification">
+              <Box
+                onClick={() => deleteNotification(notification.ID)}
+                sx={{
+                  position: "absolute",
+                  right: "5px",
+                  top: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                <Image src={cross} alt="delete" width={28} height={28} />
+              </Box>
+            </TooltipStyled>
           </Item>
         );
       })}

@@ -7,11 +7,12 @@ import eventBg from "../../../public/eventBG.svg";
 import Link from "next/link";
 import { NotificationProps } from "@/types/types";
 import like from "../../../public/icons/give-love.svg";
-import comment from "../../../public/icons/commenting.svg";
+import event from "../../../public/icons/calendar.svg";
 import follow from "../../../public/icons/profile.svg";
 import followReq from "../../../public/icons/personAdd.svg";
 import followAcc from "../../../public/icons/contacts.svg";
 import { fetchFromServer } from "@/lib/api";
+import { boolean } from "yup";
 
 interface NotificationSectionProps {
   notifications: NotificationProps[];
@@ -25,52 +26,109 @@ export default function NotificationsSection({
   let msgVal = "";
   function getNotificationLink(notification: NotificationProps): string {
     console.log(notification);
-    switch (notification.content.action) {
+    const {
+      action,
+      type,
+      userName,
+      userID,
+      groupID,
+      eventTitle,
+      groupTitle,
+      postID,
+    } = notification.content;
+    switch (type) {
+      case "event":
+        return handleEventNotification(groupID, eventTitle, groupTitle);
       case "follow":
-        msgVal = notification.content.userName + " followed you!";
-        return `/profile/${notification.content.userID}`;
+        return handleFollow(action, userName, userID);
+      case "group":
+        return handleGroupRequest(action, groupID);
+      case "post":
+        return handlePosts(action, userName, postID);
+      default:
+        return ``;
+    }
+  }
+
+  function handleEventNotification(
+    groupID: number,
+    eventTitle: string,
+    groupTitle: string
+  ): string {
+    img = event;
+    msgVal = `New Event: ${eventTitle} in group ${groupTitle}`;
+    //  Right now it just directs to the group page idk how to make it switch to the "Events" tab from the redirect
+    return `/groups/${groupID}`;
+  }
+
+  function handleFollow(
+    action: string,
+    userName: string,
+    userID: number
+  ): string {
+    switch (action) {
+      case "request":
+        img = followReq;
+        msgVal = `${userName} sent you a follow request!`;
+        // Would be nice to switch to the requests tab
+        return `/contacts`;
+      case "follow":
+        msgVal = `${userName} followed you!`;
+        return `/profile/${userID}`;
       case "accept":
         img = followAcc;
-        msgVal = notification.content.userName + " accepted your request!";
-        return `/profile/${notification.content.userID}`;
+        msgVal = `${userName} accepted your follow request!`;
+        return `/profile/${userID}`;
+      default:
+        return ``;
+    }
+  }
+
+  // wrong endpoints rn help
+  function handleGroupRequest(action: string, groupID: number): string {
+    switch (action) {
       case "request":
-        if (notification.content.type === "follow") {
-          img = followReq;
-          msgVal = `${notification.content.userName} sent you a follow request!`;
-          return `/contacts`;
-        } else if (notification.content.type === "group") {
-          // Can't accept requests yet
-          img = followReq;
-          msgVal = `${notification.content.userName} wants to join your group!`;
-          try {
-            fetchFromServer(`/groups/${notification.content.groupID}/accept/`, {
-              method: "POST",
-              credentials: "include",
-            });
-            return `/groups/${notification.content.groupID}`;
-          } catch (error) {
-            console.error("Doesn't work: ", error);
-          }
-        }
+        fetchFromServer(`/groups/${groupID}/accept/`, {
+          method: "POST",
+          credentials: "include",
+        });
+        return `/groups/${groupID}`;
       case "invite":
-        // Can't accept invites yet
-        msgVal = notification.content.userName + " invited you to their group!";
-        try {
-          fetchFromServer(`/groups/${notification.content.groupID}/accept/`, {
-            method: "POST",
-            credentials: "include",
-          });
-          return `/groups/${notification.content.groupID}`;
-        } catch (error) {
-          console.error("Doesn't work: ", error);
-        }
+        fetchFromServer(`/groups/${groupID}/accept/`, {
+          method: "POST",
+          credentials: "include",
+        });
+        return `/groups/${groupID}`;
+      default:
+        return ``;
+    }
+  }
+
+  function handlePosts(
+    action: string,
+    userName: string,
+    postID: number
+    // postContent: string
+  ): string {
+    switch (action) {
+      // this doesn't exist nvm
+      // case "create":
+      //   msgVal = `${userName} posted: ${postContent}`;
+      //   return `/post/${postID}`;
       case "like":
         img = like;
-        msgVal = notification.content.userName + " liked your post!";
-        return `/post/${notification.content.postID}`;
+        msgVal = `${userName} liked your post!`;
+        return `/post/${postID}`;
       default:
-        return "#";
+        return ``;
     }
+  }
+
+  function fetchFromServer(endpoint: string, options: object): void {
+    fetch(endpoint, options)
+      .then((response) => response.json())
+      .then((data) => console.log("Request successful", data))
+      .catch((error) => console.error("Request failed", error));
   }
 
   return (

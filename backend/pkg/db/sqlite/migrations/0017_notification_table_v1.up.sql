@@ -7,5 +7,5 @@ CREATE TABLE notification
    `groupID`   INTEGER,
    `eventID`   INTEGER,
    `postID`    INTEGER,
-   `seen`      BOOLEAN NOT NULL DEFAULT FALSE,
-)
+   `seen`      BOOLEAN NOT NULL DEFAULT FALSE
+);

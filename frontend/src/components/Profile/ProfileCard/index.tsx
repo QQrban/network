@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ProfileAvatar from "./ProfileAvatar";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import successBtn from "../../../../public/icons/successBtn.svg";
 import confirmBtn from "../../../../public/icons/confirmButton.svg";
@@ -35,6 +35,7 @@ interface Props {
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
   hasAccess: boolean;
   setHasAccess: React.Dispatch<boolean>;
+  handleAvatarChange: (file: File | null) => void;
 }
 
 export default function ProfileCard({
@@ -43,6 +44,7 @@ export default function ProfileCard({
   isYourProfile,
   hasAccess,
   setHasAccess,
+  handleAvatarChange,
 }: Props) {
   const [activeTab, setActiveTab] = useState<String>("Main Board");
   const [privateProfile, setPrivateProfile] = useState<boolean | null>(null);
@@ -197,7 +199,11 @@ export default function ProfileCard({
           />
         </SpeedDial>
       )}
-      <ProfileAvatar isYourProfile={isYourProfile} avatar={profile.image} />
+      <ProfileAvatar
+        handleAvatarChange={handleAvatarChange}
+        isYourProfile={isYourProfile}
+        avatar={profile.image}
+      />
       <Box
         sx={{
           display: "flex",

@@ -13,6 +13,9 @@ import followReq from "../../../public/icons/personAdd.svg";
 import followAcc from "../../../public/icons/contacts.svg";
 import { fetchFromServer } from "@/lib/api";
 import { boolean } from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { setNewNotification } from "@/redux/features/notifications/notificationsSlice";
 
 interface NotificationSectionProps {
   notifications: NotificationProps[];
@@ -22,6 +25,11 @@ interface NotificationSectionProps {
 export default function NotificationsSection({
   notifications,
 }: NotificationSectionProps) {
+  const hasNewNotification = useSelector(
+    (state: any) => state.notificationsReducer.hasNewNotification
+  );
+
+  const dispatch = useDispatch();
   let img = follow;
   let msgVal = "";
   function getNotificationLink(notification: NotificationProps): string {
@@ -130,6 +138,10 @@ export default function NotificationsSection({
       .then((data) => console.log("Request successful", data))
       .catch((error) => console.error("Request failed", error));
   }
+
+  useEffect(() => {
+    dispatch(setNewNotification(false));
+  }, [dispatch]);
 
   return (
     <>

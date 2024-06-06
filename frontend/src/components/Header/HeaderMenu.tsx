@@ -14,6 +14,9 @@ export default function HeaderMenu() {
   const groupIds = useSelector(
     (state: any) => state.notificationsReducer.groupIds
   );
+  const hasNewNotification = useSelector(
+    (state: any) => state.notificationsReducer.hasNewNotification
+  );
   const hasNewMessage = senderIds.length > 0 || groupIds.length > 0;
 
   return (
@@ -40,7 +43,7 @@ export default function HeaderMenu() {
       <TooltipStyled title="Notifications">
         <Link href={`/notifications/`}>
           <IconButton>
-            <Badge badgeContent={0} color="error">
+            <Badge badgeContent={hasNewNotification ? "!" : 0} color="error">
               <Image
                 style={{ width: "32px", height: "32px" }}
                 src={notificationIcon}

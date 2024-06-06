@@ -11,133 +11,98 @@ import event from "../../../public/icons/calendar.svg";
 import follow from "../../../public/icons/profile.svg";
 import followReq from "../../../public/icons/personAdd.svg";
 import followAcc from "../../../public/icons/contacts.svg";
+import groupReq from "../../../public/icons/groups.svg";
 import { fetchFromServer } from "@/lib/api";
-import { boolean } from "yup";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { setNewNotification } from "@/redux/features/notifications/notificationsSlice";
+import ConfirmBtn from "../shared/ConfirmBtn";
+import confirmBtn from "../../../public/icons/confirmButton.svg";
 
 interface NotificationSectionProps {
   notifications: NotificationProps[];
-  page?: string;
 }
+
+const getNotificationDetails = (notification: NotificationProps) => {
+  const { action, type, userName, eventTitle, groupTitle } =
+    notification.content;
+  let img = follow;
+  let msgVal = "";
+
+  switch (type) {
+    case "event":
+      img = event;
+      msgVal = `New Event: ${eventTitle} in group ${groupTitle}`;
+      break;
+    case "follow":
+      switch (action) {
+        case "request":
+          img = followReq;
+          msgVal = `${userName} sent you a follow request!`;
+          break;
+        case "follow":
+          msgVal = `${userName} followed you!`;
+          break;
+        case "accept":
+          img = followAcc;
+          msgVal = `${userName} accepted your follow request!`;
+          break;
+        default:
+          break;
+      }
+      break;
+    case "post":
+      if (action === "like") {
+        img = like;
+        msgVal = `${userName} liked your post!`;
+      }
+      break;
+    default:
+      break;
+  }
+  return { img, msgVal };
+};
 
 export default function NotificationsSection({
   notifications,
 }: NotificationSectionProps) {
-  const hasNewNotification = useSelector(
-    (state: any) => state.notificationsReducer.hasNewNotification
-  );
-
   const dispatch = useDispatch();
-  let img = follow;
-  let msgVal = "";
+
   function getNotificationLink(notification: NotificationProps): string {
-    console.log(notification);
-    const {
-      action,
-      type,
-      userName,
-      userID,
-      groupID,
-      eventTitle,
-      groupTitle,
-      postID,
-    } = notification.content;
+    const { action, type, userID, groupID, postID } = notification.content;
     switch (type) {
       case "event":
-        return handleEventNotification(groupID, eventTitle, groupTitle);
+        return `/groups/${groupID}`;
       case "follow":
-        return handleFollow(action, userName, userID);
-      case "group":
-        return handleGroupRequest(action, groupID);
+        return action === "request" ? `/contacts` : `/profile/${userID}`;
       case "post":
-        return handlePosts(action, userName, postID);
-      default:
-        return ``;
-    }
-  }
-
-  function handleEventNotification(
-    groupID: number,
-    eventTitle: string,
-    groupTitle: string
-  ): string {
-    img = event;
-    msgVal = `New Event: ${eventTitle} in group ${groupTitle}`;
-    //  Right now it just directs to the group page idk how to make it switch to the "Events" tab from the redirect
-    return `/groups/${groupID}`;
-  }
-
-  function handleFollow(
-    action: string,
-    userName: string,
-    userID: number
-  ): string {
-    switch (action) {
-      case "request":
-        img = followReq;
-        msgVal = `${userName} sent you a follow request!`;
-        // Would be nice to switch to the requests tab
-        return `/contacts`;
-      case "follow":
-        msgVal = `${userName} followed you!`;
-        return `/profile/${userID}`;
-      case "accept":
-        img = followAcc;
-        msgVal = `${userName} accepted your follow request!`;
-        return `/profile/${userID}`;
-      default:
-        return ``;
-    }
-  }
-
-  // wrong endpoints rn help
-  function handleGroupRequest(action: string, groupID: number): string {
-    switch (action) {
-      case "request":
-        fetchFromServer(`/groups/${groupID}/accept/`, {
-          method: "POST",
-          credentials: "include",
-        });
-        return `/groups/${groupID}`;
-      case "invite":
-        fetchFromServer(`/groups/${groupID}/accept/`, {
-          method: "POST",
-          credentials: "include",
-        });
-        return `/groups/${groupID}`;
-      default:
-        return ``;
-    }
-  }
-
-  function handlePosts(
-    action: string,
-    userName: string,
-    postID: number
-    // postContent: string
-  ): string {
-    switch (action) {
-      // this doesn't exist nvm
-      // case "create":
-      //   msgVal = `${userName} posted: ${postContent}`;
-      //   return `/post/${postID}`;
-      case "like":
-        img = like;
-        msgVal = `${userName} liked your post!`;
         return `/post/${postID}`;
       default:
         return ``;
     }
   }
 
-  function fetchFromServer(endpoint: string, options: object): void {
-    fetch(endpoint, options)
-      .then((response) => response.json())
-      .then((data) => console.log("Request successful", data))
-      .catch((error) => console.error("Request failed", error));
-  }
+  const handleGroupRequest = async (
+    userID: number,
+    groupID: number,
+    action: string
+  ) => {
+    try {
+      const endpoint =
+        action === "request"
+          ? `/group/${groupID}/accept/${userID}`
+          : `/group/${groupID}/join`;
+      const response = await fetchFromServer(endpoint, {
+        credentials: "include",
+        method: "POST",
+      });
+      if (response.ok) {
+        console.log(response);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     dispatch(setNewNotification(false));
@@ -145,47 +110,107 @@ export default function NotificationsSection({
 
   return (
     <>
-      {notifications.map((notification) => (
-        <Item
-          key={notification.ID}
-          sx={{
-            backgroundImage: `url(${eventBg.src})`,
-            width: "100%",
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            p: "10px",
-            position: "relative",
-          }}
-          radius="12px"
-        >
-          <Link href={getNotificationLink(notification)}>
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <Box sx={{ display: "flex", flexDirection: "row", gap: "10px" }}>
-                <Image
-                  src={img}
-                  alt={notification.content.action}
-                  width={28}
-                  height={28}
-                />
-                <Typography
-                  sx={{
-                    fontSize: "22px",
-                    fontWeight: 600,
-                    fontFamily: "Schoolbell !important",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {notification.content.action}
-                </Typography>{" "}
+      {notifications.map((notification) => {
+        const { img, msgVal } = getNotificationDetails(notification);
+        return (
+          <Item
+            key={notification.ID}
+            sx={{
+              backgroundImage: `url(${eventBg.src})`,
+              width: "100%",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              p: "10px",
+              position: "relative",
+            }}
+            radius="12px"
+          >
+            {notification.content.type !== "group" ? (
+              <Link href={getNotificationLink(notification)}>
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <Box
+                    sx={{ display: "flex", flexDirection: "row", gap: "10px" }}
+                  >
+                    <Image
+                      src={img}
+                      alt={notification.content.action}
+                      width={28}
+                      height={28}
+                    />
+                    <Typography
+                      sx={{
+                        fontSize: "22px",
+                        fontWeight: 600,
+                        fontFamily: "Schoolbell !important",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {notification.content.action}
+                    </Typography>
+                  </Box>
+                  <Typography sx={{ fontSize: "16px" }}>{msgVal}</Typography>
+                </Box>
+              </Link>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "10px",
+                    }}
+                  >
+                    <Image
+                      src={groupReq}
+                      alt={notification.content.action}
+                      width={28}
+                      height={28}
+                    />
+                    <Typography
+                      sx={{
+                        fontSize: "22px",
+                        fontWeight: 600,
+                        fontFamily: "Schoolbell !important",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {notification.content.action}
+                    </Typography>
+                  </Box>
+                  <Typography sx={{ textTransform: "capitalize" }}>
+                    {notification.content.action === "request"
+                      ? `${notification.content.userName} wants to join your group (${notification.content.groupTitle})`
+                      : `${notification.content.userName} sent you a group invitation (${notification.content.groupTitle})`}
+                  </Typography>
+                </Box>
+                <Box sx={{ width: "110px" }}>
+                  <ConfirmBtn
+                    onClick={() =>
+                      handleGroupRequest(
+                        notification.content.userID,
+                        notification.content.groupID,
+                        notification.content.action
+                      )
+                    }
+                    backgroundImage={confirmBtn.src}
+                    text="accept"
+                  />
+                </Box>
               </Box>
-              <Typography sx={{ fontSize: "16px" }}>{msgVal}</Typography>
-            </Box>
-          </Link>
-        </Item>
-      ))}
+            )}
+          </Item>
+        );
+      })}
     </>
   );
 }

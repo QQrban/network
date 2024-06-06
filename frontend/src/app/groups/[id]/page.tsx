@@ -47,6 +47,7 @@ export default function GroupPage() {
           if (groupMembers.ok) {
             const membersData = await groupMembers.json();
             setMembers(membersData);
+            console.log(membersData);
           }
         }
       } catch (error) {

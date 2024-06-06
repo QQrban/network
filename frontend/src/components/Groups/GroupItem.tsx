@@ -5,7 +5,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
-import { SpeedDial, SpeedDialAction, Typography } from "@mui/material";
+import { Divider, SpeedDial, SpeedDialAction, Typography } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,22 +15,30 @@ import pendingIcon from "../../../public/icons/pending.svg";
 import { MouseEventHandler, useState } from "react";
 import AlertDialog from "../shared/Dialog";
 import TooltipStyled from "../shared/TooltipStyled";
+import { useSelector } from "react-redux";
 
 interface GroupItemProps {
   title: string;
   members?: number;
   groupId: number;
   pendingRequest: boolean;
+  ownerID: number;
+  leaveGroup: (groupID: number) => void;
 }
 
 export default function GroupItem({
   title,
   groupId,
   pendingRequest,
+  ownerID,
+  leaveGroup,
 }: GroupItemProps) {
   const [open, setOpen] = useState<boolean>(false);
 
-  const leaveGroup: MouseEventHandler<HTMLElement> = async (event) => {
+  const authID = useSelector((state: any) => state.authReducer.value.id);
+  console.log(authID, ownerID);
+
+  const openModal: MouseEventHandler<HTMLElement> = async (event) => {
     event.preventDefault();
     setOpen(true);
   };
@@ -71,7 +79,7 @@ export default function GroupItem({
               }
             />
           </ListItem>
-          {!pendingRequest ? (
+          {!pendingRequest && authID !== ownerID ? (
             <SpeedDial
               onClick={(e) => e.preventDefault()}
               ariaLabel="SpeedDial tooltip example"
@@ -83,14 +91,13 @@ export default function GroupItem({
                   width: "36px",
                   height: "32px",
                   boxShadow: "none",
-                  "&:hover": {},
                   "&:active": { boxShadow: "none" },
                   "&:focus": { outline: "none" },
                 },
               }}
             >
               <SpeedDialAction
-                onClick={leaveGroup}
+                onClick={openModal}
                 tooltipTitle={
                   <Typography
                     sx={{
@@ -109,6 +116,8 @@ export default function GroupItem({
                 }
               />
             </SpeedDial>
+          ) : authID === ownerID ? (
+            "(admin)"
           ) : (
             <TooltipStyled title="Request Pending">
               <Image width={40} height={40} src={pendingIcon} alt="pending" />
@@ -121,10 +130,9 @@ export default function GroupItem({
         setOpen={setOpen}
         title={title}
         dialogText="Are you sure that you want to leave this group?"
-        onConfirm={function (): void {
-          throw new Error("Function not implemented.");
-        }}
+        onConfirm={() => leaveGroup(groupId)}
       />
+      <Divider />
     </>
   );
 }

@@ -6,7 +6,7 @@ import (
 )
 
 // Prepare sets up the router with checks and routes.
-func prepare(rtr *router.Router) { //, ctx context.Context
+func Prepare(rtr *router.Router) { //, ctx context.Context
 	// Create a Manager instance used to handle WebSocket Connections
 	//manager := api.NewManager(ctx)
 

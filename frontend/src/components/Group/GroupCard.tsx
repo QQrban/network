@@ -25,6 +25,7 @@ import CreateEventModal from "./CreateEventModal";
 import { ContactsProps, EventProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
 import InviteUsers from "./InviteUsers";
+import GroupMembersModal from "./GroupMembersModal";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -60,6 +61,7 @@ export default function GroupCard({
 }: GroupCardProps) {
   const [openInviteModal, setOpenInviteModal] = useState<boolean>(false);
   const [openEventModal, setOpenEventModal] = useState<boolean>(false);
+  const [openMembersModal, setOpenMembersModal] = useState<boolean>(false);
   const [events, setEvents] = useState<EventProps[]>([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -122,7 +124,14 @@ export default function GroupCard({
           }}
         >
           <StyledTypography>{groupTitle}</StyledTypography>
-          <Typography sx={{ color: "#979797" }}>
+          <Typography
+            onClick={() => setOpenMembersModal(true)}
+            sx={{
+              color: "#979797",
+              cursor: "pointer",
+              maxWidth: 150,
+            }}
+          >
             {members.length} {`member${members.length > 1 ? "s" : ""}`}
           </Typography>
           <Box
@@ -176,6 +185,11 @@ export default function GroupCard({
             }}
           >
             <SpeedDialAction
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `http://localhost:3000/groups/${pathName}`
+                );
+              }}
               icon={
                 <Image
                   style={{ width: "27px", height: "27px" }}
@@ -266,6 +280,11 @@ export default function GroupCard({
         groupID={groupID}
         openInviteModal={openInviteModal}
         setOpenInviteModal={setOpenInviteModal}
+      />
+      <GroupMembersModal
+        members={members}
+        openMembersModal={openMembersModal}
+        setOpenMembersModal={setOpenMembersModal}
       />
     </Box>
   );

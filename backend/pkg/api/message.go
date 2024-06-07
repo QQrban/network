@@ -72,6 +72,23 @@ func GetMessages(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, messages)
 }
 
+func GetLatestMessages(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	type LatestMessages struct {
+		UserMessages  []*models.Message `json:"userMessages"`
+		GroupMessages []*models.Message `json:"groupMessages"`
+	}
+
+	userMessages, err := Database.Message.GetLatestUserMessages(session.UserID)
+	panicIfErr(err)
+	groupMessages, err := Database.Message.GetLatestGroupMessages(session.UserID)
+	panicIfErr(err)
+
+
+	writeJSON(w, LatestMessages{UserMessages: userMessages, GroupMessages: groupMessages})
+}
+
 func GetMessageContacts(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 

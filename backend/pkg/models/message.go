@@ -93,6 +93,86 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 		messages = append(messages, message)
 	}
 
+	if len(messages) > 0 {
+		latest := len(messages) - 1
+		latestID := messages[latest].ID
+		userID := messageOld.SenderID
+		if messageOld.IsGroup {
+			groupID := messages[latest].ReceiverID
+			err = model.setLatestGroupMessage(userID, groupID, latestID)
+		} else {
+			contactID := messages[latest].SenderID
+			if userID == messages[latest].SenderID {
+				contactID = messages[latest].ReceiverID
+			}
+			err = model.setLatestUserMessage(userID, contactID, latestID)
+		}
+		if err != nil {
+			return nil, fmt.Errorf("Message/GetNotifications3: %w", err)
+		}
+	}
+	return messages, nil
+}
+
+func (model *MessageModel) setLatestUserMessage(userID, contactID, latestID int64) error {
+	stmt := model.queries.Prepare("setLatestUserMessage")
+	_, err := stmt.Exec(userID, contactID, latestID)
+	if err != nil {
+		return fmt.Errorf("Message/setLatestUserMessage: %w", err)
+	}
+	return nil
+}
+
+func (model *MessageModel) GetLatestUserMessages(myID int64) ([]*Message, error) {
+	stmt := model.queries.Prepare("getLatestUserMessages")
+
+	rows, err := stmt.Query(myID)
+	if err != nil {
+		return nil, fmt.Errorf("Message/GetLatestUserMessage: %w", err)
+	}
+	defer rows.Close()
+
+	messages := []*Message{}
+	for rows.Next() {
+		message := &Message{}
+		err = rows.Scan(message.pointerSlice()...)
+		if err != nil {
+			return nil, fmt.Errorf("Message/GetLatestUserMessage: %w", err)
+		}
+		messages = append(messages, message)
+	}
+	return messages, nil
+}
+
+func (model *MessageModel) setLatestGroupMessage(userID, groupID, latestID int64) error {
+	stmt := model.queries.Prepare("setLatestGroupMessage")
+	_, err := stmt.Exec(userID, groupID, latestID)
+	if err != nil {
+		return fmt.Errorf("Message/setLatestGroupMessage: %w", err)
+	}
+	return nil
+}
+
+func (model *MessageModel) GetLatestGroupMessages(myID int64) ([]*Message, error) {
+	stmt := model.queries.Prepare("getLatestGroupMessages")
+
+	rows, err := stmt.Query(myID)
+	if err != nil {
+		return nil, fmt.Errorf("Message/GetLatestGroupMessage: %w", err)
+	}
+	defer rows.Close()
+
+	messages := []*Message{}
+
+	for rows.Next() {
+		message := &Message{}
+		err = rows.Scan(message.pointerSlice()...)
+		if err != nil {
+			return nil, fmt.Errorf("Message/GetLatestGroupMessage: %w", err)
+		}
+		messages = append(messages, message)
+	}
+
 	return messages, nil
 }
 

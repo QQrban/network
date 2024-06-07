@@ -148,16 +148,12 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println(err)
 			}
-			/*if target.Private {
-				message, targets = Notify.FollowRequest(me, targetID)
-			} else {*/
 			message, targets := Notify.Follow(me, targetID)
 			event := ChatEvent{
 				Type:    "notification",
 				Payload: message,
 			}
 			ChatManager.broadcast(event, targets)
-			//}
 		}()
 		<-done
 	}

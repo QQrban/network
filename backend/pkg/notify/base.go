@@ -101,7 +101,7 @@ func (n Notifier) notify(msg Notification) ([]byte, []int64) {
 	message.IsGroup = msg.IsGroup()
 	message.ReceiverID = receiverID
 	links := msg.Links()
-	if len(links) > 0 && links[0].name == "Show event" {
+	if len(links) > 0 && links[0].name == "Show event" { // Send event notification to group members
 		for _, t := range targets {
 			message.ReceiverID = t
 			id, err := n.database.Message.SendMessage(*message)

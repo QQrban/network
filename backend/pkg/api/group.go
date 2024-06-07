@@ -96,13 +96,21 @@ func JoinGroup(w http.ResponseWriter, r *http.Request) {
 		err = Database.Group.Request(groupID, group.OwnerID, session.UserID)
 		panicIfErr(err)
 
+		done := make(chan bool)
 		go func() {
+			defer close(done)
 			user, err := Database.User.GetByID(session.UserID)
 			if err != nil {
 				log.Println(err)
 			}
-			Notify.Request(group.Group, user)
+			message, targets := Notify.Request(group.Group, user)
+			event := ChatEvent{
+				Type:    "notification",
+				Payload: message,
+			}
+			ChatManager.broadcast(event, targets)
 		}()
+		<-done
 	}
 }
 

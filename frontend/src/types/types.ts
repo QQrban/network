@@ -1,5 +1,6 @@
 export interface ContactsProps {
   ID: number;
+  access: boolean;
   firstName: string;
   lastName: string;
   nickname: string;
@@ -8,7 +9,7 @@ export interface ContactsProps {
     meToYou: boolean;
     meToYouPending: boolean;
     youToMePending: boolean;
-  };
+  } | null;
 }
 
 export interface GroupProps {
@@ -17,25 +18,82 @@ export interface GroupProps {
   title: string;
   description: string;
   IncludesMe: boolean;
-  ownerID: number;
   pendingRequest: boolean;
-  ownerName: string;
+  owner: ContactsProps;
+}
+
+export interface CommentProps {
+  ID: number;
+  aboutID: number;
+  authorID: number;
+  content: string;
+  images: string;
+  created: string;
+  author: ContactsProps;
 }
 
 export interface PostProps {
-  aboutID: number | null;
+  aboutID: null;
   author: {
     ID: number;
     firstName: string;
-    image: string | null;
+    followInfo: null;
+    image: null;
     lastName: string;
     nickname: string;
   };
   authorID: number;
+  comments: CommentProps[];
   content: string;
   created: string;
-  groupID: string;
+  group: null;
+  likes: ContactsProps[];
+  groupID: number;
   images: string;
   postID: number;
-  status: string;
+  status: "public";
+}
+
+export interface EventProps {
+  ID: number;
+  authorID: number;
+  created: string;
+  description: string;
+  groupID: number;
+  myStatus: "Going" | "Not Going";
+  options: "Going,Not Going";
+  time: string;
+  title: string;
+}
+
+export interface NotificationProps {
+  ID: number;
+  content: {
+    action: "create" | "follow" | "accept" | "request" | "invite" | "like";
+    endpoint: string;
+    eventID: number;
+    eventTitle: string;
+    groupID: number;
+    groupTitle: string;
+    postID: number;
+    postContent: string;
+    type: "follow" | "event" | "group" | "post";
+    userID: number;
+    userName: string;
+  };
+  created: string;
+  isGroup: boolean;
+  receiverID: number;
+  senderData: ContactsProps | null;
+  senderID: 0;
+}
+
+export interface MessageProps {
+  ID: number;
+  content: string;
+  created: string;
+  isGroup: boolean;
+  receiverID: number;
+  senderData: ContactsProps | null;
+  senderID: 2;
 }

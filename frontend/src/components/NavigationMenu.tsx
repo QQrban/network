@@ -1,4 +1,6 @@
-import { Box, Typography } from "@mui/material";
+"use client";
+
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import TooltipStyled from "./shared/TooltipStyled";
@@ -14,12 +16,15 @@ interface ActiveLabelProps {
 }
 
 export default function NavigationMenu() {
+  const matchesSM = useMediaQuery("(min-width:613px)");
+  const matchesXS = useMediaQuery("(min-width:414px)");
+
   const pathname = usePathname();
   const isActive = (currentPath: String, targetPath: String) =>
     currentPath === targetPath;
 
   const ActiveLabel = ({ isActive }: ActiveLabelProps) => {
-    return isActive ? (
+    return isActive && matchesSM ? (
       <Box
         sx={{
           position: "absolute",
@@ -54,12 +59,15 @@ export default function NavigationMenu() {
     <Box
       sx={{
         position: "absolute",
-        left: "23px",
-        top: "50%",
-        transform: "translateY(-50%)",
+        left: matchesSM ? "23px" : "",
+        justifyContent: "center",
+        top: matchesSM ? "50%" : "unset",
+        bottom: matchesSM ? "unset" : "14px",
+        transform: matchesSM ? "translateY(-50%)" : "",
         display: "flex",
-        flexDirection: "column",
-        gap: "90px",
+        width: matchesSM ? "unset" : "calc(100% - 40px)",
+        flexDirection: matchesSM ? "column" : "row",
+        gap: matchesSM ? "90px" : "40px",
       }}
       component="nav"
     >
@@ -72,7 +80,9 @@ export default function NavigationMenu() {
               : path.substring(1).charAt(0).toUpperCase() + path.substring(2)
           }
         >
-          <Box sx={{ position: "relative" }}>
+          <Box
+            sx={{ position: "relative", flexShrink: matchesXS ? 0 : "unset" }}
+          >
             <Link href={path} passHref>
               <Image
                 src={

@@ -41,6 +41,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 		post.GroupID = &groupID
 	}
+
 	if AboutID != "" && AboutID != "null" {
 		aboutID, err := strconv.ParseInt(AboutID, 10, 64)
 		if err != nil {
@@ -48,30 +49,21 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			writeStatusError(w, http.StatusBadRequest)
 			return
 		}
-		post.AboutID = &aboutID
+		post.Post.AboutID = &aboutID
 	}
+
 	if Status == "" {
-		post.Status = "public"
+		post.Post.Status = "public"
 	} else {
-		post.Status = Status
+		post.Post.Status = Status
 	}
 	post.Content = Content
-	/*fmt.Println("formData:", formData)
-	if formData != nil {
-		log.Println("formData:", formData)
-	}
-	err := json.NewDecoder(r.Body).Decode(&post)
-	if err != nil {
-		log.Println(err)
-		writeStatusError(w, http.StatusBadRequest)
-		return
-	}*/
 
 	// If it's a group post, check that I have access
 	if post.GroupID != nil {
-		post.Status = "public"
+		post.Post.Status = "public"
 
-		access, err := Database.Group.IncludesUser(*post.GroupID, session.UserID)
+		access, err := Database.Group.IncludesUser(*post.Post.GroupID, session.UserID)
 		panicIfErr(err)
 		if !access {
 			writeStatusError(w, http.StatusForbidden)
@@ -79,11 +71,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	/*if post.Status == "" {
-		post.Status = "public"
-	}*/
-
-	if post.Status == "manual" {
+	if post.Post.Status == "manual" {
 		if post.AllowedUsers == nil {
 			log.Println("Tried to insert a post with privacy \"MANUAL\", but with no allowedUsers array defined")
 			writeStatusError(w, http.StatusBadRequest)
@@ -103,34 +91,44 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	/*for _, img := range strings.Split(post.Images, ",") {
-		if img == "" {
-			continue
-		}
-
-		_, err = Database.File.Get(img)
-		if err != nil {
-			log.Printf("Could not find file with token %v\n", img)
+	// Save images
+	if len(r.MultipartForm.File["images"]) > 0 {
+		// Enforce the limit on the number of files.
+		if len(r.MultipartForm.File["images"]) > 3 {
 			writeStatusError(w, http.StatusBadRequest)
 			return
 		}
-	}*/
 
-	post.AuthorID = session.UserID
+		tokens, err := FileUpload(w, r, "images")
+		post.Post.Images = tokens
+
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}
+
+	post.Post.AuthorID = session.UserID
 	id, err := Database.Post.Insert(post.Post)
 	if err != nil {
 		panic(err)
 	}
 
-	if post.Status == "manual" {
+	if post.Post.Status == "manual" {
 		for _, userID := range post.AllowedUsers {
 			err = Database.Post.InsertAllowedUser(id, userID)
 			panicIfErr(err)
 		}
 	}
 
-	post.ID = id
-	post.Created = time.Now()
+	user, err := Database.User.GetByID(session.UserID)
+	panicIfErr(err)
+
+	post.Post.Author = user.Limited()
+
+	post.Post.ID = id
+	post.Post.Created = time.Now()
 
 	writeJSON(w, post.Post)
 }
@@ -172,6 +170,19 @@ func GetPostByID(w http.ResponseWriter, r *http.Request) {
 
 	post, err := Database.Post.GetByID(postID)
 	panicIfErr(err)
+
+	/*for _, img := range strings.Split(post.Images, ",") {
+		if img == "" {
+			continue
+		}
+
+		_, err = Database.File.Get(img)
+		if err != nil {
+			log.Printf("Could not find file with token %v\n", img)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}*/
 
 	writeJSON(w, post)
 }
@@ -253,8 +264,57 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	slug := router.GetSlug(r, 0)
 	postID, _ := strconv.ParseInt(slug, 10, 64)
 
-	likes, err := Database.Post.Like(postID, session.UserID)
+	likes, typ, err := Database.Post.Like(postID, session.UserID)
 	panicIfErr(err)
 
+	if typ == "+" {
+		done := make(chan bool)
+		post, err := Database.Post.GetByID(postID)
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusNotFound)
+			return
+		}
+		go func() {
+			defer close(done)
+			me, err := Database.User.GetByID(session.UserID)
+			if err != nil {
+				log.Println(err)
+			}
+
+			message, targets := Notify.PostLiked(me, post)
+			event := ChatEvent{
+				Type:    "notification",
+				Payload: message,
+			}
+			ChatManager.broadcast(event, targets)
+		}()
+		<-done
+	}
+
 	writeJSON(w, likes)
+}
+
+func DeletePost(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	slug := router.GetSlug(r, 0)
+	postID, _ := strconv.ParseInt(slug, 10, 64)
+
+	allowed, err := Database.Post.HasAccess(session.UserID, postID)
+	panicUnlessError(err, sql.ErrNoRows)
+	if err != nil {
+		log.Println(err)
+		writeStatusError(w, http.StatusNotFound)
+		return
+	}
+	if !allowed {
+		writeStatusError(w, http.StatusForbidden)
+		return
+	}
+
+	err = Database.Post.Delete(postID)
+	panicIfErr(err)
+
+	writeStatus(w, http.StatusOK)
 }

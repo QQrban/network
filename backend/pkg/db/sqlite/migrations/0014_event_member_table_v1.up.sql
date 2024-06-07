@@ -6,8 +6,8 @@ CREATE TABLE eventMember
     `created` DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     UNIQUE (eventID, userID) ON CONFLICT REPLACE,
-    FOREIGN KEY (eventID) REFERENCES event (ID),
-    FOREIGN KEY (userID) REFERENCES user (ID)
+    FOREIGN KEY (eventID) REFERENCES event (ID) ON DELETE CASCADE,
+    FOREIGN KEY (userID) REFERENCES user (ID) ON DELETE CASCADE
 );
 
 -- This trigger checks if the inserted option is null.

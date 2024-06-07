@@ -11,19 +11,39 @@ type FollowAccepted struct {
 	target   int64
 }
 
-func (n Notifier) FollowAccepted(accepter *models.User, target int64) {
-	n.notify(FollowAccepted{
+func (n Notifier) FollowAccepted(accepter *models.User, target int64) ([]byte, []int64) {
+	return n.notify(FollowAccepted{
 		accepter: accepter,
 		target:   target,
 	})
 }
 
-func (f FollowAccepted) Targets() []int64 {
-	return []int64{f.target}
+func (f FollowAccepted) Targets() ([]int64, int64) {
+	return []int64{f.target}, f.target
+}
+
+func (f FollowAccepted) Sender() int64 {
+	return 0 //f.accepter.ID
+}
+
+func (f FollowAccepted) SenderData() *models.UserLimited {
+	return f.accepter.Limited()
 }
 
 func (f FollowAccepted) Message() string {
-	return fmt.Sprintf("You are now following <strong>%v</strong>!", html.EscapeString(userGetName(f.accepter)))
+	msg := MessageContent{
+		Type:     "follow",
+		Action:   "accept",
+		UserName: html.EscapeString(userGetName(f.accepter)),
+		UserID:   f.accepter.ID,
+		Endpoint: fmt.Sprintf("/profile/%v", f.accepter.ID),
+	}
+	//return fmt.Sprintf("You are now following <strong>%v</strong>!", html.EscapeString(userGetName(f.accepter)))
+	return fmt.Sprintf("%v", msg.JSON())
+}
+
+func (f FollowAccepted) IsGroup() bool {
+	return false
 }
 
 func (f FollowAccepted) Links() []Link {

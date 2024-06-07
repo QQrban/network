@@ -1,9 +1,23 @@
-import { Avatar, Box, IconButton, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { Item } from "./Item";
 import addIcon from "../../../public/icons/add.svg";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import Link from "next/link";
 
-export default function SuggestionsGroups() {
+export default function SuggestionGroups() {
+  const matchesXL = useMediaQuery("(min-width:1389px)");
+
+  const suggestionsGroups = useSelector(
+    (state: any) => state.suggestionsReducer.Groups
+  );
+
   return (
     <Box
       sx={{
@@ -12,10 +26,14 @@ export default function SuggestionsGroups() {
     >
       <Box>
         <Typography
-          sx={{ color: "#2a2a2a", fontFamily: "Schoolbell", fontSize: "26px" }}
+          sx={{
+            color: "#2a2a2a",
+            fontFamily: "Schoolbell",
+            fontSize: matchesXL ? "26px" : "20px",
+          }}
           variant="h5"
         >
-          This might interest you
+          These Groups might interest you
         </Typography>
         <Item
           sx={{
@@ -32,63 +50,47 @@ export default function SuggestionsGroups() {
               gap: "14px",
             }}
           >
-            {[0, 1, 2].map((_, index) => (
-              <Box
-                key={index}
-                sx={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Box sx={{ display: "flex", gap: "9px" }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px",
-                    }}
-                  >
-                    <Typography
+            {suggestionsGroups.map((suggestion: any) => (
+              <Link href={`/groups/${suggestion.ID}`} key={suggestion.ID}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: "9px" }}>
+                    <Box
                       sx={{
-                        fontFamily: "Schoolbell, cursive",
-                        fontWeight: 600,
-                        color: "#2a2a2a",
-                        fontSize: "17px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "4px",
                       }}
                     >
-                      CuteCatsClub
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "#a2a1a1",
-                        fontSize: "15px",
-                        fontFamily: "Comic Neue",
-                      }}
-                    >
-                      Animal lovers
-                    </Typography>
+                      <Typography
+                        sx={{
+                          fontFamily: "Schoolbell, cursive",
+                          fontWeight: 600,
+                          color: "#2a2a2a",
+                          fontSize: "17px",
+                        }}
+                      >
+                        {suggestion.title}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: "#a2a1a1",
+                          fontSize: "15px",
+                          fontFamily: "Comic Neue",
+                        }}
+                      >
+                        {suggestion.description.length > 20
+                          ? suggestion.description.slice(0, 22) + "..."
+                          : suggestion.description}
+                      </Typography>
+                    </Box>
                   </Box>
                 </Box>
-                <Tooltip
-                  placement="right"
-                  title={
-                    <Typography
-                      sx={{
-                        fontFamily: "Schoolbell !important",
-                        letterSpacing: "2px",
-                      }}
-                      fontSize={16}
-                    >
-                      Join Group
-                    </Typography>
-                  }
-                >
-                  <IconButton>
-                    <Image
-                      style={{ width: "30px", height: "30px" }}
-                      src={addIcon}
-                      alt="add"
-                    />
-                  </IconButton>
-                </Tooltip>
-              </Box>
+              </Link>
             ))}
           </Box>
         </Item>

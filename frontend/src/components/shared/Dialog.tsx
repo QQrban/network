@@ -13,7 +13,7 @@ interface AlertDialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   dialogText: string;
   title: string;
-  onConfirm: () => void; // Updated prop type
+  onConfirm: () => void;
 }
 
 export default function AlertDialog({

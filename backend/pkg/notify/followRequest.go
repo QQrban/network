@@ -11,19 +11,38 @@ type FollowRequest struct {
 	target    int64
 }
 
-func (n Notifier) FollowRequest(requester *models.User, target int64) {
-	n.notify(FollowRequest{
+func (n Notifier) FollowRequest(requester *models.User, target int64) ([]byte, []int64) {
+	return n.notify(FollowRequest{
 		requester: requester,
 		target:    target,
 	})
 }
 
-func (f FollowRequest) Targets() []int64 {
-	return []int64{f.target}
+func (f FollowRequest) Targets() ([]int64, int64) {
+	return []int64{f.target}, f.target
+}
+
+func (f FollowRequest) Sender() int64 {
+	return 0 //f.requester.ID
+}
+
+func (f FollowRequest) SenderData() *models.UserLimited {
+	return f.requester.Limited()
 }
 
 func (f FollowRequest) Message() string {
-	return fmt.Sprintf("<strong>%v</strong> has sent you a follow request", html.EscapeString(userGetName(f.requester)))
+	msg := MessageContent{
+		Type:     "follow",
+		Action:   "request",
+		UserName: html.EscapeString(userGetName(f.requester)),
+		UserID:   f.requester.ID,
+		Endpoint: fmt.Sprintf("/profile/%v", f.requester.ID),
+	}
+	return fmt.Sprintf("%v", msg.JSON())
+}
+
+func (f FollowRequest) IsGroup() bool {
+	return false
 }
 
 func (f FollowRequest) Links() []Link {

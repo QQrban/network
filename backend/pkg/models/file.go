@@ -3,13 +3,14 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"github.com/google/uuid"
 	"io"
 	"os"
 	"path"
 	"regexp"
 	"social-network/pkg/queries"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const PersistPath = "./persist"
@@ -70,18 +71,18 @@ func (model FileModel) Insert(file io.Reader, filename string) (string, error) {
 
 	out, err := os.Create(path.Join(UploadsPath, token+extension))
 	if err != nil {
-		return "", fmt.Errorf("File/Insert: %w", err)
+		return "", fmt.Errorf("File/Insert1: %w", err)
 	}
 	defer out.Close()
 
 	_, err = io.Copy(out, file)
 	if err != nil {
-		return "", fmt.Errorf("File/Insert: %w", err)
+		return "", fmt.Errorf("File/Insert2: %w", err)
 	}
 
 	_, err = stmt.Exec(token, filename, extension)
 	if err != nil {
-		return "", fmt.Errorf("File/Insert: %w", err)
+		return "", fmt.Errorf("File/Insert3: %w", err)
 	}
 
 	return token, err
@@ -92,17 +93,17 @@ func (model FileModel) Delete(token string) (bool, error) {
 
 	file, err := model.Get(token)
 	if err != nil {
-		return false, fmt.Errorf("File/Delete: %w", err)
+		return false, fmt.Errorf("File/Delete1: %w", err)
 	}
 
 	res, err := stmt.Exec(token)
 	if err != nil {
-		return false, fmt.Errorf("File/Delete: %w", err)
+		return false, fmt.Errorf("File/Delete2: %w", err)
 	}
 
 	err = os.Remove(path.Join(UploadsPath, token+file.Extension))
 	if err != nil {
-		return false, fmt.Errorf("File/Delete: %w", err)
+		return false, fmt.Errorf("File/Delete3: %w", err)
 	}
 
 	n, _ := res.RowsAffected()

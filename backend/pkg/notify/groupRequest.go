@@ -11,23 +11,45 @@ type Request struct {
 	requester *models.User
 }
 
-func (n Notifier) Request(group *models.Group, requester *models.User) {
-	n.notify(Request{
+func (n Notifier) Request(group *models.Group, requester *models.User) ([]byte, []int64) {
+	return n.notify(Request{
 		group:     group,
 		requester: requester,
 	})
 }
 
-func (n Request) Targets() []int64 {
-	return []int64{n.group.OwnerID}
+func (n Request) Targets() ([]int64, int64) {
+	return []int64{n.group.OwnerID}, n.group.OwnerID
+}
+
+func (n Request) Sender() int64 {
+	return 0 //n.requester.ID
+}
+
+func (n Request) SenderData() *models.UserLimited {
+	return n.requester.Limited()
 }
 
 func (n Request) Message() string {
+	msg := MessageContent{
+		Type:     "group",
+		Action:   "request",
+		GroupID:  n.group.ID,
+		GroupTitle: html.EscapeString(n.group.Title),
+		UserName: html.EscapeString(userGetName(n.requester)),
+		UserID:   n.requester.ID,
+		Endpoint: fmt.Sprintf("/profile/%v", n.requester.ID),
+	}
 	return fmt.Sprintf(
-		"%v has requested to join your group <strong>%v</strong>",
-		html.EscapeString(userGetName(n.requester)),
-		html.EscapeString(n.group.Title),
+		//"<strong>%v</strong> has requested to join your group <strong>%v</strong>",
+		//html.EscapeString(userGetName(n.requester)),
+		//html.EscapeString(n.group.Title),
+		"%v", msg.JSON(),
 	)
+}
+
+func (n Request) IsGroup() bool {
+	return false
 }
 
 func (n Request) Links() []Link {
@@ -39,12 +61,12 @@ func (n Request) Links() []Link {
 		},
 		{
 			name:   "Accept request",
-			url:    fmt.Sprintf("/submit/group/%v/accepted/%v", n.group.ID, n.requester.ID),
+			url:    fmt.Sprintf("/group/%v/accept/%v", n.group.ID, n.requester.ID),
 			method: "POST",
 		},
 		{
 			name:   "Reject request",
-			url:    fmt.Sprintf("/submit/group/%v/rejected/%v", n.group.ID, n.requester.ID),
+			url:    fmt.Sprintf("/group/%v/reject/%v", n.group.ID, n.requester.ID),
 			method: "POST",
 		},
 	}

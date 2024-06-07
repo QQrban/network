@@ -18,8 +18,11 @@ import (
 var frontend_host = getFrontendHost()
 
 type Notification interface {
-	Targets() []int64
+	Targets() ([]int64, int64)
+	Sender() int64
 	Message() string
+	IsGroup() bool
+	SenderData() *models.UserLimited
 	Links() []Link
 }
 
@@ -31,7 +34,8 @@ type Link struct {
 
 func (l Link) String() string {
 	return fmt.Sprintf(
-		"\n<button type=\"submit\" formmethod=\"%v\" formaction=\"%v\">%v</button>",
+		//"\n<button type=\"submit\" formmethod=\"%v\" formaction=\"%v\">%v</button>",
+		"%v;%v;%v",
 		html.EscapeString(l.method),
 		html.EscapeString(l.url),
 		html.EscapeString(l.name),
@@ -59,48 +63,78 @@ func NewNotifier(db *database.Database) *Notifier {
 	}
 }
 
-func (n Notifier) notify(msg Notification) {
-	content := fmt.Sprintf("<span>%v</span>", msg.Message())
-	content += "\n<form style='display: flex; flex-direction: column; gap: 2px; margin-top: 3px'>"
-	for _, link := range msg.Links() {
-		content += link.String()
-	}
-	content += "\n</form>"
+type MessageContent struct {
+	Type        string `json:"type"`
+	Action      string `json:"action"`
+	UserName    string `json:"userName"`
+	UserID      int64  `json:"userID"`
+	GroupTitle  string `json:"groupTitle"`
+	GroupID     int64  `json:"groupID"`
+	EventTitle  string `json:"eventTitle"`
+	EventID     int64  `json:"eventID"`
+	Endpoint    string `json:"endpoint"`
+	PostID      int64  `json:"postID"`
+	PostContent string `json:"postContent"`
+}
 
+func (m *MessageContent) JSON() string {
+	b := new(bytes.Buffer)
+	err := json.NewEncoder(b).Encode(*m)
+	if err != nil {
+		log.Println(err)
+	}
+	return b.String()
+}
+
+func (n Notifier) notify(msg Notification) ([]byte, []int64) {
+	content := fmt.Sprintf("%v", msg.Message())
 	message := &models.Message{
 		SenderID:   0,
 		ReceiverID: 0,
 		Content:    content,
 		Created:    time.Now(),
+		SenderData: msg.SenderData(),
 	}
 
-	targets := msg.Targets()
-	for _, t := range targets {
-		message.ReceiverID = t
-		_, err := n.database.Message.SendMessage(*message)
+	targets, receiverID := msg.Targets()
+	message.SenderID = msg.Sender()
+	message.IsGroup = msg.IsGroup()
+	message.ReceiverID = receiverID
+	links := msg.Links()
+	if len(links) > 0 && links[0].name == "Show event" { // Send event notification to group members
+		for _, t := range targets {
+			message.ReceiverID = t
+			id, err := n.database.Message.SendMessage(*message)
+			message.ID = id
+			if err != nil {
+				who := ""
+				if message.IsGroup {
+					who = "group"
+				} else {
+					who = "user"
+				}
+				log.Printf("could not insert %v notification message for %v: %v\n", who, t, err)
+			}
+		}
+	} else {
+		id, err := n.database.Message.SendMessage(*message)
+		message.ID = id
 		if err != nil {
-			log.Printf("could insert notification message for %v: %v\n", t, err)
+			who := ""
+			if message.IsGroup {
+				who = "group"
+			} else {
+				who = "user"
+			}
+			log.Printf("could not insert %v notification message for %v: %v\n", who, receiverID, err)
 		}
 	}
 
-	payload := struct {
-		Targets []int64         `json:"targets"`
-		Message *models.Message `json:"message"`
-	}{
-		Targets: targets,
-		Message: message,
-	}
-
-	b := new(bytes.Buffer)
-	err := json.NewEncoder(b).Encode(payload)
+	b, err := json.Marshal(message)
 	if err != nil {
 		log.Println(err)
 	}
-
-	_, err = http.Post(fmt.Sprintf("http://%v:8080/notify", frontend_host), "", b)
-	if err != nil {
-		log.Printf("could not notify notification: %v\n", err)
-	}
+	return b, targets
 }
 
 func userGetName(u *models.User) string {
@@ -110,13 +144,13 @@ func userGetName(u *models.User) string {
 	return fmt.Sprintf("%v %v", u.FirstName, u.LastName)
 }
 
-func conditionalString(b bool, s string) string {
+/*func conditionalString(b bool, s string) string {
 	if b {
 		return s
 	}
 
 	return ""
-}
+}*/
 
 func getFrontendHost() string {
 	v := os.Getenv("FRONTEND_ADDRESS")

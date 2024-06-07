@@ -8,6 +8,7 @@ import (
 	database "social-network/pkg/db"
 	"social-network/pkg/models"
 	"social-network/pkg/notify"
+	"golang.org/x/crypto/bcrypt"
 	"strconv"
 	"time"
 )
@@ -46,6 +47,10 @@ func _checkAnyErrIs(err error, checks []error) bool {
 // writeStatusError writes a response according to the status code.
 func writeStatusError(w http.ResponseWriter, code int) {
 	http.Error(w, fmt.Sprintf(`%v %v`, code, http.StatusText(code)), code)
+}
+
+func writeStatus(w http.ResponseWriter, code int) {
+	w.WriteHeader(code)
 }
 
 // newSessionCookie makes a new cookie for a given session token
@@ -98,4 +103,14 @@ func queryAtoi(s string) (int64, error) {
 	}
 
 	return id, nil
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

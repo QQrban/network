@@ -6,17 +6,20 @@ import profileIcon from "../../../../public/icons/profile.svg";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { fetchFromServer } from "@/lib/api";
-import { GroupProps } from "@/types/types";
-import GroupMainContent from "@/components/Group/GroupMainContent";
+import { ContactsProps, GroupProps } from "@/types/types";
+
+import GroupCard from "@/components/Group/GroupCard";
 import GroupAddInfo from "@/components/Group/GroupAddInfo";
-import CreatePostModal from "@/components/Group/CreatePostModal";
+import JoinGroupCard from "@/components/Group/JoinGroupCard";
 
 export default function GroupPage() {
-  const [openPostModal, setOpenPostModal] = useState(false);
+  const [openPostModal, setOpenPostModal] = useState<boolean>(false);
+  const [members, setMembers] = useState<ContactsProps[]>([]);
 
   const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
-
+  const [isMember, setIsMember] = useState<boolean>(false);
+  // /group/([0-9]+)/(join|accept|reject) - api to send join group request|accept|reject
   const pathname = usePathname().split("/").pop();
 
   useEffect(() => {
@@ -28,16 +31,31 @@ export default function GroupPage() {
         if (response.ok) {
           const data = await response.json();
           setMainInfo(data);
-          console.log(data);
+
+          setIsMember(data.includesMe === true);
         } else {
           throw new Error("Failed to fetch groups");
+        }
+
+        if (isMember) {
+          const groupMembers = await fetchFromServer(
+            `/group/${pathname}/members`,
+            {
+              credentials: "include",
+            }
+          );
+          if (groupMembers.ok) {
+            const membersData = await groupMembers.json();
+            setMembers(membersData);
+            console.log(membersData);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch groups:", error);
       }
     };
     fetchGroup();
-  }, [pathname]);
+  }, [pathname, isMember]);
 
   return (
     <Box
@@ -51,25 +69,42 @@ export default function GroupPage() {
     >
       {mainInfo && (
         <>
-          <GroupMainContent
-            pathname={pathname}
-            setOpenPostModal={setOpenPostModal}
-            groupTitle={mainInfo.title}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-          <GroupAddInfo
-            description={mainInfo.description}
-            ownerID={mainInfo.ownerID}
-            profileIcon={profileIcon}
-            ownerName={mainInfo.ownerName}
-          />
+          {isMember ? (
+            <>
+              <GroupCard
+                openPostModal={openPostModal}
+                members={members}
+                setOpenPostModal={setOpenPostModal}
+                groupTitle={mainInfo.title}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                pathName={pathname}
+                groupID={mainInfo.ID}
+              />
+              <GroupAddInfo
+                isMember={isMember}
+                description={mainInfo.description}
+                profileIcon={profileIcon}
+                owner={mainInfo.owner}
+              />
+            </>
+          ) : (
+            <>
+              <JoinGroupCard
+                groupTitle={mainInfo.title}
+                id={mainInfo.ID}
+                pendingRequest={mainInfo.pendingRequest}
+              />
+              <GroupAddInfo
+                isMember={isMember}
+                description={mainInfo.description}
+                profileIcon={profileIcon}
+                owner={mainInfo.owner}
+              />
+            </>
+          )}
         </>
       )}
-      <CreatePostModal
-        openPostModal={openPostModal}
-        setOpenPostModal={setOpenPostModal}
-      />
     </Box>
   );
 }

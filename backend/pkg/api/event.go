@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// rtr.Post("/api/event/create", api.EnsureAuth(api.CreateEvent))
+// rtr.Post("/event/create", api.EnsureAuth(api.CreateEvent))
 func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 
@@ -44,7 +44,9 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, event)
 
+	done := make(chan bool)
 	go func() {
+		defer close(done)
 		creator, err := Database.User.GetByID(session.UserID)
 		if err != nil {
 			log.Println(err)
@@ -55,11 +57,17 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 
-		Notify.EventCreated(group.Group, event, creator, members)
+		message, targets := Notify.EventCreated(group.Group, event, creator, members)
+		event := ChatEvent{
+			Type:    "notification",
+			Payload: message,
+		}
+		ChatManager.broadcast(event, targets)
 	}()
+	<-done
 }
 
-// rtr.Post("/api/event/([0-9]+)/going", api.EnsureAuth(api.EventGoing))
+// rtr.Post("/event/([0-9]+)/going", api.EnsureAuth(api.EventGoing))
 func EventGoing(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 	eventID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
@@ -76,7 +84,7 @@ func EventGoing(w http.ResponseWriter, r *http.Request) {
 	panicIfErr(err)
 }
 
-// rtr.Post("/api/event/([0-9]+)/not-going", api.EnsureAuth(api.EventNotGoing))
+// rtr.Post("/event/([0-9]+)/not-going", api.EnsureAuth(api.EventNotGoing))
 func EventNotGoing(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 	eventID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
@@ -93,7 +101,7 @@ func EventNotGoing(w http.ResponseWriter, r *http.Request) {
 	panicIfErr(err)
 }
 
-// rtr.Post("/api/event/([0-9]+)/unset", api.EnsureAuth(api.EventUnset))
+// rtr.Post("/event/([0-9]+)/unset", api.EnsureAuth(api.EventUnset))
 func EventUnset(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 	eventID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
@@ -102,7 +110,7 @@ func EventUnset(w http.ResponseWriter, r *http.Request) {
 	panicIfErr(err)
 }
 
-// rtr.Get("/api/event/([0-9]+)", api.EventAccessCheck(api.GetEvent))
+// rtr.Get("/event/([0-9]+)", api.EventAccessCheck(api.GetEvent))
 func GetEvent(w http.ResponseWriter, r *http.Request) {
 	myID := getPossibleUserID(r)
 	eventID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
@@ -114,19 +122,19 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, members)
 }
 
-// rtr.Get("/api/group/([0-9]+)/events", api.GroupAccessCheck(api.GetGroupEvents))
+// rtr.Get("/group/([0-9]+)/events", api.GroupAccessCheck(api.GetGroupEvents))
 func GetGroupEvents(w http.ResponseWriter, r *http.Request) {
 	myID := getPossibleUserID(r)
 	groupID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
-	members, err := Database.Event.GetByGroup(groupID, myID)
+	events, err := Database.Event.GetByGroup(groupID, myID)
 	if err != nil {
 		panic(err)
 	}
 
-	writeJSON(w, members)
+	writeJSON(w, events)
 }
 
-// rtr.Get("/api/event/([0-9]+)/members", api.EventAccessCheck(api.GetEventMembers))
+// rtr.Get("/event/([0-9]+)/members", api.EventAccessCheck(api.GetEventMembers))
 func GetEventMembers(w http.ResponseWriter, r *http.Request) {
 	eventID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
 	members, err := Database.Event.GetMembers(eventID)
@@ -137,16 +145,16 @@ func GetEventMembers(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, members)
 }
 
-// rtr.Get("/api/event/all", api.EnsureAuth(api.GetMyEvents))
+// rtr.Get("/events", api.EnsureAuth(api.GetMyEvents))
 func GetMyEvents(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)
 
-	members, err := Database.Event.GetByUser(session.UserID)
+	events, err := Database.Event.GetByUser(session.UserID)
 	if err != nil {
 		panic(err)
 	}
 
-	writeJSON(w, members)
+	writeJSON(w, events)
 }
 
 func RespondEvent(w http.ResponseWriter, r *http.Request) {

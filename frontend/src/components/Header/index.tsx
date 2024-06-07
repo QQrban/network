@@ -10,7 +10,7 @@ export default function Header() {
       sx={{
         position: "sticky",
         top: "0",
-        zIndex: "2",
+        zIndex: "1051",
         border: "none",
         borderBottom: "3px solid #b0b0b0",
         boxShadow: "none",
@@ -18,16 +18,11 @@ export default function Header() {
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        height: "56px",
+        height: "70px",
         gap: "20px",
         padding: "30px",
       }}
     >
-      <Box
-        sx={{
-          position: "absolute",
-        }}
-      ></Box>
       <Box
         sx={{
           display: "flex",

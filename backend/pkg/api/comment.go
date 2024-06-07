@@ -38,6 +38,10 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 	id, err := Database.Comment.Insert(comment)
 	panicIfErr(err)
 
+	user, err := Database.User.GetByID(session.UserID)
+	panicIfErr(err)
+	comment.Author = user.Limited()
+
 	comment.ID = id
 	comment.Created = time.Now()
 

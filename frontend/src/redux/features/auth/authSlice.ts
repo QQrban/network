@@ -13,6 +13,7 @@ type AuthState = {
   nickname: string;
   birthday?: string;
   country?: string;
+  image: string | null;
 };
 
 const initialState: InitialState = {
@@ -25,6 +26,7 @@ const initialState: InitialState = {
     nickname: "",
     birthday: undefined,
     country: undefined,
+    image: "",
   },
 };
 

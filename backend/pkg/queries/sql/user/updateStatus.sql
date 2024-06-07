@@ -1,0 +1,1 @@
+UPDATE user SET private = 1 - private WHERE ID = ?1;

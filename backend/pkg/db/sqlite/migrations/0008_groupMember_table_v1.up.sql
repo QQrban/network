@@ -8,9 +8,9 @@ CREATE TABLE groupMember
     `responded` DATE NOT NULL DEFAULT '',
     `response`  TEXT NOT NULL DEFAULT 'pending' CHECK (response IN ('accept', 'pending', 'reject')),
 
-    FOREIGN KEY (groupID)  REFERENCES `group` (ID),
-    FOREIGN KEY (userID)   REFERENCES `user`  (ID),
-    FOREIGN KEY (memberID) REFERENCES `user`  (ID),
+    FOREIGN KEY (groupID)  REFERENCES `group` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (userID)   REFERENCES `user`  (ID) ON DELETE CASCADE,
+    FOREIGN KEY (memberID) REFERENCES `user`  (ID) ON DELETE RESTRICT,
 
     UNIQUE (groupID, userID) ON CONFLICT REPLACE
 );

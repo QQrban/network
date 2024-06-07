@@ -17,7 +17,7 @@ type Comment struct {
 
 	Created time.Time `json:"created"`
 
-	Author *UserLimited `json:"author,omitempty"`
+	Author *UserLimited `json:"author"`
 }
 
 func (x *Comment) pointerSlice() []interface{} {

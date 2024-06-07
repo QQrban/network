@@ -2,16 +2,45 @@
 
 import { Box, Typography } from "@mui/material";
 import EventSection from "@/components/Events/EventSection";
-import { Event, yourEvents } from "@/components/Events/mock";
 import { useEffect, useState } from "react";
+import { EventProps } from "@/types/types";
+import { fetchFromServer } from "@/lib/api";
 
-export default function Events() {
-  const [events, setEvents] = useState<Event[]>([]);
+interface Props {
+  groupID: number;
+}
+
+export default function Events({ groupID }: Props) {
+  const [events, setEvents] = useState<EventProps[]>([]);
 
   useEffect(() => {
-    const filteredEvents = yourEvents.filter((event) => event.interested);
-    setEvents(filteredEvents);
-  }, []);
+    const fetchGroups = async () => {
+      try {
+        const response = await fetchFromServer(`/events`, {
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const filteredEvents = data.filter(
+            (event: any) => event.myStatus === "Going"
+          );
+          setEvents(filteredEvents);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchGroups();
+  }, [groupID]);
+
+  const statusHandler = (eventID: number, status: "Going" | "Not Going") => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.ID === eventID ? { ...event, myStatus: status } : event
+      )
+    );
+  };
 
   return (
     <Box
@@ -27,8 +56,14 @@ export default function Events() {
         Your Events
       </Typography>
       {events.length > 0 ? (
-        <Box sx={{ mt: "23px", display: "flex", gap: "23px" }}>
-          <EventSection events={events} />
+        <Box
+          sx={{ mt: "23px", display: "flex", gap: "23px", flexWrap: "wrap" }}
+        >
+          <EventSection
+            statusHandler={statusHandler}
+            groupID={groupID}
+            events={events}
+          />
         </Box>
       ) : (
         <Typography sx={{ fontSize: "30px" }}>

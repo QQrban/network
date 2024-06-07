@@ -1,10 +1,11 @@
-import { Box, Divider, Typography } from "@mui/material";
-import Image from "next/image";
+import { Box, Button, Divider, Typography, useMediaQuery } from "@mui/material";
 import { Item } from "../shared/Item";
-import noProfilePic from "../../../public/icons/profile.svg";
 import { styled } from "@mui/material";
 import Link from "next/link";
 import { useSelector } from "react-redux";
+import ProfileImage from "../shared/ProfileImage";
+import { useCallback, useEffect, useState } from "react";
+import { fetchFromServer } from "@/lib/api";
 
 const StatisticsItemText = styled(Typography)`
   width: 100px;
@@ -25,15 +26,73 @@ const StatisticsItemNumber = styled(Typography)`
   color: #325187;
 `;
 
+interface UserStats {
+  commented: number;
+  comments: number;
+  events: number;
+  followers: number;
+  following: number;
+  groups: number;
+  liked: number;
+  likes: number;
+  posts: number;
+}
+
+const statsMapping = {
+  followers: "Followers",
+  following: "Following",
+  groups: "Groups",
+  events: "Events",
+  posts: "Posts",
+};
+
+const statsLinks = {
+  followers: "/contacts",
+  following: "/contacts",
+  groups: "/groups",
+  events: "/events",
+};
+
 export default function LeftColumn() {
+  const [userStats, setUserStats] = useState<UserStats>();
   const userData = useSelector((state: any) => state.authReducer.value);
+  const id = userData.id;
+
+  const matchesXL = useMediaQuery("(min-width:1389px)");
+
+  const fetchFollowersStats = useCallback(async () => {
+    try {
+      const response = await fetchFromServer(`/stats/user/${id}`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUserStats(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      fetchFollowersStats();
+    }, 1000);
+  }, [fetchFollowersStats]);
+
+  const getLink = (key: string) => {
+    if (key === "posts") {
+      return `/profile/all-posts/${id}`;
+    }
+    return statsLinks[key as keyof typeof statsLinks] || "#";
+  };
 
   return (
     <Item
       sx={{
-        position: "sticky",
-        top: "90px",
-        width: "290px",
+        position: matchesXL ? "sticky" : "relative",
+        top: matchesXL ? "90px" : "0",
+        width: matchesXL ? "290px" : "unset",
         alignSelf: "flex-start",
         pb: "10px",
       }}
@@ -48,17 +107,7 @@ export default function LeftColumn() {
             p: "17px 50px",
           }}
         >
-          <Box
-            sx={{
-              width: "72px",
-              height: "72px",
-              border: "3px solid #6f6f6f",
-              borderRadius: "50%",
-              overflow: "hidden",
-            }}
-          >
-            <Image src={noProfilePic} alt="profile pic" />
-          </Box>
+          <ProfileImage width={72} height={72} image={userData.image} />
           <Box sx={{ textAlign: "center" }}>
             <Typography
               sx={{
@@ -74,64 +123,45 @@ export default function LeftColumn() {
       </Link>
 
       <Divider />
-      <Box
-        sx={{
-          p: "17px 50px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-        }}
-      >
-        <StatisticsItemsContainer>
-          <StatisticsItemText>Followers</StatisticsItemText>
-          <StatisticsItemNumber>126</StatisticsItemNumber>
-        </StatisticsItemsContainer>
-        <StatisticsItemsContainer>
-          <StatisticsItemText>Following</StatisticsItemText>
-          <StatisticsItemNumber>191</StatisticsItemNumber>
-        </StatisticsItemsContainer>
-      </Box>
-      <Divider />
-      <Box>
-        <Typography
-          sx={{
-            textAlign: "left",
-            p: "10px 50px 5px 50px",
-            fontFamily: "Comic Neue",
-            fontWeight: 600,
-            fontSize: "18px",
-          }}
-        >
-          Your shortcuts
-        </Typography>
+      {userStats ? (
         <Box
           sx={{
-            p: "0 50px 0 50px",
+            p: "17px 50px",
             display: "flex",
             flexDirection: "column",
-            gap: "8px",
+            gap: "12px",
           }}
         >
-          <Typography
-            sx={{
-              fontSize: "18px",
-              color: "#6495ED",
-              fontFamily: "Schoolbell",
-            }}
-          >
-            Ctrl + Alt + Delete Club
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: "18px",
-              color: "#6495ED",
-              fontFamily: "Schoolbell",
-            }}
-          >
-            JS Gladiators
-          </Typography>
+          {Object.entries(statsMapping).map(([key, label]) => (
+            <Link key={key} href={getLink(key)}>
+              <Button
+                color="success"
+                sx={{
+                  textTransform: "capitalize",
+                }}
+              >
+                <StatisticsItemsContainer>
+                  <StatisticsItemText>{label}</StatisticsItemText>
+                  <StatisticsItemNumber>
+                    {userStats[key as keyof UserStats]}
+                  </StatisticsItemNumber>
+                </StatisticsItemsContainer>
+              </Button>
+            </Link>
+          ))}
         </Box>
-      </Box>
+      ) : (
+        <Typography
+          sx={{
+            p: "20px",
+            textAlign: "center",
+            fontSize: "20px",
+            fontFamily: "Gloria Hallelujah !important",
+          }}
+        >
+          Loading Statistics
+        </Typography>
+      )}
     </Item>
   );
 }

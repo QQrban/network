@@ -1,37 +1,46 @@
 "use client";
 
 import { Item } from "@/components/shared/Item";
-import {
-  Box,
-  Button,
-  SpeedDial,
-  SpeedDialAction,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import wall from "../../../../public/mockBG.png";
-import deleteIcon from "../../../../public/icons/delete.svg";
-import AlertDialog from "@/components/shared/Dialog";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import { PostProps } from "@/types/types";
+import Link from "next/link";
 
 interface PhotosContentProps {
+  posts: PostProps[];
   isMainBoard: boolean;
   setSelectedTab: React.Dispatch<React.SetStateAction<String>>;
+}
+
+interface PhotosProps {
+  postID: number;
+  image: string;
 }
 
 export default function PhotosContent({
   isMainBoard,
   setSelectedTab,
+  posts,
 }: PhotosContentProps) {
-  const [open, setOpen] = useState<boolean>(false);
+  const [photos, setPhotos] = useState<PhotosProps[]>([]);
 
-  const nums = [0, 1, 2, 3, 4, 5, 6];
+  useEffect(() => {
+    const allPhotos: PhotosProps[] = [];
 
-  const newNums = isMainBoard ? nums.slice(0, 4) : nums;
+    posts.forEach((post) => {
+      const photosArr = post.images.split(",");
+      photosArr.forEach((image) => {
+        image !== "" && allPhotos.push({ postID: post.postID, image });
+      });
+    });
+
+    setPhotos(allPhotos);
+  }, [posts]);
 
   return (
-    <Box sx={{ mt: "23px" }}>
+    <Box sx={{ mt: "23px", width: "100%" }}>
       <Box
         sx={{
           display: "flex",
@@ -41,7 +50,6 @@ export default function PhotosContent({
       >
         <Typography
           sx={{
-            fontFamily: "Gloria Hallelujah !important",
             fontSize: "30px",
             p: `${!isMainBoard && "0 60px"}`,
           }}
@@ -75,86 +83,71 @@ export default function PhotosContent({
             flexWrap: "wrap",
           }}
         >
-          {newNums.map((_, index) => (
-            <Box
+          {photos.length > 0 ? (
+            isMainBoard ? (
+              photos
+                .slice(0, 4)
+                .map((photo, index) => (
+                  <PhotoItem index={index} key={index} photo={photo} />
+                ))
+            ) : (
+              photos.map((photo, index) => (
+                <PhotoItem index={index} key={index} photo={photo} />
+              ))
+            )
+          ) : (
+            <Typography
               sx={{
-                cursor: "pointer",
-                "&:hover": {
-                  filter: "brightness(96%)",
-                },
+                textTransform: "capitalize",
+                fontSize: "40px",
+                fontFamily: "Gloria Hallelujah !important",
               }}
-              key={index}
             >
-              <Item
-                sx={{
-                  width: "220px",
-                  height: "270px",
-                  position: "relative",
-                }}
-                radius="8px"
-              >
-                <SpeedDial
-                  sx={{
-                    position: "absolute",
-                    top: "6px",
-                    right: "-2px",
-                  }}
-                  ariaLabel="SpeedDial openIcon example"
-                  icon={<MoreVertIcon sx={{ color: "grey" }} />}
-                  direction="down"
-                  FabProps={{
-                    sx: {
-                      backgroundColor: "white",
-                      width: "36px",
-                      height: "32px",
-                      boxShadow: "none",
-                      "&:hover": {
-                        backgroundColor: "white",
-                      },
-                      "&:active": {
-                        backgroundColor: "transparent",
-                        boxShadow: "none",
-                      },
-                      "&:focus": {
-                        outline: "none",
-                      },
-                    },
-                  }}
-                >
-                  <SpeedDialAction
-                    onClick={() => setOpen(true)}
-                    icon={
-                      <Image
-                        width={30}
-                        height={30}
-                        src={deleteIcon}
-                        alt="delete"
-                      />
-                    }
-                    tooltipTitle={
-                      <Typography
-                        sx={{
-                          fontFamily: "Schoolbell !important",
-                          fontSize: "20px",
-                        }}
-                      >
-                        Delete Photo
-                      </Typography>
-                    }
-                  />
-                </SpeedDial>
-                <Image src={wall} alt="photo" />
-              </Item>
-            </Box>
-          ))}
+              This user has no photos
+            </Typography>
+          )}
         </Box>
       </Box>
-      <AlertDialog
-        title="Are you sure you don't want to delete this photo?"
-        dialogText=""
-        open={open}
-        setOpen={setOpen}
-      />
     </Box>
+  );
+}
+
+interface PhotoItemProps {
+  index: number;
+  photo: {
+    postID: number;
+    image: string;
+  };
+}
+
+function PhotoItem({ photo, index }: PhotoItemProps) {
+  return (
+    <Link href={`/post/${photo.postID}`} key={index}>
+      <Box
+        sx={{
+          cursor: "pointer",
+          "&:hover": {
+            filter: "brightness(96%)",
+          },
+        }}
+      >
+        <Item
+          sx={{
+            width: "220px",
+            height: "270px",
+            position: "relative",
+            overflow: "hidden",
+          }}
+          radius="8px"
+        >
+          <Image
+            src={`http://localhost:8888/file/${photo.image}`}
+            alt={`Photo from post ${photo.postID}`}
+            fill
+            style={{ objectFit: "cover" }}
+          />
+        </Item>
+      </Box>
+    </Link>
   );
 }

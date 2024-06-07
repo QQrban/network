@@ -3,12 +3,20 @@
 import { useState } from "react";
 import { Box, Tab, Tabs, Typography, styled } from "@mui/material";
 
-import FollowersSection from "@/components/shared/FollowersSection";
+import FollowersSection from "@/components/shared/SharedFollowers/FollowersSection";
 import { useSelector } from "react-redux";
 
 const StyledTab = styled(Tab)`
   font-family: Gloria Hallelujah, sans-serif;
   font-size: 18px;
+`;
+
+const StyledBox = styled(Box)`
+  padding: 30px 0 30px 120px;
+  display: flex;
+  gap: 29px;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 export default function Followers() {
@@ -32,6 +40,7 @@ export default function Followers() {
       >
         <StyledTab label="Followers" value="Followers" />
         <StyledTab label="Followings" value="Following" />
+        <StyledTab label="Requests" value="Requests" />
       </Tabs>
       <Typography
         component="h2"
@@ -43,17 +52,9 @@ export default function Followers() {
       >
         {activeTab}
       </Typography>
-      <Box
-        sx={{
-          padding: "30px 0 30px 120px",
-          display: "flex",
-          gap: "29px",
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
+      <StyledBox>
         <FollowersSection activeTab={activeTab} profileId={profileId} />
-      </Box>
+      </StyledBox>
     </Box>
   );
 }

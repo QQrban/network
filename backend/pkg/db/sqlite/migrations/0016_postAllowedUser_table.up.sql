@@ -5,8 +5,8 @@ CREATE TABLE postAllowedUser
     `created` DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     UNIQUE (postID, userID) ON CONFLICT REPLACE,
-    FOREIGN KEY (postID) REFERENCES post (ID),
-    FOREIGN KEY (userID) REFERENCES user (ID)
+    FOREIGN KEY (postID) REFERENCES post (ID) ON DELETE CASCADE,
+    FOREIGN KEY (userID) REFERENCES user (ID) ON DELETE CASCADE
 );
 
 -- This trigger checks if the user is follower of post author.

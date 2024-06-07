@@ -11,7 +11,9 @@ type ProfileState = {
   about: string;
   firstName: string;
   lastName: string;
+  image: string | null;
   nickname: string;
+  access: boolean;
   private: boolean;
   followInfo: FollowInfo;
 };
@@ -27,6 +29,8 @@ const initialState: InitialState = {
     firstName: "",
     lastName: "",
     nickname: "",
+    image: null,
+    access: false,
     private: false,
     followInfo: {
       meToYou: false,

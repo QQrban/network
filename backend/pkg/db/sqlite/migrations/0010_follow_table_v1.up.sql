@@ -8,8 +8,8 @@ CREATE TABLE follow
 
     UNIQUE (followerID, followeeID) ON CONFLICT REPLACE,
     CHECK (followerID != followeeID),
-    FOREIGN KEY (followerID) REFERENCES user (ID),
-    FOREIGN KEY (followeeID) REFERENCES user (ID)
+    FOREIGN KEY (followerID) REFERENCES user (ID) ON DELETE CASCADE,
+    FOREIGN KEY (followeeID) REFERENCES user (ID) ON DELETE CASCADE
 );
 
 CREATE INDEX follow_reverse

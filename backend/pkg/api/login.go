@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -33,9 +34,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check password
-	// TODO: Password encryption
-	if user.Password != credentials.Password {
+	// Check password + password encryption
+	fmt.Println(credentials.Password, user.Password)
+	if !CheckPasswordHash(credentials.Password, user.Password) {
 		writeStatusError(w, http.StatusUnauthorized)
 		return
 	}
@@ -49,6 +50,8 @@ func doLogin(w http.ResponseWriter, user *models.User) {
 	if err != nil {
 		panic(err)
 	}
+
+	// Make websocket connection
 
 	cookie := newSessionCookie(token, time.Now().Add(sessionDuration))
 	http.SetCookie(w, cookie)
@@ -101,12 +104,54 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Create custom struct because the user struct doesn't include json tag for password
 	incoming := models.UserIncoming{}
-	err := json.NewDecoder(r.Body).Decode(&incoming)
+
+	// Get form values
+	err := r.ParseMultipartForm(32 << 10)
 	if err != nil {
 		log.Println("api/Register1:", err)
 		writeStatusError(w, http.StatusBadRequest)
 		return
 	}
+
+	email := r.FormValue("email")
+	password := r.FormValue("password")
+	hashedPassword, _ := HashPassword(password)
+	firstName := r.FormValue("firstName")
+	lastName := r.FormValue("lastName")
+	layout := "2006-01-02T15:04:05-07:00"
+	birthday, terr := time.Parse(layout, r.FormValue("birthday"))
+	nickname := r.FormValue("nickname")
+	about := r.FormValue("about")
+	private := r.FormValue("private") == "true"
+	country := r.FormValue("country")
+	var token string
+	fmt.Println("birthday0:", r.FormValue("birthday"), birthday, terr)
+
+	// Save images
+	if len(r.MultipartForm.File["avatar"]) > 0 {
+		// Enforce the limit on the number of files.
+		if len(r.MultipartForm.File["avatar"]) > 1 {
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+		token, err = FileUpload(w, r, "avatar")
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}
+
+	incoming.Email = &email
+	incoming.Password = &hashedPassword
+	incoming.FirstName = &firstName
+	incoming.LastName = &lastName
+	incoming.Birthday = &birthday
+	incoming.Nickname = &nickname
+	incoming.About = &about
+	incoming.Private = private
+	incoming.Country = &country
+	incoming.Image = &token
 
 	id, err := Database.User.Insert(incoming)
 	if err != nil {

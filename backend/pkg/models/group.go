@@ -20,9 +20,11 @@ type Group struct {
 
 type GroupPlus struct {
 	*Group
-	IncludesMe     bool   `json:"includesMe"`
-	PendingRequest bool   `json:"pendingRequest"`
-	OwnerName      string `json:"ownerName"`
+	IncludesMe     bool `json:"includesMe"`
+	PendingRequest bool `json:"pendingRequest"`
+	//OwnerName      string        `json:"ownerName"`
+	Owner      *UserLimited  `json:"owner"`
+	TopMembers []UserLimited `json:"topMembers"`
 }
 
 func (x *Group) pointerSlice() []interface{} {
@@ -69,9 +71,41 @@ func (model GroupModel) GetByID(groupID, myID int64) (*GroupPlus, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Group/GetByID2: %w", err)
 	}
-	groupPlus.OwnerName = ownerSlice.FirstName + " " + ownerSlice.LastName
+	//groupPlus.OwnerName = ownerSlice.FirstName + " " + ownerSlice.LastName
+	groupPlus.Owner = ownerSlice.Limited()
+
+	topMembers, err1 := model.GetTopMembers(groupID)
+	if err1 != nil {
+		return nil, fmt.Errorf("Group/GetByID0: %w", err1)
+	}
+	groupPlus.TopMembers = topMembers
 
 	return groupPlus, nil
+}
+
+func (model GroupModel) GetTopMembers(groupID int64) ([]UserLimited, error) {
+	stmt := model.queries.Prepare("getTopMembers")
+
+	rows, err := stmt.Query(groupID)
+	if err != nil {
+		return nil, fmt.Errorf("Group/GetTopMembers1: %w", err)
+	}
+	defer rows.Close()
+
+	users := make([]UserLimited, 0)
+
+	for rows.Next() {
+		user := User{}
+
+		err = rows.Scan(user.pointerSlice()...)
+		if err != nil {
+			return nil, fmt.Errorf("Group/GetTopMembers2: %w", err)
+		}
+
+		users = append(users, *user.Limited())
+	}
+
+	return users, nil
 }
 
 func (model GroupModel) GetAll(myID int64) ([]*GroupPlus, error) {
@@ -95,13 +129,20 @@ func (model GroupModel) GetAll(myID int64) ([]*GroupPlus, error) {
 			return nil, fmt.Errorf("Group/GetAll2: %w", err)
 		}
 
+		owner := MakeUserModel(model.db)
+		ownerSlice, err := owner.GetByID(group.OwnerID)
+		if err != nil {
+			return nil, fmt.Errorf("Group/GetAll3: %w", err)
+		}
+		groupPlus.Owner = ownerSlice.Limited()
+
 		groups = append(groups, groupPlus)
 	}
 
 	return groups, nil
 }
 
-func (model GroupModel) GetMyGroups(myID int64) ([]*Group, error) {
+func (model GroupModel) GetMyGroups(myID int64) ([]*GroupPlus, error) {
 	stmt := model.queries.Prepare("getMyGroups")
 
 	rows, err := stmt.Query(myID)
@@ -110,17 +151,26 @@ func (model GroupModel) GetMyGroups(myID int64) ([]*Group, error) {
 	}
 	defer rows.Close()
 
-	groups := make([]*Group, 0)
+	groups := make([]*GroupPlus, 0)
 
 	for rows.Next() {
 		group := &Group{}
+		groupPlus := &GroupPlus{Group: group}
 
-		err = rows.Scan(group.pointerSlice()...)
+		err = rows.Scan(append(group.pointerSlice(), &groupPlus.IncludesMe, &groupPlus.PendingRequest)...)
+		//err = rows.Scan(group.pointerSlice()...)
 		if err != nil {
 			return nil, fmt.Errorf("Group/GetMyGroups2: %w", err)
 		}
 
-		groups = append(groups, group)
+		owner := MakeUserModel(model.db)
+		ownerSlice, err := owner.GetByID(group.OwnerID)
+		if err != nil {
+			return nil, fmt.Errorf("Group/GetMyGroups3: %w", err)
+		}
+		groupPlus.Owner = ownerSlice.Limited()
+
+		groups = append(groups, groupPlus)
 	}
 
 	return groups, nil

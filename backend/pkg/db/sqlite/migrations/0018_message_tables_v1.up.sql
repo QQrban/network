@@ -5,9 +5,9 @@ CREATE TABLE userMessage
     `receiverID` INTEGER NOT NULL,
     `content`    TEXT    NOT NULL,
     `created`    DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `edited`     DATE    NOT NULL DEFAULT '',
-    FOREIGN KEY (senderID) REFERENCES `user` (ID),
-    FOREIGN KEY (receiverID) REFERENCES `user` (ID)
+    --`edited`     DATE    NOT NULL DEFAULT '',
+    FOREIGN KEY (senderID) REFERENCES `user` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (receiverID) REFERENCES `user` (ID) ON DELETE CASCADE
 );
 
 CREATE INDEX userMessage_SR
@@ -23,7 +23,7 @@ CREATE TABLE groupMessage
     `groupID`   INTEGER NOT NULL,
     `content`   TEXT    NOT NULL,
     `created`   DATE    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `edited`    DATE    NOT NULL DEFAULT '',
+    --`edited`    DATE    NOT NULL DEFAULT '',
     FOREIGN KEY (senderID) REFERENCES `user` (ID),
     FOREIGN KEY (groupID) REFERENCES `group` (ID)
 );

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import confirmBtn from "../../../../public/icons/confirmButton.svg";
 
-import FollowersSection from "@/components/shared/FollowersSection";
+import FollowersSection from "@/components/shared/SharedFollowers/FollowersSection";
 import { usePathname } from "next/navigation";
 
 export default function ContactsContent() {

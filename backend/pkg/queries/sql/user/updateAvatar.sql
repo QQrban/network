@@ -1,0 +1,1 @@
+UPDATE user SET image = ?2 WHERE ID = ?1;

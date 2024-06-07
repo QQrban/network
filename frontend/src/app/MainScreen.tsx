@@ -9,9 +9,15 @@ import LoadingScreen from "@/components/shared/LoadingScreen";
 import Login from "@/components/Login/index";
 import Header from "@/components/Header";
 import NavigationMenu from "@/components/NavigationMenu";
-import { Item } from "@/components/shared/Item";
 import { Box } from "@mui/material";
-import bgWall from "../../public/icons/wall.svg";
+import { setSuggestions } from "@/redux/features/suggestions/suggestionsSlice";
+import {
+  addNewMessage,
+  setNewNotification,
+} from "@/redux/features/notifications/notificationsSlice";
+import { usePathname } from "next/navigation";
+import { Screen } from "@/components/Main/styles";
+import { useWebSocketContext } from "@/context/WebSocketContext";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
   const [showLoading, setShowLoading] = useState(true);
@@ -19,6 +25,10 @@ export default function MainScreen({ children }: { children: ReactNode }) {
 
   const auth = useSelector((state: any) => state.authReducer.value.isAuth);
   const dispatch = useDispatch();
+  const pathname = usePathname();
+
+  const { lastMessage, processedMessage, setProcessedMessage } =
+    useWebSocketContext();
 
   useEffect(() => {
     async function fetchData() {
@@ -39,6 +49,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
                 lastName: data.lastName,
                 nickname: data.nickname,
                 birthday: data.birthday,
+                image: data.image,
                 country: data.country,
               })
             );
@@ -56,6 +67,71 @@ export default function MainScreen({ children }: { children: ReactNode }) {
     fetchData();
   }, [dispatch]);
 
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      try {
+        if (auth) {
+          const response = await fetchFromServer("/suggestions", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          dispatch(setSuggestions(data));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSuggestions();
+  }, [auth, dispatch]);
+
+  useEffect(() => {
+    if (lastMessage && lastMessage !== processedMessage) {
+      if (!pathname.includes("chat")) {
+        try {
+          const data = JSON.parse(lastMessage.data);
+          console.log(data);
+          if (data.type === "message_personal" && !data.payload.isGroup) {
+            dispatch(
+              addNewMessage({
+                senderId: data.payload.senderID,
+                isGroup: false,
+              })
+            );
+          } else if (data.type === "message_group" && data.payload.isGroup) {
+            dispatch(
+              addNewMessage({
+                senderId: data.payload.receiverID,
+                isGroup: true,
+              })
+            );
+          } else if (data.type === "notification") {
+            dispatch(setNewNotification(true));
+          }
+        } catch (error) {
+          console.error(error);
+        }
+        setProcessedMessage(lastMessage);
+      }
+    }
+  }, [lastMessage, dispatch, pathname, processedMessage, setProcessedMessage]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        if (auth) {
+          const response = await fetchFromServer("/notifications", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          if (data.length !== 0) dispatch(setNewNotification(true));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchNotifications();
+  }, [auth, dispatch]);
+
   if (showLoading) {
     return <LoadingScreen />;
   }
@@ -63,32 +139,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
   return (
     <>
       {auth && <NavigationMenu />}
-      <Item
-        radius="8px"
-        sx={{
-          border: "4px solid #4a4a4a",
-          backgroundImage: `url(${bgWall.src})`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          width: "100%",
-          height: "calc(100vh - 40px)",
-          m: "0 auto",
-          overflowX: "none",
-          overflowY: "scroll",
-          pb: "23px",
-          "&::-webkit-scrollbar": {
-            width: "5px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#ccc",
-            borderRadius: "10px",
-          },
-          "&::-webkit-scrollbar-track": {
-            backgroundColor: "transparent",
-          },
-        }}
-      >
+      <Screen radius="8px">
         {auth ? <Header /> : ""}
         {authChecked &&
           (auth ? (
@@ -108,7 +159,7 @@ export default function MainScreen({ children }: { children: ReactNode }) {
               />
             </Box>
           ))}
-      </Item>
+      </Screen>
     </>
   );
 }

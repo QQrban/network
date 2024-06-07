@@ -6,6 +6,7 @@ import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
 import { StyledTextField } from "./styles";
 import { SuccessBtn } from "../shared/styles";
+import { useRouter } from "next/navigation";
 
 interface LoginProps {
   setShowLoading: React.Dispatch<boolean>;
@@ -18,6 +19,21 @@ const validationSchema = Yup.object({
 
 export default function LoginContent({ setShowLoading }: LoginProps) {
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetchFromServer(`/notifications/all`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -39,18 +55,10 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
         });
 
         if (response.ok) {
-          const data = await response.json();
-          dispatch(
-            loginSuccess({
-              id: data.ID,
-              email: data.email,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              nickname: data.nickname,
-              birthday: data.birthday,
-              country: data.country,
-            })
-          );
+          router.push("/");
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
         } else {
           console.error("Login failed");
         }

@@ -118,14 +118,22 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		/*go func() {
+		done := make(chan bool)
+		go func() {
+			defer close(done)
 			me, err := Database.User.GetByID(session.UserID)
 			if err != nil {
 				log.Println(err)
 			}
 
-			Notify.FollowRequest(me, targetID)
-		}()*/
+			message, targets := Notify.FollowRequest(me, targetID)
+			event := ChatEvent{
+				Type:    "notification",
+				Payload: message,
+			}
+			ChatManager.broadcast(event, targets)
+		}()
+		<-done
 	} else {
 		// Following a public user*/
 		err = Database.User.Follow(session.UserID, target.ID)
@@ -133,17 +141,21 @@ func UserFollow(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		/*go func() {
+		done := make(chan bool)
+		go func() {
+			defer close(done)
 			me, err := Database.User.GetByID(session.UserID)
 			if err != nil {
 				log.Println(err)
 			}
-			if target.Private {
-				Notify.FollowRequest(me, targetID)
-			} else {
-				Notify.Follow(me, targetID)
+			message, targets := Notify.Follow(me, targetID)
+			event := ChatEvent{
+				Type:    "notification",
+				Payload: message,
 			}
-		}()*/
+			ChatManager.broadcast(event, targets)
+		}()
+		<-done
 	}
 }
 
@@ -158,14 +170,22 @@ func UserAcceptFollow(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	done := make(chan bool)
 	go func() {
+		defer close(done)
 		me, err := Database.User.GetByID(session.UserID)
 		if err != nil {
 			log.Println(err)
 		}
 
-		Notify.FollowAccepted(me, targetID)
+		message, targets := Notify.FollowAccepted(me, targetID)
+		event := ChatEvent{
+			Type:    "notification",
+			Payload: message,
+		}
+		ChatManager.broadcast(event, targets)
 	}()
+	<-done
 }
 
 func UserRejectFollow(w http.ResponseWriter, r *http.Request) {
@@ -179,14 +199,14 @@ func UserRejectFollow(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	go func() {
+	/*go func() {
 		me, err := Database.User.GetByID(session.UserID)
 		if err != nil {
 			log.Println(err)
 		}
 
 		Notify.FollowRejected(me, targetID)
-	}()
+	}()*/
 }
 
 func UserUnfollow(w http.ResponseWriter, r *http.Request) {
@@ -250,4 +270,52 @@ func GetFollowStats(w http.ResponseWriter, r *http.Request) {
 	panicIfErr(err)
 
 	writeJSON(w, stats)
+}
+
+func GetSuggestions(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+	suggestions, err := Database.User.Suggestions(session.UserID)
+	panicIfErr(err)
+
+	writeJSON(w, suggestions)
+}
+
+func UpdateStatus(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+
+	status, err := Database.User.UpdateStatus(session.UserID)
+	panicIfErr(err)
+
+	writeJSON(w, status)
+}
+
+func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
+	session := getSession(r)
+	// Get new avatar from request
+	err := r.ParseMultipartForm(32 << 10)
+	if err != nil {
+		log.Println(err)
+		writeStatusError(w, http.StatusBadRequest)
+		return
+	}
+
+	// Save images
+	var token string
+	if len(r.MultipartForm.File["avatar"]) > 0 {
+		// Enforce the limit on the number of files.
+		if len(r.MultipartForm.File["avatar"]) > 1 {
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+		token, err = FileUpload(w, r, "avatar")
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}
+	err = Database.User.UpdateAvatar(session.UserID, token)
+	panicIfErr(err)
+
+	writeJSON(w, token)
 }

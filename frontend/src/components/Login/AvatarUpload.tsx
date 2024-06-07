@@ -4,7 +4,7 @@ import Tooltip from "@mui/material/Tooltip";
 import profileIcon from "../../../public/icons/profile.svg";
 
 interface AvatarUploadProps {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (file: File | null) => void;
 }
 
 export default function AvatarUpload({ onChange }: AvatarUploadProps) {
@@ -14,13 +14,8 @@ export default function AvatarUpload({ onChange }: AvatarUploadProps) {
     const file = e.target.files?.[0];
 
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-
-      onChange(e);
+      setPreview(URL.createObjectURL(file));
+      onChange(file);
     }
   };
 
@@ -46,8 +41,8 @@ export default function AvatarUpload({ onChange }: AvatarUploadProps) {
             sx={{
               mt: "10px",
               border: "4px solid #4a4a4a",
-              width: 90,
-              height: 90,
+              width: 170,
+              height: 170,
               cursor: "pointer",
             }}
           />

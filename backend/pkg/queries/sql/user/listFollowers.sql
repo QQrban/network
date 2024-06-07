@@ -4,4 +4,5 @@ SELECT user.*,
        EXISTS(SELECT * FROM follow fr WHERE fr.followerID = user.ID AND fr.followeeID = ?1 AND fr.response = 'pending') AS youToMePending
 FROM follow f
 JOIN user ON f.followerID = user.ID
-WHERE f.followeeID = ?2;
+WHERE f.followeeID = ?2
+AND f.response != 'reject';

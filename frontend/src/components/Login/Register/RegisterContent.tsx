@@ -3,6 +3,8 @@
 import {
   Autocomplete,
   Box,
+  Checkbox,
+  FormControlLabel,
   TextareaAutosize,
   Typography,
   styled,
@@ -21,6 +23,7 @@ import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
 import { StyledTextArea, StyledTextField } from "../styles";
 import { SuccessBtn } from "@/components/shared/styles";
+import { useRouter } from "next/navigation";
 
 interface RegisterProps {
   setShowLoading: React.Dispatch<boolean>;
@@ -34,6 +37,7 @@ interface FormValues {
   password: string;
   nickname: string;
   confirmPassword: string;
+  private: boolean;
   about: string;
   birthday: null;
   [key: string]: any;
@@ -47,25 +51,18 @@ const initialValues: FormValues = {
   email: "",
   password: "",
   confirmPassword: "",
+  private: false,
   about: "",
   birthday: null,
 };
 
 export default function RegisterContent({ setShowLoading }: RegisterProps) {
-  const [avatar, setAvatar] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<File | null>(null);
 
-  const dispatch = useDispatch();
+  const router = useRouter();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatar(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleAvatarChange = (file: File | null) => {
+    setAvatar(file);
   };
 
   const formik = useFormik({
@@ -80,28 +77,24 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
         }
 
         Object.entries(values).forEach(([key, value]) => {
-          formData.append(key, value.toString());
+          if (typeof value === "boolean") {
+            formData.append(key, value ? "true" : "false");
+          } else {
+            formData.append(key, value);
+          }
+          console.log(key, value);
         });
 
         const response = await fetchFromServer("/register", {
           method: "PUT",
           credentials: "include",
-          body: JSON.stringify(values),
+          body: formData,
         });
         if (response.ok) {
-          resetForm();
-          const data = await response.json();
-          dispatch(
-            loginSuccess({
-              id: data.ID,
-              email: data.email,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              nickname: data.nickname,
-              birthday: data.birthday,
-              country: data.country,
-            })
-          );
+          router.push("/");
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
         } else {
           console.error("Registration failed");
         }
@@ -128,7 +121,7 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
       >
         Sign Up
       </Typography>
-      <AvatarUpload onChange={handleFileChange} />
+      <AvatarUpload onChange={handleAvatarChange} />
       <Box
         sx={{
           mt: "23px",
@@ -364,6 +357,27 @@ export default function RegisterContent({ setShowLoading }: RegisterProps) {
           </Box>
         </Box>
       </Box>
+      <FormControlLabel
+        control={
+          <Checkbox
+            name="private"
+            id="private"
+            onChange={formik.handleChange}
+            value={formik.values.private}
+          />
+        }
+        label={
+          <Typography
+            sx={{
+              fontFamily: "Gloria Hallelujah !important",
+              fontSize: "19px",
+              color: "#4a4a4a",
+            }}
+          >
+            Make Account Private
+          </Typography>
+        }
+      />
       <SuccessBtn sx={{ mt: "13px" }} type="submit">
         Sign Up
       </SuccessBtn>

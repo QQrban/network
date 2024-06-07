@@ -3,11 +3,12 @@
 import Link from "next/link";
 import TooltipStyled from "../shared/TooltipStyled";
 import { useState } from "react";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { fetchFromServer } from "@/lib/api";
 import profileSvg from "../../../public/icons/profile.svg";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import ProfileImage from "../shared/ProfileImage";
 
 export default function ProfileMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -16,7 +17,8 @@ export default function ProfileMenu() {
     setAnchorEl(event.currentTarget);
   };
 
-  const id = useSelector((state: any) => state.authReducer.value.id);
+  const auth = useSelector((state: any) => state.authReducer.value);
+  const id = auth.id;
 
   const handleLogout = async () => {
     const response = await fetchFromServer("/logout", {
@@ -44,11 +46,7 @@ export default function ProfileMenu() {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <Image
-            style={{ width: "42px", height: "42px" }}
-            src={profileSvg}
-            alt="Profile"
-          />
+          <ProfileImage width={50} height={50} image={auth.image} />
         </IconButton>
       </TooltipStyled>
       <Menu

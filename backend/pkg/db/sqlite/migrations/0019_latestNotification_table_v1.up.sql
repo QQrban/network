@@ -1,0 +1,29 @@
+CREATE TABLE latestNotification
+(
+    `userID`     INTEGER NOT NULL UNIQUE ON CONFLICT REPLACE,
+    `messageID`  INTEGER NOT NULL,
+    FOREIGN KEY (userID) REFERENCES `user` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (messageID) REFERENCES `userMessage` (ID) ON DELETE CASCADE
+);
+
+CREATE TABLE latestUserMessage
+(
+    `userID`     INTEGER NOT NULL,
+    `contactID`   INTEGER NOT NULL,
+    `messageID`  INTEGER NOT NULL,
+    UNIQUE (userID, contactID) ON CONFLICT REPLACE,
+    FOREIGN KEY (userID) REFERENCES `user` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (contactID) REFERENCES `user` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (messageID) REFERENCES `userMessage` (ID) ON DELETE NO ACTION
+);
+
+CREATE TABLE latestGroupMessage
+(
+    `userID`      INTEGER NOT NULL,
+    `groupID`     INTEGER NOT NULL,
+    `messageID`   INTEGER NOT NULL,
+    UNIQUE (userID, groupID) ON CONFLICT REPLACE,
+    FOREIGN KEY (userID) REFERENCES `user` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (groupID) REFERENCES `group` (ID) ON DELETE CASCADE,
+    FOREIGN KEY (messageID) REFERENCES `groupMessage` (ID) ON DELETE NO ACTION
+);

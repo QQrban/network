@@ -1,6 +1,7 @@
 WITH following AS (SELECT followeeID
                    FROM follow f
-                   WHERE f.followerID = ?1)
+                   WHERE f.followerID = ?1
+                   AND f.response = 'accept')
 
 SELECT p.*, u.*
 FROM post p

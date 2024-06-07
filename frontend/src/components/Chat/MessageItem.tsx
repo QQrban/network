@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import ProfileImage from "@/components/shared/ProfileImage";
 import { MessageProps } from "@/types/types";
+import Link from "next/link";
 
 interface MessageItemProps {
   message: MessageProps;
@@ -38,7 +39,15 @@ const MessageItem = ({ message, authID, tabValue }: MessageItemProps) => {
           {message.senderData?.firstName} {message.senderData?.lastName}
         </Box>
       )}
-      {!isSent && <ProfileImage image="" width={30} height={30} />}
+      {!isSent && (
+        <Link href={`/profile/${message.senderData?.ID}`}>
+          <ProfileImage
+            image={message.senderData?.image}
+            width={30}
+            height={30}
+          />
+        </Link>
+      )}
       {isSent && (
         <Typography
           sx={{
@@ -58,7 +67,15 @@ const MessageItem = ({ message, authID, tabValue }: MessageItemProps) => {
       >
         {message.content}
       </Typography>
-      {isSent && <ProfileImage image="" width={30} height={30} />}
+      {isSent && (
+        <Link href={`/profile/${message.senderData?.ID}`}>
+          <ProfileImage
+            image={message.senderData?.image}
+            width={30}
+            height={30}
+          />
+        </Link>
+      )}
       {!isSent && (
         <Typography
           sx={{

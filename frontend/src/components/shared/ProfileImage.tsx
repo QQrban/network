@@ -3,7 +3,7 @@ import Image from "next/image";
 import noPhoto from "../../../public/icons/profile.svg";
 
 interface ProfileImageProps {
-  image: string | null;
+  image: string | undefined | null;
   width: number;
   height: number;
 }

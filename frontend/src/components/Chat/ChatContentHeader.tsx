@@ -1,16 +1,21 @@
 import { Box, Typography } from "@mui/material";
 import ProfileImage from "../shared/ProfileImage";
 import Link from "next/link";
+import { ContactsProps } from "@/types/types";
 
 interface ChatContentHeaderProps {
   activeChatName: string;
   chatReceiverID: number | undefined;
+  initChat: ContactsProps | undefined;
 }
 
 export default function ChatContentHeader({
   activeChatName,
   chatReceiverID,
+  initChat,
 }: ChatContentHeaderProps) {
+  console.log(initChat);
+
   return (
     <Box
       sx={{
@@ -32,7 +37,7 @@ export default function ChatContentHeader({
           }}
         >
           <Link href={`/profile/${chatReceiverID}`}>
-            <ProfileImage width={45} height={45} image="" />
+            <ProfileImage width={45} height={45} image={initChat?.image} />
           </Link>
           <Typography
             sx={{

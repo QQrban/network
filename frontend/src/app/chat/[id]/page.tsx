@@ -311,6 +311,7 @@ export default function Chat() {
       >
         {activeChatName ? (
           <ChatContentHeader
+          initChat={initChat}
             chatReceiverID={chatReceiverID}
             activeChatName={activeChatName}
           />

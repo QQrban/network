@@ -1,4 +1,10 @@
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { Item } from "./Item";
 import addIcon from "../../../public/icons/add.svg";
 import Image from "next/image";
@@ -6,6 +12,8 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 
 export default function SuggestionGroups() {
+  const matchesXL = useMediaQuery("(min-width:1389px)");
+
   const suggestionsGroups = useSelector(
     (state: any) => state.suggestionsReducer.Groups
   );
@@ -18,7 +26,11 @@ export default function SuggestionGroups() {
     >
       <Box>
         <Typography
-          sx={{ color: "#2a2a2a", fontFamily: "Schoolbell", fontSize: "26px" }}
+          sx={{
+            color: "#2a2a2a",
+            fontFamily: "Schoolbell",
+            fontSize: matchesXL ? "26px" : "20px",
+          }}
           variant="h5"
         >
           These Groups might interest you

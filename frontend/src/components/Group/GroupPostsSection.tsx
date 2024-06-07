@@ -6,7 +6,7 @@ import PostsSection from "../shared/Post/PostsSection";
 import { fetchFromServer } from "@/lib/api";
 import { PostProps, CommentProps, ContactsProps } from "@/types/types";
 import { Box, Typography } from "@mui/material";
-import CreatePostModal from "./CreatePostModal";
+import CreatePostModal from "../shared/Post/CreatePostModal";
 
 interface GroupPostsSectionProps {
   openPostModal: boolean;

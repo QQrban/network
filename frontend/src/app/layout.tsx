@@ -17,15 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Box
-        sx={{
-          minHeight: "100vh",
-          background: "#819eb0",
-          p: "20px 70px 20px 110px",
-          overflow: "hidden",
-        }}
-        component="body"
-      >
+      <Box component="body">
         <ReduxProvider>
           <WebSocketProvider>
             <MainScreen>{children}</MainScreen>

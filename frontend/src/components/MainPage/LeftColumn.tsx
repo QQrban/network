@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, Typography, useMediaQuery } from "@mui/material";
 import { Item } from "../shared/Item";
 import { styled } from "@mui/material";
 import Link from "next/link";
@@ -58,6 +58,8 @@ export default function LeftColumn() {
   const userData = useSelector((state: any) => state.authReducer.value);
   const id = userData.id;
 
+  const matchesXL = useMediaQuery("(min-width:1389px)");
+
   const fetchFollowersStats = useCallback(async () => {
     try {
       const response = await fetchFromServer(`/stats/user/${id}`, {
@@ -88,9 +90,9 @@ export default function LeftColumn() {
   return (
     <Item
       sx={{
-        position: "sticky",
-        top: "90px",
-        width: "290px",
+        position: matchesXL ? "sticky" : "relative",
+        top: matchesXL ? "90px" : "0",
+        width: matchesXL ? "290px" : "unset",
         alignSelf: "flex-start",
         pb: "10px",
       }}

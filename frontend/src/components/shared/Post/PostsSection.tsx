@@ -7,6 +7,7 @@ import {
   SpeedDial,
   SpeedDialAction,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CommentsPost from "./CommentsPost";
@@ -46,6 +47,9 @@ export default function PostsSection({
   const [selectedImage, setSelectedImage] = useState<string>("");
 
   const userData = useSelector((state: any) => state.authReducer.value);
+
+  const matchesMD = useMediaQuery("(min-width:813px)");
+  const matchesSM = useMediaQuery("(min-width:605px)");
 
   const inputRefs = useRef<{
     [key: number]: React.RefObject<HTMLTextAreaElement>;
@@ -103,7 +107,7 @@ export default function PostsSection({
               sx={{
                 position: "relative",
                 overflow: "hidden",
-                width: "600px",
+                width: matchesMD ? "600px" : matchesSM ? "400px" : "320px",
               }}
               radius="8px"
             >

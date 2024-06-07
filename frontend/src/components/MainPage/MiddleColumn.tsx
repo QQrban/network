@@ -1,10 +1,10 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import PostsSection from "../shared/Post/PostsSection";
 import CreatePost from "../shared/Post/CreatePost";
 import { useEffect, useState } from "react";
-import CreatePostModal from "../Group/CreatePostModal";
+import CreatePostModal from "../shared/Post/CreatePostModal";
 import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
 import CircularIndeterminate from "../shared/CircularIndeterminate";
@@ -12,6 +12,9 @@ import CircularIndeterminate from "../shared/CircularIndeterminate";
 export default function MiddleColumn() {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
   const [showLoading, setShowLoading] = useState<boolean>(false);
+
+  const matchesMD = useMediaQuery("(min-width:813px)");
+  const matchesSM = useMediaQuery("(min-width:605px)");
 
   useEffect(() => {
     const fetchFollowingPosts = async () => {
@@ -65,7 +68,7 @@ export default function MiddleColumn() {
   };
 
   return (
-    <Box sx={{ width: "600px" }}>
+    <Box sx={{ width: matchesMD ? "600px" : matchesSM ? "400px" : "320px" }}>
       <Box sx={{ width: "100%" }}>
         <CreatePost setOpenPostModal={setOpenPostModal} />
       </Box>

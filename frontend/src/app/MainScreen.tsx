@@ -69,12 +69,16 @@ export default function MainScreen({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const fetchSuggestions = async () => {
-      if (auth) {
-        const response = await fetchFromServer("/suggestions", {
-          credentials: "include",
-        });
-        const data = await response.json();
-        dispatch(setSuggestions(data));
+      try {
+        if (auth) {
+          const response = await fetchFromServer("/suggestions", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          dispatch(setSuggestions(data));
+        }
+      } catch (error) {
+        console.error(error);
       }
     };
     fetchSuggestions();
@@ -110,6 +114,23 @@ export default function MainScreen({ children }: { children: ReactNode }) {
       }
     }
   }, [lastMessage, dispatch, pathname, processedMessage, setProcessedMessage]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        if (auth) {
+          const response = await fetchFromServer("/notifications", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          if (data.length !== 0) dispatch(setNewNotification(true));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchNotifications();
+  }, [auth, dispatch]);
 
   if (showLoading) {
     return <LoadingScreen />;

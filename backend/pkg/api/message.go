@@ -24,17 +24,17 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	message.SenderID = session.UserID
 	message.Created = time.Now()
-	msgType := "message_personal"
+	messageType := "message_personal"
 
 	if message.SenderID == 0 {
-		msgType = "notification"
+		messageType = "notification"
 	} else {
 		u, err := Database.User.GetByID(message.SenderID)
 		panicIfErr(err)
 		message.SenderData = u.Limited()
 	}
 	if message.IsGroup {
-		msgType = "message_group"
+		messageType = "message_group"
 	}
 
 	done := make(chan bool)
@@ -42,7 +42,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		defer close(done)
 		message, targets := Notify.SendMessage(message, session.UserID, Database)
 		event := ChatEvent{
-			Type:    msgType,
+			Type:    messageType,
 			Payload: message,
 		}
 		ChatManager.broadcast(event, targets)

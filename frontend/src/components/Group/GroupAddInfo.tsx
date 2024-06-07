@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ContactsProps } from "@/types/types";
 import ProfileImage from "../shared/ProfileImage";
+import advertisement from "../../../public/icons/advert.svg";
 
 const StyledTypography = styled(Typography)`
   font-family: "Gloria Hallelujah", sans-serif !important;
@@ -32,7 +33,7 @@ export default function GroupAddInfo({
   return (
     <Box
       sx={{
-        width: "550px",
+        width: "400px",
         position: "sticky",
         top: "90px",
         alignSelf: "flex-start",
@@ -121,7 +122,14 @@ export default function GroupAddInfo({
           radius="8px"
         >
           <StyledTypography>Advertisement</StyledTypography>
-          <Box>Advertisement</Box>
+          <Box sx={{ mt: "23px" }}>
+            <Image
+              width={500}
+              height={250}
+              src={advertisement}
+              alt="advertisement"
+            />
+          </Box>
         </Item>
       )}
     </Box>

@@ -36,6 +36,7 @@ export default function ChattersList({
   const newMessageGroupIds = useSelector(
     (state: any) => state.notificationsReducer.groupIds
   );
+  console.log(chatters);
 
   return (
     <List aria-label="contacts">
@@ -57,7 +58,7 @@ export default function ChattersList({
             >
               <ListItemButton>
                 <ListItemIcon>
-                  <ProfileImage width={40} height={40} image="" />
+                  <ProfileImage width={40} height={40} image={chatter.image} />
                 </ListItemIcon>
                 <ListItemText
                   primary={

@@ -89,7 +89,8 @@ export default function NotificationsSection({
   const handleGroupRequest = async (
     userID: number,
     groupID: number,
-    action: string
+    action: string,
+    notificationID: number
   ) => {
     try {
       const endpoint =
@@ -102,6 +103,7 @@ export default function NotificationsSection({
       });
       if (response.ok) {
         console.log(response);
+        deleteNotification(notificationID);
       }
     } catch (error) {
       console.error(error);
@@ -124,7 +126,6 @@ export default function NotificationsSection({
               width: "100%",
               backgroundPosition: "center",
               backgroundSize: "cover",
-              overflow: "hidden",
               display: "flex",
               flexDirection: "column",
               p: "10px",
@@ -203,7 +204,8 @@ export default function NotificationsSection({
                       handleGroupRequest(
                         notification.content.userID,
                         notification.content.groupID,
-                        notification.content.action
+                        notification.content.action,
+                        notification.ID
                       )
                     }
                     backgroundImage={confirmBtn.src}
@@ -217,8 +219,8 @@ export default function NotificationsSection({
                 onClick={() => deleteNotification(notification.ID)}
                 sx={{
                   position: "absolute",
-                  right: "5px",
-                  top: "5px",
+                  right: "-12px",
+                  top: "-12px",
                   cursor: "pointer",
                 }}
               >

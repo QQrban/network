@@ -4,9 +4,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import { StyledBadge } from "./StyledBadge";
-import Image from "next/image";
-import noPhoto from "../../../public/icons/profile.svg";
+
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import ProfileImage from "./ProfileImage";

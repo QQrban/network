@@ -2,11 +2,14 @@
 
 import LeftColumn from "@/components/MainPage/LeftColumn";
 import MiddleColumn from "@/components/MainPage/MiddleColumn";
-import ContactsSection from "@/components/shared/ContactsSection";
-import SuggestionGroups from "@/components/shared/SuggestionsGroups";
-import { Box, Typography } from "@mui/material";
+import RightColumn from "@/components/MainPage/RightColumn";
+
+import { Box, useMediaQuery } from "@mui/material";
 
 export default function Home() {
+  const matchesXL = useMediaQuery("(min-width:1389px)");
+  const matchesLG = useMediaQuery("(min-width:1143px)");
+
   return (
     <Box
       sx={{
@@ -17,33 +20,22 @@ export default function Home() {
       }}
       component="section"
     >
-      <LeftColumn />
-      <MiddleColumn />
-      <Box
-        sx={{
-          position: "sticky",
-          top: "90px",
-          width: "350px",
-          height: "900px",
-        }}
-      >
-        <SuggestionGroups />
-        <Box sx={{ mt: "23px" }}>
-          <Typography
-            sx={{
-              color: "#2a2a2a",
-              fontFamily: "Schoolbell",
-              fontSize: "26px",
-            }}
-            variant="h5"
-          >
-            You might know them
-          </Typography>
-          <Box sx={{ mt: "8px" }}>
-            <ContactsSection />
-          </Box>
+      {matchesLG && (
+        <Box
+          sx={{
+            height: "100vh",
+            position: "sticky",
+            top: "80px",
+          }}
+        >
+          <LeftColumn />
+          {!matchesXL && <RightColumn />}
         </Box>
+      )}
+      <Box>
+        <MiddleColumn />
       </Box>
+      {matchesXL && <RightColumn />}
     </Box>
   );
 }

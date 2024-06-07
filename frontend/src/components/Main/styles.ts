@@ -24,4 +24,8 @@ export const Screen = styled(Item)`
   &::-webkit-scrollbar-track {
     background-color: #ccc;
   }
+
+  @media (max-width: 613px) {
+    height: calc(100vh - 100px);
+  }
 `;

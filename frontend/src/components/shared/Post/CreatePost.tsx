@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import { Item } from "@/components/shared/Item";
 import { useSelector } from "react-redux";
 import Link from "next/link";
@@ -10,6 +10,8 @@ interface CreatePostProps {
 
 export default function CreatePost({ setOpenPostModal }: CreatePostProps) {
   const userData = useSelector((state: any) => state.authReducer.value);
+
+  const matchesMD = useMediaQuery("(min-width:813px)");
 
   const openModal = () => {
     setOpenPostModal(true);

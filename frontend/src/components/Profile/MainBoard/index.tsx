@@ -7,7 +7,7 @@ import { Item } from "@/components/shared/Item";
 import PhotosContent from "../PhotosContent";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import CreatePostModal from "@/components/Group/CreatePostModal";
+import CreatePostModal from "@/components/shared/Post/CreatePostModal";
 import { CommentProps, ContactsProps, PostProps } from "@/types/types";
 import { useRouter } from "next/navigation";
 import privacyIcon from "../../../../public/icons/private.svg";

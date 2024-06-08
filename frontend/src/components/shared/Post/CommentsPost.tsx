@@ -3,12 +3,23 @@ import { CommentProps } from "@/types/types";
 import dayjs from "dayjs";
 import ProfileImage from "../ProfileImage";
 import Link from "next/link";
+import PostImage from "./PostImage";
+import { useState } from "react";
+import PostImageDialog from "./PostImageDialog";
 
 interface CommentPostProps {
   comments: CommentProps[];
 }
 
 export default function CommentsPost({ comments }: CommentPostProps) {
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+
+  const handleClickOpen = (image: string) => {
+    setSelectedImage(image);
+    setOpenDialog(true);
+  };
+
   return (
     <>
       {comments?.map((comment) => (
@@ -57,6 +68,9 @@ export default function CommentsPost({ comments }: CommentPostProps) {
           <Box
             sx={{
               m: "0 0 0 42px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
             }}
           >
             <Typography
@@ -67,6 +81,16 @@ export default function CommentsPost({ comments }: CommentPostProps) {
             >
               {comment.content}
             </Typography>
+            {comment.images && (
+              <Box sx={{ overflow: "hidden" }}>
+                <PostImage
+                  image={comment.images}
+                  width="150px"
+                  height="100px"
+                  onClick={() => handleClickOpen(comment.images)}
+                />
+              </Box>
+            )}
             <Box
               sx={{
                 mt: "9px",
@@ -83,6 +107,12 @@ export default function CommentsPost({ comments }: CommentPostProps) {
           </Box>
         </Box>
       ))}
+      <PostImageDialog
+        selectedImage={selectedImage}
+        setSelectedImage={setSelectedImage}
+        setOpenDialog={setOpenDialog}
+        openDialog={openDialog}
+      />
     </>
   );
 }

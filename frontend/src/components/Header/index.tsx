@@ -1,9 +1,12 @@
 import { Item } from "../shared/Item";
 import HeaderMenu from "./HeaderMenu";
+import ProfileMenu from "./ProfileMenu";
 import SearchHeader from "./SearchHeader";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 
 export default function Header() {
+  const matchesMD = useMediaQuery("(min-width:813px)");
+
   return (
     <Item
       radius="0"
@@ -31,7 +34,7 @@ export default function Header() {
       >
         <SearchHeader />
       </Box>
-      <HeaderMenu />
+      {matchesMD ? <HeaderMenu /> : <ProfileMenu />}
     </Item>
   );
 }

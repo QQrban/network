@@ -1,6 +1,6 @@
 "use client";
 
-import { IconButton, InputBase, Box } from "@mui/material";
+import { IconButton, InputBase, Box, useMediaQuery } from "@mui/material";
 import search from "../../../public/icons/search.svg";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -21,6 +21,8 @@ export default function SearchHeader() {
   const [allUsers, setAllUsers] = useState<AllUsers[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<AllUsers[]>([]);
   const searchBoxRef = useRef<HTMLDivElement>(null);
+
+  const matchesMD = useMediaQuery("(min-width:813px)");
 
   useEffect(() => {
     const fetchPeople = async () => {
@@ -97,7 +99,7 @@ export default function SearchHeader() {
         p: "2px 4px",
         display: "flex",
         alignItems: "center",
-        width: 300,
+        width: matchesMD ? 300 : 200,
         height: 35,
         bgcolor: "transparent",
         border: "1px solid #4b4b4b",
@@ -131,7 +133,7 @@ export default function SearchHeader() {
             borderRadius: "0 0 10px 10px",
             background: "white",
             position: "absolute",
-            width: 300,
+            width: matchesMD ? 300 : 200,
             height: 150,
             overflowY: "scroll",
             border: "1px solid #4b4b4b",

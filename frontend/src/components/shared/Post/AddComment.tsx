@@ -2,7 +2,7 @@ import { Box, IconButton, styled } from "@mui/material";
 import confirmBtn from "../../../../public/icons/confirmButton.svg";
 import deleteIcon from "../../../../public/icons/delete.svg";
 import mediaIcon from "../../../../public/icons/media.svg";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
 import { fetchFromServer } from "@/lib/api";
 import { CommentProps } from "@/types/types";
@@ -25,6 +25,8 @@ export default function AddComment({
   const [commentText, setCommentText] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const userImage = useSelector((state: any) => state.authReducer.value.image);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -39,6 +41,9 @@ export default function AddComment({
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleAddComment = async () => {
@@ -61,6 +66,9 @@ export default function AddComment({
         addComment(postID, newComment);
         setCommentText("");
         setSelectedImage(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     } catch (error) {
       console.error(error);
@@ -108,6 +116,7 @@ export default function AddComment({
               type="file"
               hidden
               onChange={handleImageUpload}
+              ref={fileInputRef}
             />
           </IconButton>
         </Box>

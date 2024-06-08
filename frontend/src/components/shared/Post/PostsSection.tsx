@@ -3,6 +3,7 @@
 import { Item } from "@/components/shared/Item";
 import {
   Box,
+  Button,
   Divider,
   SpeedDial,
   SpeedDialAction,
@@ -43,6 +44,7 @@ export default function PostsSection({
   const [postID, setPostID] = useState<number>(0);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [loadMore, setLoadMore] = useState<boolean>(false);
 
   const [selectedImage, setSelectedImage] = useState<string>("");
 
@@ -295,7 +297,16 @@ export default function PostsSection({
                 focusInput={focusInput}
               />
               <Divider />
-              <CommentsPost comments={post.comments} />
+              <CommentsPost
+                comments={loadMore ? post.comments : post.comments.slice(0, 3)}
+              />
+              <Button
+                color="primary"
+                onClick={() => setLoadMore(!loadMore)}
+                sx={{ fontFamily: "Gloria Hallelujah", ml: "55px" }}
+              >
+                {loadMore ? "Show Less" : "Load More..."}
+              </Button>
               <AddComment
                 postID={post.postID}
                 inputRef={inputRefs.current[post.postID]}

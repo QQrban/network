@@ -209,9 +209,11 @@ export default function Chat() {
                 tabValue === "group"
                   ? "read_group_message"
                   : "read_personal_message",
-              messageID: messageWithID.ID,
-              senderID: tabValue === "group" ? groupID : chatReceiverID,
-              readerID: authID,
+              payload: {
+                messageID: messageWithID.ID,
+                senderID: tabValue === "group" ? groupID : chatReceiverID,
+                readerID: authID,
+              },
             };
             sendMessage(JSON.stringify(messagePayload));
           } else {

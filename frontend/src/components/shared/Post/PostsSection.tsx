@@ -50,8 +50,8 @@ export default function PostsSection({
 
   const userData = useSelector((state: any) => state.authReducer.value);
 
-  const matchesMD = useMediaQuery("(min-width:813px)");
-  const matchesSM = useMediaQuery("(min-width:605px)");
+  const matchesLG = useMediaQuery("(min-width:1200px)");
+  const matchesSM = useMediaQuery("(min-width:635px)");
 
   const inputRefs = useRef<{
     [key: number]: React.RefObject<HTMLTextAreaElement>;
@@ -109,7 +109,7 @@ export default function PostsSection({
               sx={{
                 position: "relative",
                 overflow: "hidden",
-                width: matchesMD ? "600px" : matchesSM ? "400px" : "320px",
+                width: matchesLG ? "600px" : "100%",
               }}
               radius="8px"
             >
@@ -300,13 +300,15 @@ export default function PostsSection({
               <CommentsPost
                 comments={loadMore ? post.comments : post.comments.slice(0, 3)}
               />
-              <Button
-                color="primary"
-                onClick={() => setLoadMore(!loadMore)}
-                sx={{ fontFamily: "Gloria Hallelujah", ml: "55px" }}
-              >
-                {loadMore ? "Show Less" : "Load More..."}
-              </Button>
+              {post.comments.length > 3 && (
+                <Button
+                  color="primary"
+                  onClick={() => setLoadMore(!loadMore)}
+                  sx={{ fontFamily: "Gloria Hallelujah", ml: "55px" }}
+                >
+                  {loadMore ? "Show Less" : "Load More..."}
+                </Button>
+              )}
               <AddComment
                 postID={post.postID}
                 inputRef={inputRefs.current[post.postID]}

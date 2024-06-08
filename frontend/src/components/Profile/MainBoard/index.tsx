@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import CreatePost from "../../shared/Post/CreatePost";
 import PostsSection from "../../shared/Post/PostsSection";
 import { Item } from "@/components/shared/Item";
@@ -30,6 +30,10 @@ export default function MainBoard({
   hasAccess,
 }: Props) {
   const [openPostModal, setOpenPostModal] = useState<boolean>(false);
+
+  const matchesXL = useMediaQuery("(min-width:1200px)");
+  const matchesMD = useMediaQuery("(min-width:856px)");
+  const matchesSM = useMediaQuery("(min-width:670px)");
 
   const profile = useSelector((state: any) => state.profileReducer.value);
 
@@ -74,14 +78,18 @@ export default function MainBoard({
         <Box
           sx={{
             display: "flex",
+            flexDirection: matchesXL ? "row" : "column",
             gap: "23px",
             overflow: "auto",
             pb: "40px",
+            width: matchesXL ? "100%" : matchesMD ? "600px" : "100%",
+            m: "0 auto",
           }}
         >
           <Box
             sx={{
-              width: "600px",
+              order: matchesXL ? 1 : 2,
+              width: matchesMD ? "600px" : "100%",
             }}
           >
             {isYourProfile && (
@@ -136,7 +144,8 @@ export default function MainBoard({
           </Box>
           <Box
             sx={{
-              width: "600px",
+              order: matchesXL ? 2 : 1,
+              width: matchesMD ? "600px" : "100%",
             }}
           >
             <Item

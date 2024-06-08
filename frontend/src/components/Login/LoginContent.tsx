@@ -1,12 +1,9 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
 import { StyledTextField } from "./styles";
 import { SuccessBtn } from "../shared/styles";
-import { useRouter } from "next/navigation";
 
 interface LoginProps {
   setShowLoading: React.Dispatch<boolean>;
@@ -18,23 +15,6 @@ const validationSchema = Yup.object({
 });
 
 export default function LoginContent({ setShowLoading }: LoginProps) {
-  const dispatch = useDispatch();
-  const router = useRouter();
-
-  const fetchNotifications = async () => {
-    try {
-      const response = await fetchFromServer(`/notifications/all`, {
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -55,7 +35,6 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
         });
 
         if (response.ok) {
-          router.push("/");
           setTimeout(() => {
             window.location.reload();
           }, 300);

@@ -7,7 +7,7 @@ import ProfileCard from "@/components/Profile/ProfileCard";
 import { Item } from "@/components/shared/Item";
 import profileCardBg from "../../../../public/eventBG.svg";
 
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { fetchFromServer } from "@/lib/api";
 import { usePathname } from "next/navigation";
@@ -23,6 +23,11 @@ export default function ProfilePage() {
   const [profilePosts, setProfilePosts] = useState<PostProps[]>([]);
   const [selectedTab, setSelectedTab] = useState<String>("Main Board");
   const [hasAccess, setHasAccess] = useState<boolean>(false);
+
+  const matchesXXL = useMediaQuery("(min-width:1454px)");
+  const matchesXL = useMediaQuery("(min-width:1200px)");
+  const matchesMD = useMediaQuery("(min-width:856px)");
+  const matchesSM = useMediaQuery("(min-width:670px)");
 
   const dispatch = useDispatch();
 
@@ -101,7 +106,6 @@ export default function ProfilePage() {
       }
 
       const userData = await getUser.json();
-      console.log(userData);
 
       dispatch(
         putProfile({
@@ -182,7 +186,7 @@ export default function ProfilePage() {
         sx={{
           position: "relative",
           p: "19px 28px",
-          width: "1250px",
+          width: matchesXXL ? "1250px" : "100%",
           m: "0 auto",
         }}
       >
@@ -207,7 +211,6 @@ export default function ProfilePage() {
         </Item>
         <Box
           sx={{
-            mt: "25px",
             m: "23px auto 0 auto",
           }}
         >

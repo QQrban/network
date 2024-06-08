@@ -13,8 +13,8 @@ export default function MiddleColumn() {
   const [mainPagePosts, setMainPagePosts] = useState<PostProps[]>([]);
   const [showLoading, setShowLoading] = useState<boolean>(false);
 
-  const matchesMD = useMediaQuery("(min-width:813px)");
-  const matchesSM = useMediaQuery("(min-width:605px)");
+  const matchesLG = useMediaQuery("(min-width:1200px)");
+  const matchesMD = useMediaQuery("(min-width:856px)");
 
   useEffect(() => {
     const fetchFollowingPosts = async () => {
@@ -68,7 +68,7 @@ export default function MiddleColumn() {
   };
 
   return (
-    <Box sx={{ width: matchesMD ? "600px" : matchesSM ? "400px" : "320px" }}>
+    <Box sx={{ width: matchesLG ? "100%" : matchesMD ? "600px" : "100%" }}>
       <Box sx={{ width: "100%" }}>
         <CreatePost setOpenPostModal={setOpenPostModal} />
       </Box>

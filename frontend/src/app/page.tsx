@@ -8,12 +8,13 @@ import { Box, useMediaQuery } from "@mui/material";
 
 export default function Home() {
   const matchesXL = useMediaQuery("(min-width:1389px)");
-  const matchesLG = useMediaQuery("(min-width:1143px)");
+  const matchesLG = useMediaQuery("(min-width:1200px)");
+  const matchesMD = useMediaQuery("(min-width:856px)");
 
   return (
     <Box
       sx={{
-        display: "flex",
+        display: matchesMD ? "flex" : "block",
         justifyContent: "center",
         padding: "32px 29px 0 29px",
         gap: "23px",

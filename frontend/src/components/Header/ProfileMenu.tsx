@@ -13,10 +13,9 @@ import {
 import { fetchFromServer } from "@/lib/api";
 import { useSelector } from "react-redux";
 import ProfileImage from "../shared/ProfileImage";
-import HeaderMenu from "./HeaderMenu";
 
 export default function ProfileMenu() {
-  const matchesMD = useMediaQuery("(min-width:813px)");
+  const matchesMD = useMediaQuery("(min-width:856px)");
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -130,44 +129,42 @@ export default function ProfileMenu() {
             Profile
           </MenuItem>
         </Link>
-        {!matchesMD && (
-          <>
-            <Link href="/chat">
-              <MenuItem
-                sx={{
-                  fontFamily: "Schoolbell, cursive",
-                  fontSize: "18px",
-                }}
-                onClick={handleClose}
+        {!matchesMD && [
+          <Link key="chat" href="/chat">
+            <MenuItem
+              sx={{
+                fontFamily: "Schoolbell, cursive",
+                fontSize: "18px",
+              }}
+              onClick={handleClose}
+            >
+              <Badge
+                variant="dot"
+                badgeContent={hasNewMessage ? "!" : 0}
+                color="error"
               >
-                <Badge
-                  variant="dot"
-                  badgeContent={hasNewMessage ? "!" : 0}
-                  color="error"
-                >
-                  Messenger
-                </Badge>
-              </MenuItem>
-            </Link>
-            <Link href="/notifications">
-              <MenuItem
-                sx={{
-                  fontFamily: "Schoolbell, cursive",
-                  fontSize: "18px",
-                }}
-                onClick={handleClose}
+                Messenger
+              </Badge>
+            </MenuItem>
+          </Link>,
+          <Link key="notifications" href="/notifications">
+            <MenuItem
+              sx={{
+                fontFamily: "Schoolbell, cursive",
+                fontSize: "18px",
+              }}
+              onClick={handleClose}
+            >
+              <Badge
+                variant="dot"
+                badgeContent={hasNewNotification ? "!" : 0}
+                color="error"
               >
-                <Badge
-                  variant="dot"
-                  badgeContent={hasNewNotification ? "!" : 0}
-                  color="error"
-                >
-                  Notifications
-                </Badge>
-              </MenuItem>
-            </Link>
-          </>
-        )}
+                Notifications
+              </Badge>
+            </MenuItem>
+          </Link>,
+        ]}
         <MenuItem
           sx={{
             fontFamily: "Schoolbell, cursive",

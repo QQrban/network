@@ -6,6 +6,7 @@ import {
   SpeedDial,
   SpeedDialAction,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import ProfileAvatar from "./ProfileAvatar";
 import React, { useEffect, useState } from "react";
@@ -25,7 +26,7 @@ const tabStyle = (isActive: boolean) => ({
   pb: "11px",
   borderBottom: isActive ? "3px solid #6495ED" : "none",
   fontFamily: "Schoolbell !important",
-  fontSize: "19px",
+  fontSize: "16px",
   cursor: "pointer",
 });
 

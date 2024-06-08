@@ -11,8 +11,6 @@ interface CreatePostProps {
 export default function CreatePost({ setOpenPostModal }: CreatePostProps) {
   const userData = useSelector((state: any) => state.authReducer.value);
 
-  const matchesMD = useMediaQuery("(min-width:813px)");
-
   const openModal = () => {
     setOpenPostModal(true);
   };

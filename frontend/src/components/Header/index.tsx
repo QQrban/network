@@ -5,7 +5,7 @@ import SearchHeader from "./SearchHeader";
 import { Box, useMediaQuery } from "@mui/material";
 
 export default function Header() {
-  const matchesMD = useMediaQuery("(min-width:813px)");
+  const matchesMD = useMediaQuery("(min-width:856px)");
 
   return (
     <Item

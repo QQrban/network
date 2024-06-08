@@ -1,7 +1,7 @@
 "use client";
 
 import { Item } from "@/components/shared/Item";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import Image from "next/image";
 
 import { useEffect, useState } from "react";
@@ -25,6 +25,7 @@ export default function PhotosContent({
   posts,
 }: PhotosContentProps) {
   const [photos, setPhotos] = useState<PhotosProps[]>([]);
+  const matchesXXL = useMediaQuery("(min-width:1454px)");
 
   useEffect(() => {
     const allPhotos: PhotosProps[] = [];
@@ -99,7 +100,7 @@ export default function PhotosContent({
             <Typography
               sx={{
                 textTransform: "capitalize",
-                fontSize: "40px",
+                fontSize: matchesXXL ? "40px" : "25px",
                 fontFamily: "Gloria Hallelujah !important",
               }}
             >

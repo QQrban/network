@@ -51,12 +51,18 @@ func NewManager() *Manager {
 }
 
 const (
-	EventSendMessage = "send_message"
-	EventNewMessage  = "new_message"
+	EventSendMessage         = "send_message"
+	EventNewMessage          = "new_message"
+	EventReadPersonalMessage = "read_personal_message"
+	EventReadGroupMessage    = "read_group_message"
+	EventReadNotification    = "read_notification"
 )
 
 func (m *Manager) setupEventHandlers() {
 	m.handlers[EventSendMessage] = SendMessageHandler
+	m.handlers[EventReadPersonalMessage] = ReadMessageHandler
+	m.handlers[EventReadGroupMessage] = ReadMessageHandler
+	m.handlers[EventReadNotification] = ReadMessageHandler
 }
 
 func (m *Manager) WSHandler(w http.ResponseWriter, r *http.Request) {
@@ -181,6 +187,39 @@ func SendMessageHandler(event ChatEvent, c *Client) error {
 	// Broadcast to all other Clients
 	for client := range c.manager.clients {
 		client.egress <- outgoingEvent
+	}
+
+	return nil
+
+}
+
+func ReadMessageHandler(event ChatEvent, c *Client) error {
+	// Marshal Payload into wanted format
+	var readEvent ReadMessageEvent
+	if err := json.Unmarshal(event.Payload, &readEvent); err != nil {
+		return fmt.Errorf("bad payload in request: %v", err)
+	}
+
+	// Register latest message as read
+	switch event.Type {
+	case EventReadNotification:
+		// Register latest notification as read
+		err := Database.Message.SetLatestNotification(c.userID, readEvent.MessageID)
+		if err != nil {
+			return fmt.Errorf("failed to set latest notification as read: %v", err)
+		}
+	case EventReadPersonalMessage:
+		// Register latest personal message as read
+		err := Database.Message.SetLatestUserMessage(c.userID, readEvent.SenderID, readEvent.MessageID)
+		if err != nil {
+			return fmt.Errorf("failed to set latest personal message as read: %v", err)
+		}
+	case EventReadGroupMessage:
+		// Register latest group message as read
+		err := Database.Message.SetLatestGroupMessage(c.userID, readEvent.SenderID, readEvent.MessageID)
+		if err != nil {
+			return fmt.Errorf("failed to set latest group message as read: %v", err)
+		}
 	}
 
 	return nil

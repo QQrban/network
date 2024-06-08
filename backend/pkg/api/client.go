@@ -11,10 +11,6 @@ import (
 
 type ClientList map[*Client]bool
 
-func (cl ClientList) len() int {
-	return len(cl)
-}
-
 type Client struct {
 	connection   *websocket.Conn
 	manager      *Manager
@@ -128,4 +124,10 @@ type SendMessageEvent struct {
 type NewMessageEvent struct {
 	SendMessageEvent
 	Sent time.Time `json:"sent"`
+}
+
+type ReadMessageEvent struct {
+	MessageID int64 `json:"messageID"`
+	SenderID  int64 `json:"senderID"`
+	ReaderID  int64 `json:"readerID"`
 }

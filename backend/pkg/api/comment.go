@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -16,12 +15,22 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 
 	comment := models.Comment{}
 
-	err := json.NewDecoder(r.Body).Decode(&comment)
+	//err := json.NewDecoder(r.Body).Decode(&comment)
+	maxBytesSize := int64((60 << 20) + 1024)              // 60.1 MB = 3 * 20MB + text
+	r.Body = http.MaxBytesReader(w, r.Body, maxBytesSize) // Limit total size of request body
+	err := r.ParseMultipartForm(32 << 20)
+
 	if err != nil {
 		log.Println(err)
 		writeStatusError(w, http.StatusBadRequest)
 		return
 	}
+
+	Content := r.FormValue("content")
+	//GroupID := r.FormValue("groupID")
+	//AboutID := r.FormValue("aboutID")
+	//Status := r.FormValue("status")
+	comment.Content = Content
 
 	// Check if you have access to the post
 	access, err := Database.Post.HasAccess(session.UserID, postID)
@@ -34,6 +43,24 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 
 	comment.AboutID = postID
 	comment.AuthorID = session.UserID
+
+	// Save images
+	if len(r.MultipartForm.File["images"]) > 0 {
+		// Enforce the limit on the number of files.
+		if len(r.MultipartForm.File["images"]) > 3 {
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+
+		tokens, err := FileUpload(w, r, "images")
+		comment.Images = tokens
+
+		if err != nil {
+			log.Println(err)
+			writeStatusError(w, http.StatusBadRequest)
+			return
+		}
+	}
 
 	id, err := Database.Comment.Insert(comment)
 	panicIfErr(err)

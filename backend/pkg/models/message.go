@@ -99,13 +99,13 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 		userID := messageOld.SenderID
 		if messageOld.IsGroup {
 			groupID := messages[latest].ReceiverID
-			err = model.setLatestGroupMessage(userID, groupID, latestID)
+			err = model.SetLatestGroupMessage(userID, groupID, latestID)
 		} else {
 			contactID := messages[latest].SenderID
 			if userID == messages[latest].SenderID {
 				contactID = messages[latest].ReceiverID
 			}
-			err = model.setLatestUserMessage(userID, contactID, latestID)
+			err = model.SetLatestUserMessage(userID, contactID, latestID)
 		}
 		if err != nil {
 			return nil, fmt.Errorf("Message/GetNotifications3: %w", err)
@@ -114,7 +114,7 @@ func (model *MessageModel) GetMessages(messageOld Message) ([]*Message, error) {
 	return messages, nil
 }
 
-func (model *MessageModel) setLatestUserMessage(userID, contactID, latestID int64) error {
+func (model *MessageModel) SetLatestUserMessage(userID, contactID, latestID int64) error {
 	stmt := model.queries.Prepare("setLatestUserMessage")
 	_, err := stmt.Exec(userID, contactID, latestID)
 	if err != nil {
@@ -144,7 +144,7 @@ func (model *MessageModel) GetLatestUserMessages(myID int64) ([]*Message, error)
 	return messages, nil
 }
 
-func (model *MessageModel) setLatestGroupMessage(userID, groupID, latestID int64) error {
+func (model *MessageModel) SetLatestGroupMessage(userID, groupID, latestID int64) error {
 	stmt := model.queries.Prepare("setLatestGroupMessage")
 	_, err := stmt.Exec(userID, groupID, latestID)
 	if err != nil {
@@ -228,7 +228,7 @@ func (model *MessageModel) GetNotifications(userID int64) ([]*Message, error) {
 	if len(messages) > 0 {
 		latestID := messages[0].ID
 		userID := messages[0].ReceiverID
-		err = model.setLatestNotification(userID, latestID)
+		err = model.SetLatestNotification(userID, latestID)
 		if err != nil {
 			return nil, fmt.Errorf("Message/GetNotifications3: %w", err)
 		}
@@ -237,7 +237,7 @@ func (model *MessageModel) GetNotifications(userID int64) ([]*Message, error) {
 	return messages, nil
 }
 
-func (model *MessageModel) setLatestNotification(userID, latestID int64) error {
+func (model *MessageModel) SetLatestNotification(userID, latestID int64) error {
 	stmt := model.queries.Prepare("setLatestNotification")
 	_, err := stmt.Exec(userID, latestID)
 	if err != nil {

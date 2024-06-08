@@ -60,7 +60,7 @@ export default function Chat() {
   const pathname = usePathname().split("/").pop();
   const router = useRouter();
 
-  const { lastMessage, processedMessage, setProcessedMessage } =
+  const { lastMessage, processedMessage, setProcessedMessage, sendMessage } =
     useWebSocketContext();
 
   const handleEmojiSelect = useCallback((emoji: EmojiClickData) => {
@@ -197,9 +197,23 @@ export default function Chat() {
         if (data.type === "message_personal") {
           const newMessage = data.payload;
           const { receiverID, senderID, ID } = newMessage;
-          if (chatReceiverID === receiverID || chatReceiverID === senderID) {
+          if (
+            (chatReceiverID === receiverID || chatReceiverID === senderID) &&
+            activeChatName
+          ) {
             const messageWithID = { ...newMessage, ID: ID };
             setMessages((prevMessages) => [...prevMessages, messageWithID]);
+
+            const messagePayload = {
+              type:
+                tabValue === "group"
+                  ? "read_group_message"
+                  : "read_personal_message",
+              messageID: messageWithID.ID,
+              senderID: tabValue === "group" ? groupID : chatReceiverID,
+              readerID: authID,
+            };
+            sendMessage(JSON.stringify(messagePayload));
           } else {
             dispatch(
               addNewMessage({
@@ -311,7 +325,7 @@ export default function Chat() {
       >
         {activeChatName ? (
           <ChatContentHeader
-          initChat={initChat}
+            initChat={initChat}
             chatReceiverID={chatReceiverID}
             activeChatName={activeChatName}
           />

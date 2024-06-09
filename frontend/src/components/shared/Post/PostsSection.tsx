@@ -51,7 +51,6 @@ export default function PostsSection({
   const userData = useSelector((state: any) => state.authReducer.value);
 
   const matchesLG = useMediaQuery("(min-width:1200px)");
-  const matchesSM = useMediaQuery("(min-width:635px)");
 
   const inputRefs = useRef<{
     [key: number]: React.RefObject<HTMLTextAreaElement>;

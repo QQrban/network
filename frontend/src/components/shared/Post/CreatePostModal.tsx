@@ -8,6 +8,8 @@ import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
 import { StyledTextArea } from "../../Login/styles";
 import deleteIcon from "../../../../public/icons/delete.svg";
+import privateIcon from "../../../../public/icons/locked.svg";
+import publicIcon from "../../../../public/icons/unlocked.svg";
 import Image from "next/image";
 import IconButton from "@mui/material/IconButton";
 import successBtn from "../../../../public/icons/successBtn.svg";
@@ -18,6 +20,7 @@ import * as Yup from "yup";
 import { usePathname } from "next/navigation";
 import { fetchFromServer } from "@/lib/api";
 import { PostProps } from "@/types/types";
+import PostPrivacyModal from "./PostPrivacy";
 
 interface CreatePostModalProps {
   text: string;
@@ -43,6 +46,8 @@ export default function CreatePostModal({
 }: CreatePostModalProps) {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [privatePost, setPrivatePost] = useState<boolean>(false);
+  const [openPrivacyModal, setOpenPrivacyModal] = useState<boolean>(false);
 
   const pathname = usePathname().split("/").pop() || "";
 
@@ -118,6 +123,29 @@ export default function CreatePostModal({
         {text}
       </DialogTitle>
       <DialogContent>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <IconButton
+            onClick={() => setOpenPrivacyModal(true)}
+            sx={{
+              p: 0,
+            }}
+          >
+            <Image
+              width={27}
+              height={27}
+              src={privatePost ? privateIcon : publicIcon}
+              alt="private"
+            />
+          </IconButton>
+          <Typography
+            sx={{
+              fontFamily: "Gloria Hallelujah !important",
+              fontSize: "19px",
+            }}
+          >
+            {privatePost ? "Private" : "Public"}
+          </Typography>
+        </Box>
         <Box sx={{ position: "relative" }}>
           <StyledTextArea
             minRows={5}
@@ -214,6 +242,10 @@ export default function CreatePostModal({
           />
         </Box>
       </DialogActions>
+      <PostPrivacyModal
+        openPrivacyModal={openPrivacyModal}
+        setOpenPrivacyModal={setOpenPrivacyModal}
+      />
     </Dialog>
   );
 }

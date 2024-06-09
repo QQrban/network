@@ -1,4 +1,4 @@
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Item } from "@/components/shared/Item";
 import { useSelector } from "react-redux";
 import Link from "next/link";

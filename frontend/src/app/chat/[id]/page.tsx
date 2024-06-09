@@ -32,6 +32,7 @@ import {
   resetNewMessage,
 } from "@/redux/features/notifications/notificationsSlice";
 import { useWebSocketContext } from "@/context/WebSocketContext";
+import { Box, Button, useMediaQuery } from "@mui/material";
 
 export default function Chat() {
   const [tabValue, setTabValue] = useState<string>("private");
@@ -59,6 +60,10 @@ export default function Chat() {
   const pathname = usePathname().split("/").pop();
   const router = useRouter();
 
+  // MEDIA STATES
+  const matchesLG = useMediaQuery("(min-width:1200px)");
+  const [mediaSelectedChat, setMediaSelectedChat] = useState<boolean>(false);
+
   const { lastMessage, processedMessage, setProcessedMessage, sendMessage } =
     useWebSocketContext();
 
@@ -80,17 +85,23 @@ export default function Chat() {
       setChatReceiverID(chatterID);
       setActiveChatName(chatName);
       dispatch(removeSenderId({ senderId: chatterID }));
+      if (!matchesLG) {
+        setMediaSelectedChat(true);
+      }
       if (senderIds && senderIds.length === 0) {
         resetNewMessage();
       }
     },
-    [dispatch, senderIds]
+    [dispatch, senderIds, matchesLG]
   );
 
   const handleGroupClick = (groupID: number, groupChatName: string) => {
     setGroupID(groupID);
     setActiveChatName(groupChatName);
     dispatch(removeSenderId({ senderId: groupID, isGroup: true }));
+    if (!matchesLG) {
+      setMediaSelectedChat(true);
+    }
   };
 
   const fetchChatters = useCallback(async () => {
@@ -279,7 +290,6 @@ export default function Chat() {
         {authID && activeChatName
           ? messages?.map((message, index) => (
               <MessageItem
-                tabValue={tabValue}
                 key={`${message.ID}-${index}`}
                 message={message}
                 authID={authID}
@@ -289,7 +299,7 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </>
     );
-  }, [authID, activeChatName, messages, tabValue]);
+  }, [authID, activeChatName, messages]);
 
   const resetChatState = useCallback(() => {
     setActiveChatName("");
@@ -306,91 +316,113 @@ export default function Chat() {
 
   return (
     <ChatBoxStyles>
-      <ItemStyles radius="8px">
-        <ChatTabs
-          resetChatState={resetChatState}
-          tabValue={tabValue}
-          setTabValue={setTabValue}
-        />
-        <ChattersList
-          groupID={groupID}
-          tabValue={tabValue}
-          groups={groupChats}
-          chatReceiverID={chatReceiverID}
-          handleClick={handleClick}
-          handleGroupClick={handleGroupClick}
-          chatters={chatters}
-          content={tabValue}
-        />
-      </ItemStyles>
-      <Item
-        radius="8px"
-        sx={{ width: "100%", position: "relative", overflow: "hidden" }}
-      >
-        {activeChatName ? (
-          <ChatContentHeader
-            initChat={initChat}
-            chatReceiverID={chatReceiverID}
-            activeChatName={activeChatName}
-          />
-        ) : (
-          <CenterTextStyles>Please select a Chat</CenterTextStyles>
-        )}
-        <ChatContentStyles
+      {!matchesLG && mediaSelectedChat && (
+        <Button
+          onClick={() => setMediaSelectedChat(false)}
           sx={{
-            mt: tabValue === "group" ? "12px" : "0px",
+            fontFamily: "Gloria Hallelujah",
+            fontSize: "18px",
           }}
         >
-          {chatContent}
-        </ChatContentStyles>
-        {tabValue === "private" ? (
-          activeChatName && chatReceiverID !== undefined && initChat?.access ? (
-            <ChatTextArea
-              tabValue={tabValue}
+          &#x2190; View All Chats
+        </Button>
+      )}
+      {!mediaSelectedChat && (
+        <ItemStyles radius="8px">
+          <ChatTabs
+            resetChatState={resetChatState}
+            tabValue={tabValue}
+            setTabValue={setTabValue}
+          />
+          <ChattersList
+            groupID={groupID}
+            tabValue={tabValue}
+            groups={groupChats}
+            chatReceiverID={chatReceiverID}
+            handleClick={handleClick}
+            handleGroupClick={handleGroupClick}
+            chatters={chatters}
+            content={tabValue}
+          />
+        </ItemStyles>
+      )}
+      {(matchesLG || mediaSelectedChat) && (
+        <Item
+          radius="8px"
+          sx={{
+            width: "100%",
+            position: "relative",
+            overflow: "hidden",
+            height: matchesLG ? "100%" : "90%",
+          }}
+        >
+          {activeChatName ? (
+            <ChatContentHeader
               initChat={initChat}
-              text={text}
-              setText={setText}
-              chatters={chatters}
-              messages={messages}
-              setChatters={setChatters}
               chatReceiverID={chatReceiverID}
-              groupID={groupID}
-              setMessages={setMessages}
-              openEmoji={openEmoji}
-              setOpenEmoji={setOpenEmoji}
-              emojiPickerRef={emojiPickerRef}
-              handleEmojiSelect={handleEmojiSelect}
+              activeChatName={activeChatName}
             />
           ) : (
-            authID !== Number(pathname) &&
-            activeChatName && (
-              <ErrorTextStyles color="error">
-                This account is private. To send a message, you need to follow
-                it first
-              </ErrorTextStyles>
+            <CenterTextStyles>Please select a Chat</CenterTextStyles>
+          )}
+          <ChatContentStyles
+            sx={{
+              mt: tabValue === "group" ? "12px" : "0px",
+            }}
+          >
+            {chatContent}
+          </ChatContentStyles>
+          {tabValue === "private" ? (
+            activeChatName &&
+            chatReceiverID !== undefined &&
+            initChat?.access ? (
+              <ChatTextArea
+                tabValue={tabValue}
+                initChat={initChat}
+                text={text}
+                setText={setText}
+                chatters={chatters}
+                messages={messages}
+                setChatters={setChatters}
+                chatReceiverID={chatReceiverID}
+                groupID={groupID}
+                setMessages={setMessages}
+                openEmoji={openEmoji}
+                setOpenEmoji={setOpenEmoji}
+                emojiPickerRef={emojiPickerRef}
+                handleEmojiSelect={handleEmojiSelect}
+              />
+            ) : (
+              authID !== Number(pathname) &&
+              activeChatName && (
+                <ErrorTextStyles color="error">
+                  This account is private. To send a message, you need to follow
+                  it first
+                </ErrorTextStyles>
+              )
             )
-          )
-        ) : (
-          activeChatName && (
-            <ChatTextArea
-              tabValue={tabValue}
-              initChat={initChat}
-              text={text}
-              setText={setText}
-              messages={messages}
-              chatters={chatters}
-              setChatters={setChatters}
-              chatReceiverID={chatReceiverID}
-              groupID={groupID}
-              setMessages={setMessages}
-              openEmoji={openEmoji}
-              setOpenEmoji={setOpenEmoji}
-              emojiPickerRef={emojiPickerRef}
-              handleEmojiSelect={handleEmojiSelect}
-            />
-          )
-        )}
-      </Item>
+          ) : (
+            activeChatName && (
+              <ChatTextArea
+                tabValue={tabValue}
+                initChat={initChat}
+                text={text}
+                setText={setText}
+                messages={messages}
+                chatters={chatters}
+                setChatters={setChatters}
+                chatReceiverID={chatReceiverID}
+                groupID={groupID}
+                setMessages={setMessages}
+                openEmoji={openEmoji}
+                setOpenEmoji={setOpenEmoji}
+                emojiPickerRef={emojiPickerRef}
+                handleEmojiSelect={handleEmojiSelect}
+              />
+            )
+          )}
+        </Item>
+      )}
     </ChatBoxStyles>
   );
 }

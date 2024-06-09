@@ -16,7 +16,7 @@ interface ActiveLabelProps {
 }
 
 export default function NavigationMenu() {
-  const matchesSM = useMediaQuery("(min-width:613px)");
+  const matchesSM = useMediaQuery("(min-width:614px)");
   const matchesXS = useMediaQuery("(min-width:414px)");
 
   const pathname = usePathname();

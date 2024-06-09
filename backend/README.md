@@ -1,0 +1,1 @@
+This is backend for social-network written in Golang and using SQLite3 for persistency. 

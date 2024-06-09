@@ -54,7 +54,9 @@ export default function CreatePostModal({
   const [openSpecificFollowers, setOpenSpecificFollowers] =
     useState<boolean>(false);
 
-  const pathname = usePathname().split("/").pop() || "";
+  const url = usePathname();
+
+  const pathname = url.split("/").pop() || "";
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -141,37 +143,39 @@ export default function CreatePostModal({
         {text}
       </DialogTitle>
       <DialogContent>
-        <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <IconButton
-            onClick={handleOpenPrivacyModal}
-            sx={{
-              p: 0,
-            }}
-          >
-            <Image
-              width={27}
-              height={27}
-              src={
-                privatePost === "private" || privatePost === "manual"
-                  ? privateIcon
-                  : publicIcon
-              }
-              alt="private"
-            />
-          </IconButton>
-          <Typography
-            sx={{
-              fontFamily: "Gloria Hallelujah !important",
-              fontSize: "19px",
-            }}
-          >
-            {privatePost === "private" || privatePost === "manual"
-              ? privatePost === "private"
-                ? "Private"
-                : "Specific"
-              : "Public"}
-          </Typography>
-        </Box>
+        {!url.includes("group") && (
+          <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <IconButton
+              onClick={handleOpenPrivacyModal}
+              sx={{
+                p: 0,
+              }}
+            >
+              <Image
+                width={27}
+                height={27}
+                src={
+                  privatePost === "private" || privatePost === "manual"
+                    ? privateIcon
+                    : publicIcon
+                }
+                alt="private"
+              />
+            </IconButton>
+            <Typography
+              sx={{
+                fontFamily: "Gloria Hallelujah !important",
+                fontSize: "19px",
+              }}
+            >
+              {privatePost === "private" || privatePost === "manual"
+                ? privatePost === "private"
+                  ? "Private"
+                  : "Specific"
+                : "Public"}
+            </Typography>
+          </Box>
+        )}
         <Box sx={{ position: "relative" }}>
           <StyledTextArea
             minRows={5}

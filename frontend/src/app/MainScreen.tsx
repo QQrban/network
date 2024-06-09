@@ -18,6 +18,7 @@ import {
 import { usePathname } from "next/navigation";
 import { Screen } from "@/components/Main/styles";
 import { useWebSocketContext } from "@/context/WebSocketContext";
+import { MessageProps } from "@/types/types";
 
 export default function MainScreen({ children }: { children: ReactNode }) {
   const [showLoading, setShowLoading] = useState(true);
@@ -124,6 +125,36 @@ export default function MainScreen({ children }: { children: ReactNode }) {
           });
           const data = await response.json();
           if (data.length !== 0) dispatch(setNewNotification(true));
+
+          const unreadMessagesResponse = await fetchFromServer(
+            "/messages/latest",
+            {
+              credentials: "include",
+            }
+          );
+          if (unreadMessagesResponse.ok) {
+            const messages = await unreadMessagesResponse.json();
+            console.log(messages);
+            const userMessages = messages.userMessages;
+            userMessages.forEach((message: MessageProps) => {
+              dispatch(
+                addNewMessage({
+                  senderId: message.senderID,
+                  isGroup: false,
+                })
+              );
+            });
+
+            const groupMessages = messages.groupMessages;
+            groupMessages.forEach((message: MessageProps) => {
+              dispatch(
+                addNewMessage({
+                  senderId: message.receiverID,
+                  isGroup: true,
+                })
+              );
+            });
+          }
         }
       } catch (error) {
         console.error(error);

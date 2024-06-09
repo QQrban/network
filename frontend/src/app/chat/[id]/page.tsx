@@ -30,7 +30,6 @@ import {
   addNewMessage,
   removeSenderId,
   resetNewMessage,
-  setNewNotification,
 } from "@/redux/features/notifications/notificationsSlice";
 import { useWebSocketContext } from "@/context/WebSocketContext";
 
@@ -252,8 +251,11 @@ export default function Chat() {
     authID,
     chatReceiverID,
     groupID,
+    sendMessage,
     processedMessage,
     setProcessedMessage,
+    activeChatName,
+    tabValue,
   ]);
 
   useEffect(() => {

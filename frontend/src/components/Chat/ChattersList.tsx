@@ -36,7 +36,6 @@ export default function ChattersList({
   const newMessageGroupIds = useSelector(
     (state: any) => state.notificationsReducer.groupIds
   );
-  console.log(chatters);
 
   return (
     <List aria-label="contacts">

@@ -12,19 +12,41 @@ import { Typography, styled } from "@mui/material";
 import SelectSpecificFollowers from "./SelectSpecificFollowers";
 
 interface PostPrivacyModalProps {
+  openSpecificFollowers: boolean;
+  setOpenSpecificFollowers: React.Dispatch<boolean>;
   openPrivacyModal: boolean;
   setOpenPrivacyModal: React.Dispatch<boolean>;
+  privatePost: "public" | "private" | "manual";
+  setPrivatePost: React.Dispatch<
+    React.SetStateAction<"public" | "private" | "manual">
+  >;
+  allowedUsers: number[];
+  setAllowedUsers: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export default function PostPrivacyModal({
   openPrivacyModal,
+  openSpecificFollowers,
   setOpenPrivacyModal,
+  setOpenSpecificFollowers,
+  privatePost,
+  setPrivatePost,
+  allowedUsers,
+  setAllowedUsers,
 }: PostPrivacyModalProps) {
-  const [openSpecificFollowers, setOpenSpecificFollowers] =
-    React.useState<boolean>(false);
-
   const handleClose = () => {
     setOpenPrivacyModal(false);
+    setOpenSpecificFollowers(false);
+  };
+
+  const handlePrivacy = (value: "public" | "private" | "manual") => {
+    setPrivatePost(value);
+    if (value === "manual") {
+      setOpenSpecificFollowers(true);
+    } else {
+      setAllowedUsers([]);
+      setOpenSpecificFollowers(false);
+    }
   };
 
   return (
@@ -49,24 +71,24 @@ export default function PostPrivacyModal({
             </FormLabel>
             <RadioGroup
               aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="public"
+              value={privatePost}
               name="radio-buttons-group"
+              onChange={(e) =>
+                handlePrivacy(e.target.value as "public" | "private" | "manual")
+              }
             >
               <FormControlLabel
-                onClick={() => setOpenSpecificFollowers(false)}
                 value="public"
                 control={<Radio />}
                 label={<StyledTypography>Public</StyledTypography>}
               />
               <FormControlLabel
-                onClick={() => setOpenSpecificFollowers(false)}
                 value="private"
                 control={<Radio />}
                 label={<StyledTypography>Private</StyledTypography>}
               />
               <FormControlLabel
-                onClick={() => setOpenSpecificFollowers(true)}
-                value="specific"
+                value="manual"
                 control={<Radio />}
                 label={<StyledTypography>Specific Followers</StyledTypography>}
               />
@@ -74,11 +96,15 @@ export default function PostPrivacyModal({
           </FormControl>
           <SelectSpecificFollowers
             openSpecificFollowers={openSpecificFollowers}
-            setOpenSpecificFollowers={setOpenSpecificFollowers}
+            allowedUsers={allowedUsers}
+            setAllowedUsers={setAllowedUsers}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} autoFocus>
+          <Button
+            sx={{ fontFamily: "Gloria Hallelujah", fontSize: "20px" }}
+            onClick={handleClose}
+          >
             Confirm
           </Button>
         </DialogActions>

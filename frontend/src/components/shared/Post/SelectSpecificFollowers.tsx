@@ -13,28 +13,30 @@ import { Typography } from "@mui/material";
 
 interface SelectSpecificFollowersProps {
   openSpecificFollowers: boolean;
-  setOpenSpecificFollowers: React.Dispatch<boolean>;
+  setAllowedUsers: React.Dispatch<React.SetStateAction<number[]>>;
+  allowedUsers: number[];
 }
 
 export default function SelectSpecificFollowers({
   openSpecificFollowers,
-  setOpenSpecificFollowers,
+  setAllowedUsers,
+  allowedUsers,
 }: SelectSpecificFollowersProps) {
-  const [checked, setChecked] = useState([1]);
   const [followersList, setFollowersList] = useState<ContactsProps[]>([]);
 
   const authID = useSelector((state: any) => state.authReducer.value.id);
 
   const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+    const currentIndex = allowedUsers.indexOf(value);
+    const newChecked = [...allowedUsers];
 
     if (currentIndex === -1) {
       newChecked.push(value);
     } else {
       newChecked.splice(currentIndex, 1);
     }
-    setChecked(newChecked);
+
+    setAllowedUsers(newChecked);
   };
 
   useEffect(() => {
@@ -70,7 +72,7 @@ export default function SelectSpecificFollowers({
         Followers
       </Typography>
       {followersList.length > 0
-        ? followersList.map((follower, index) => (
+        ? followersList.map((follower) => (
             <ListItem
               key={follower.ID}
               onClick={handleToggle(follower.ID)}
@@ -78,7 +80,7 @@ export default function SelectSpecificFollowers({
                 <Checkbox
                   edge="end"
                   onChange={handleToggle(follower.ID)}
-                  checked={checked.indexOf(follower.ID) !== -1}
+                  checked={allowedUsers.indexOf(follower.ID) !== -1}
                 />
               }
               disablePadding

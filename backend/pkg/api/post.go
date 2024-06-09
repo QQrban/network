@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -72,6 +73,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if post.Post.Status == "manual" {
+		fmt.Println("Manual post:", post)
 		if post.AllowedUsers == nil {
 			log.Println("Tried to insert a post with privacy \"MANUAL\", but with no allowedUsers array defined")
 			writeStatusError(w, http.StatusBadRequest)

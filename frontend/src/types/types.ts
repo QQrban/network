@@ -51,7 +51,7 @@ export interface PostProps {
   groupID: number;
   images: string;
   postID: number;
-  status: "public";
+  status: "private" | "public" | "manual";
 }
 
 export interface EventProps {

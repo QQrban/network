@@ -46,8 +46,13 @@ export default function CreatePostModal({
 }: CreatePostModalProps) {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [privatePost, setPrivatePost] = useState<boolean>(false);
+  const [privatePost, setPrivatePost] = useState<
+    "public" | "private" | "manual"
+  >("public");
+  const [allowedUsers, setAllowedUsers] = useState<number[]>([]);
   const [openPrivacyModal, setOpenPrivacyModal] = useState<boolean>(false);
+  const [openSpecificFollowers, setOpenSpecificFollowers] =
+    useState<boolean>(false);
 
   const pathname = usePathname().split("/").pop() || "";
 
@@ -77,10 +82,16 @@ export default function CreatePostModal({
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
       formData.append("content", values.content);
+      formData.append("status", privatePost);
       !isProfile && formData.append("groupID", pathname);
       selectedImages.forEach((image) => {
         formData.append("images", image);
       });
+
+      if (allowedUsers.length > 0) {
+        formData.append("allowedUsers", JSON.stringify(allowedUsers));
+      }
+      console.log(status, allowedUsers);
 
       const response = await fetchFromServer("/post", {
         method: "POST",
@@ -99,6 +110,13 @@ export default function CreatePostModal({
       }
     },
   });
+
+  const handleOpenPrivacyModal = () => {
+    setOpenPrivacyModal(true);
+    if (privatePost === "manual") {
+      setOpenSpecificFollowers(true);
+    }
+  };
 
   const handleClose = () => {
     setOpenPostModal(false);
@@ -125,7 +143,7 @@ export default function CreatePostModal({
       <DialogContent>
         <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <IconButton
-            onClick={() => setOpenPrivacyModal(true)}
+            onClick={handleOpenPrivacyModal}
             sx={{
               p: 0,
             }}
@@ -133,7 +151,11 @@ export default function CreatePostModal({
             <Image
               width={27}
               height={27}
-              src={privatePost ? privateIcon : publicIcon}
+              src={
+                privatePost === "private" || privatePost === "manual"
+                  ? privateIcon
+                  : publicIcon
+              }
               alt="private"
             />
           </IconButton>
@@ -143,7 +165,11 @@ export default function CreatePostModal({
               fontSize: "19px",
             }}
           >
-            {privatePost ? "Private" : "Public"}
+            {privatePost === "private" || privatePost === "manual"
+              ? privatePost === "private"
+                ? "Private"
+                : "Specific"
+              : "Public"}
           </Typography>
         </Box>
         <Box sx={{ position: "relative" }}>
@@ -243,6 +269,12 @@ export default function CreatePostModal({
         </Box>
       </DialogActions>
       <PostPrivacyModal
+        openSpecificFollowers={openSpecificFollowers}
+        setOpenSpecificFollowers={setOpenSpecificFollowers}
+        privatePost={privatePost}
+        allowedUsers={allowedUsers}
+        setAllowedUsers={setAllowedUsers}
+        setPrivatePost={setPrivatePost}
         openPrivacyModal={openPrivacyModal}
         setOpenPrivacyModal={setOpenPrivacyModal}
       />

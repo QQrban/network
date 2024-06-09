@@ -143,6 +143,14 @@ export default function PostsSection({
                       >
                         {post.author.firstName} {post.author.lastName}
                       </Typography>
+                      {post.status === "private" && (
+                        <Typography
+                          sx={{ fontSize: "12px", color: "#8a8a8a" }}
+                          component="span"
+                        >
+                          (Post is private)
+                        </Typography>
+                      )}
                       <Typography
                         sx={{
                           color: "#BEBEBE",

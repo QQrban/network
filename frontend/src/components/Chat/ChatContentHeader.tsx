@@ -14,8 +14,6 @@ export default function ChatContentHeader({
   chatReceiverID,
   initChat,
 }: ChatContentHeaderProps) {
-  console.log(initChat);
-
   return (
     <Box
       sx={{

@@ -1,4 +1,4 @@
-import { Box, SxProps, Theme, Typography, styled } from "@mui/material";
+import { Box, Typography, styled } from "@mui/material";
 import { Item } from "../shared/Item";
 
 export const ChatBoxStyles = styled(Box)`
@@ -10,6 +10,13 @@ export const ChatBoxStyles = styled(Box)`
   justify-content: center;
   width: 100%;
   height: calc(100vh - 160px);
+  @media (max-width: 1200px) {
+    display: block;
+  }
+  @media (max-width: 614px) {
+    padding: 20px;
+    height: 90%;
+  }
 `;
 
 export const ItemStyles = styled(Item)`
@@ -29,6 +36,10 @@ export const ItemStyles = styled(Item)`
   }
   &::-webkit-scrollbar-track {
     background-color: transparent;
+  }
+  @media (max-width: 1200px) {
+    width: 100%;
+    height: 100%;
   }
 `;
 

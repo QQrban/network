@@ -2,7 +2,7 @@ package api
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 	"social-network/pkg/models"
@@ -32,6 +32,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	GroupID := r.FormValue("groupID")
 	AboutID := r.FormValue("aboutID")
 	Status := r.FormValue("status")
+	Allowed := r.FormValue("allowedUsers")
 
 	if GroupID != "" && GroupID != "null" {
 		groupID, err := strconv.ParseInt(GroupID, 10, 64)
@@ -72,9 +73,10 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	var allowedUsers []int64
 	if post.Post.Status == "manual" {
-		fmt.Println("Manual post:", post)
-		if post.AllowedUsers == nil {
+		err := json.Unmarshal([]byte(Allowed), &allowedUsers)
+		if err != nil {
 			log.Println("Tried to insert a post with privacy \"MANUAL\", but with no allowedUsers array defined")
 			writeStatusError(w, http.StatusBadRequest)
 			return
@@ -83,7 +85,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		// This is a crappy way of doing this, but I want to make sure the provided user IDs are valid
 		// That way we don't end up with an "orphan" post that nobody has access to
 		// A much better alternative would be to use a transaction, but we don't have the framework set up for that
-		for i, userID := range post.AllowedUsers {
+		for i, userID := range allowedUsers {
 			_, err := Database.User.GetByID(userID)
 			if err != nil {
 				log.Printf("Provided userID %v at allowedUsers[%v] is not valid\n", userID, i)
@@ -118,7 +120,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if post.Post.Status == "manual" {
-		for _, userID := range post.AllowedUsers {
+		for _, userID := range allowedUsers {
 			err = Database.Post.InsertAllowedUser(id, userID)
 			panicIfErr(err)
 		}

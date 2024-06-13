@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import NotificationsSection from "@/components/Notifications/NotificationsSection";
 
 import { useEffect, useState } from "react";
@@ -8,9 +8,9 @@ import { fetchFromServer } from "@/lib/api";
 import { NotificationProps } from "@/types/types";
 
 export default function Notifications() {
-  // const [notifications, setNotifications] = useState<Notification[]>([]);
   const [iNotifications, setINotifications] = useState<NotificationProps[]>([]);
 
+  const matchesMD = useMediaQuery("(min-width:950px)");
   useEffect(() => {
     const fetchNotifications = async () => {
       const response = await fetchFromServer("/notifications/all", {
@@ -57,7 +57,7 @@ export default function Notifications() {
   return (
     <Box
       sx={{
-        p: "40px",
+        p: matchesMD ? "40px" : "20px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -65,7 +65,10 @@ export default function Notifications() {
     >
       <Typography
         component="h2"
-        sx={{ fontFamily: "Gloria Hallelujah !important", fontSize: "50px" }}
+        sx={{
+          fontFamily: "Gloria Hallelujah !important",
+          fontSize: matchesMD ? "50px" : "35px",
+        }}
       >
         Notifications
       </Typography>
@@ -76,7 +79,7 @@ export default function Notifications() {
             display: "flex",
             flexDirection: "column",
             gap: "23px",
-            width: "700px",
+            width: matchesMD ? "700px" : "100%",
           }}
         >
           <NotificationsSection
@@ -85,7 +88,7 @@ export default function Notifications() {
           />
         </Box>
       ) : (
-        <Typography sx={{ fontSize: "30px" }}>
+        <Typography sx={{ fontSize: matchesMD ? "30px" : "15px" }}>
           You have 0 notifications.
         </Typography>
       )}

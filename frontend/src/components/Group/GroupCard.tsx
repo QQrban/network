@@ -76,7 +76,6 @@ export default function GroupCard({
         const response = await fetchFromServer(`/group/${groupID}/events`, {
           credentials: "include",
         });
-
         if (response.ok) {
           const data = await response.json();
           setEvents(data);

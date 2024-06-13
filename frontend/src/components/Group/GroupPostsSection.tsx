@@ -7,6 +7,7 @@ import { fetchFromServer } from "@/lib/api";
 import { PostProps, CommentProps, ContactsProps } from "@/types/types";
 import { Box, Typography } from "@mui/material";
 import CreatePostModal from "../shared/Post/CreatePostModal";
+import CircularIndeterminate from "../shared/CircularIndeterminate";
 
 interface GroupPostsSectionProps {
   openPostModal: boolean;
@@ -22,20 +23,29 @@ export default function GroupPostsSection({
   matchesLG,
 }: GroupPostsSectionProps) {
   const [posts, setPosts] = useState<PostProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetchFromServer(`/group/${pathName}/posts`, {
-        credentials: "include",
-      });
-      const data = await response.json();
-      const postsWithComments = data.map((post: PostProps) => ({
-        ...post,
-        comments: post.comments || [],
-      }));
-      setPosts(postsWithComments);
+      try {
+        const response = await fetchFromServer(`/group/${pathName}/posts`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+        const postsWithComments = data.map((post: PostProps) => ({
+          ...post,
+          comments: post.comments || [],
+        }));
+        setPosts(postsWithComments);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchPosts();
+    setTimeout(() => {
+      fetchPosts();
+    }, 1000);
   }, [pathName]);
 
   const addNewPost = (newPost: PostProps) => {
@@ -86,7 +96,7 @@ export default function GroupPostsSection({
           posts={posts}
           addCommentToPost={addCommentToPost}
         />
-      ) : (
+      ) : !loading ? (
         <Typography
           sx={{
             mt: "23px",
@@ -96,6 +106,10 @@ export default function GroupPostsSection({
         >
           This group has no posts yet!
         </Typography>
+      ) : (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CircularIndeterminate />
+        </Box>
       )}
       <CreatePostModal
         text="Create Group Post"

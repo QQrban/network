@@ -55,7 +55,9 @@ export default function GroupPage() {
         console.error("Failed to fetch groups:", error);
       }
     };
-    fetchGroup();
+    setTimeout(() => {
+      fetchGroup();
+    }, 100);
   }, [pathname, isMember]);
 
   return (

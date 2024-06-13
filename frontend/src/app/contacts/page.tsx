@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Tab, Tabs, Typography, styled } from "@mui/material";
+import {
+  Box,
+  Tab,
+  Tabs,
+  Typography,
+  styled,
+  useMediaQuery,
+} from "@mui/material";
 
 import FollowersSection from "@/components/shared/SharedFollowers/FollowersSection";
 import { useSelector } from "react-redux";
@@ -19,6 +26,14 @@ const StyledBox = styled(Box)`
   justify-content: center;
 `;
 
+const StyledSmallBox = styled(Box)`
+  padding: 0;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
 export default function Followers() {
   const [activeTab, setActiveTab] = useState<string>("Followers");
   const profileId = useSelector((state: any) => state.authReducer.value.id);
@@ -31,12 +46,16 @@ export default function Followers() {
     handleActiveTab(newValue);
   };
 
+  const matchesMD = useMediaQuery("(min-width:950px)");
+
   return (
     <Box>
       <Tabs
         value={activeTab}
         onChange={handleChange}
         aria-label="Followers tabs"
+        variant="scrollable"
+        
       >
         <StyledTab label="Followers" value="Followers" />
         <StyledTab label="Followings" value="Following" />
@@ -46,15 +65,22 @@ export default function Followers() {
         component="h2"
         variant="h4"
         sx={{
-          p: "24px 0 0 210px",
+          p: matchesMD ? "24px 0 0 210px" : "0",
+          textAlign: matchesMD ? "left" : "center",
           fontFamily: "SchoolBell !important",
         }}
       >
         {activeTab}
       </Typography>
-      <StyledBox>
-        <FollowersSection activeTab={activeTab} profileId={profileId} />
-      </StyledBox>
+      {matchesMD ? (
+        <StyledBox>
+          <FollowersSection activeTab={activeTab} profileId={profileId} />
+        </StyledBox>
+      ) : (
+        <StyledSmallBox>
+          <FollowersSection activeTab={activeTab} profileId={profileId} />
+        </StyledSmallBox>
+      )}
     </Box>
   );
 }

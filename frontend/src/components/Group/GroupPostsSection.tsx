@@ -5,7 +5,7 @@ import CreatePost from "../shared/Post/CreatePost";
 import PostsSection from "../shared/Post/PostsSection";
 import { fetchFromServer } from "@/lib/api";
 import { PostProps, CommentProps, ContactsProps } from "@/types/types";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import CreatePostModal from "../shared/Post/CreatePostModal";
 import CircularIndeterminate from "../shared/CircularIndeterminate";
 
@@ -24,6 +24,8 @@ export default function GroupPostsSection({
 }: GroupPostsSectionProps) {
   const [posts, setPosts] = useState<PostProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const matchesMD = useMediaQuery("(min-width:875px)");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -82,9 +84,10 @@ export default function GroupPostsSection({
   return (
     <Box
       sx={{
-        width: matchesLG ? "600px" : "100%",
+        width: matchesMD ? "600px" : "100%",
         display: "flex",
         flexDirection: "column",
+        m: matchesLG ? "" : "0 auto",
         gap: "23px",
       }}
     >

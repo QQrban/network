@@ -251,7 +251,10 @@ export default function GroupCard({
           sx={{
             mt: "23px",
             display: "flex",
-            flexDirection: "column",
+            flexDirection: matchesLG ? "column" : "row",
+            flexWrap: matchesLG ? "unset" : "wrap",
+            alignItems: "center",
+            justifyContent: "center",
             gap: "23px",
           }}
         >

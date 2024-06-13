@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Typography, styled } from "@mui/material";
+import { Box, Typography, styled, useMediaQuery } from "@mui/material";
 import { Item } from "../shared/Item";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,14 +31,16 @@ export default function GroupAddInfo({
   matchesLG,
 }: GroupAddInfoProps) {
   const [expandAbout, setExpandAbout] = useState<boolean>(false);
+  const matchesMD = useMediaQuery("(min-width:875px)");
 
   return (
     <Box
       sx={{
-        width: matchesLG ? "400px" : "100%",
+        width: matchesLG ? "400px" : matchesMD ? "600px" : "100%",
         position: matchesLG ? "sticky" : "relative",
         top: matchesLG ? "90px" : "0",
         alignSelf: "flex-start",
+        m: matchesLG ? "" : "0 auto",
         display: "flex",
         flexDirection: "column",
         gap: "23px",

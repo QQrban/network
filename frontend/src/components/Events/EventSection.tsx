@@ -1,7 +1,7 @@
 "use client";
 
 import { Item } from "../shared/Item";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import eventBg from "../../../public/eventBG.svg";
 import confirmedBtn from "../../../public/icons/confirmButton.svg";
 import errorBtn from "../../../public/icons/errorBtn.svg";
@@ -23,6 +23,9 @@ export default function EventSection({
   events,
   statusHandler,
 }: EventSectionProps) {
+  const [showFull, setShowFull] = useState<boolean>(false);
+  const matchesXS = useMediaQuery("(min-width:500px)");
+
   const myStatusHandler = async (eventID: number, status: boolean) => {
     const eventStatus = status ? "Going" : "Not Going";
     const option: number = eventStatus === "Going" ? 1 : 2;
@@ -43,6 +46,8 @@ export default function EventSection({
     <>
       {events.map((event) => (
         <EventItem
+          showFull={showFull}
+          setShowFull={setShowFull}
           key={event.ID}
           event={event}
           myStatusHandler={myStatusHandler}
@@ -55,9 +60,16 @@ export default function EventSection({
 interface EventItemProps {
   event: EventProps;
   myStatusHandler: (eventID: number, status: boolean) => void;
+  showFull: boolean;
+  setShowFull: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function EventItem({ event, myStatusHandler }: EventItemProps) {
+function EventItem({
+  event,
+  myStatusHandler,
+  showFull,
+  setShowFull,
+}: EventItemProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   const handleConfirmClick = (status: boolean) => {
@@ -88,7 +100,9 @@ function EventItem({ event, myStatusHandler }: EventItemProps) {
         p: "10px",
         position: "relative",
         minWidth: "350px",
+        flexShrink: 0,
         maxWidth: "350px",
+        minHeight: "300px",
       }}
       radius="12px"
     >
@@ -128,7 +142,23 @@ function EventItem({ event, myStatusHandler }: EventItemProps) {
           wordBreak: "break-word",
         }}
       >
-        {event.description}
+        {event.description.length > 200 ? (
+          <Box>
+            {showFull ? event.description : event.description.slice(0, 150)}
+            <Typography
+              sx={{
+                cursor: "pointer",
+              }}
+              color="primary"
+              onClick={() => setShowFull(!showFull)}
+              component="span"
+            >
+              {showFull ? "...Show Less" : "...Show More"}
+            </Typography>
+          </Box>
+        ) : (
+          event.description
+        )}
       </Box>
       <Box sx={{ maxWidth: "200px" }}>
         <ConfirmBtn

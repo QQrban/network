@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import profileIcon from "../../../../public/icons/profile.svg";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -21,6 +21,8 @@ export default function GroupPage() {
   const [isMember, setIsMember] = useState<boolean>(false);
   // /group/([0-9]+)/(join|accept|reject) - api to send join group request|accept|reject
   const pathname = usePathname().split("/").pop();
+
+  const matchesMD = useMediaQuery("(min-width:950px)");
 
   useEffect(() => {
     const fetchGroup = async () => {

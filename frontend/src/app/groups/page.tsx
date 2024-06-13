@@ -3,7 +3,7 @@
 import Box from "@mui/material/Box";
 import { Item } from "@/components/shared/Item";
 import GroupItem from "@/components/Groups/GroupItem";
-import { Typography } from "@mui/material";
+import { Typography, useMediaQuery } from "@mui/material";
 import SearchBar from "@/components/Groups/SearchBar";
 import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
 import ConfirmBtn from "@/components/shared/ConfirmBtn";
@@ -17,6 +17,9 @@ export default function Groups() {
   const [groups, setGroups] = useState<GroupProps[]>([]);
   const [createdGroup, setCreatedGroup] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+
+  const matchesMD = useMediaQuery("(min-width:950px)");
+  const matchesSM = useMediaQuery("(min-width:750px)");
 
   const fetchGroups = async () => {
     try {
@@ -79,11 +82,16 @@ export default function Groups() {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: matchesSM ? "center" : "left",
+          flexDirection: matchesSM ? "row" : "column",
+          gap: matchesSM ? "0px" : "23px",
         }}
       >
         <Typography
-          sx={{ fontFamily: "Gloria Hallelujah" }}
+          sx={{
+            fontFamily: "Gloria Hallelujah",
+            fontSize: matchesSM ? "48px" : "30px",
+          }}
           component="h2"
           variant="h3"
         >
@@ -110,12 +118,13 @@ export default function Groups() {
       <Box
         sx={{
           display: "flex",
+          flexDirection: matchesMD ? "row" : "column",
           gap: "23px",
         }}
       >
         <Item
           sx={{
-            width: "70%",
+            width: matchesMD ? "70%" : "100%",
             overflow: "hidden",
             alignSelf: "flex-start",
           }}
@@ -145,7 +154,7 @@ export default function Groups() {
             </Typography>
           )}
         </Item>
-        <Box sx={{ width: "30%" }}>
+        <Box sx={{ width: matchesMD ? "30%" : "100%" }}>
           <SuggestionsGroups />
         </Box>
       </Box>

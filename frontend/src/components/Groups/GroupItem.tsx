@@ -5,7 +5,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
-import { Divider, SpeedDial, SpeedDialAction, Typography } from "@mui/material";
+import {
+  Divider,
+  SpeedDial,
+  SpeedDialAction,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,6 +39,8 @@ export default function GroupItem({
   ownerID,
   leaveGroup,
 }: GroupItemProps) {
+  const matchesSM = useMediaQuery("(min-width:750px)");
+
   const [open, setOpen] = useState<boolean>(false);
 
   const authID = useSelector((state: any) => state.authReducer.value.id);
@@ -69,7 +77,7 @@ export default function GroupItem({
               primary={
                 <Typography
                   sx={{
-                    fontSize: "28px",
+                    fontSize: matchesSM ? "28px" : "20px",
                     fontFamily: "Schoolbell !important",
                     textTransform: "capitalize",
                   }}
@@ -82,11 +90,14 @@ export default function GroupItem({
           {!pendingRequest && authID !== ownerID ? (
             <SpeedDial
               onClick={(e) => e.preventDefault()}
-              ariaLabel="SpeedDial tooltip example"
+              ariaLabel="SpeedDial"
               icon={<MoreVertIcon sx={{ color: "white" }} />}
               direction="left"
               FabProps={{
                 sx: {
+                  position: "absolute",
+                  right: "10px",
+                  transform: "translateY(-50%)",
                   backgroundColor: "#6495ED",
                   width: "36px",
                   height: "32px",
@@ -98,6 +109,11 @@ export default function GroupItem({
             >
               <SpeedDialAction
                 onClick={openModal}
+                sx={{
+                  position: "absolute",
+                  top: "10px",
+                  transform: "translateX(-50%)",
+                }}
                 tooltipTitle={
                   <Typography
                     sx={{
@@ -109,7 +125,10 @@ export default function GroupItem({
                 }
                 icon={
                   <Image
-                    style={{ width: "25px", height: "25px" }}
+                    style={{
+                      width: "25px",
+                      height: "25px",
+                    }}
                     src={leaveIcon}
                     alt="leave"
                   />

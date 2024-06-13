@@ -1,4 +1,4 @@
-import { Box, InputBase, IconButton } from "@mui/material";
+import { Box, InputBase, IconButton, useMediaQuery } from "@mui/material";
 import Image from "next/image";
 import searchIcon from "../../../public/icons/search.svg";
 import { fetchFromServer } from "@/lib/api";
@@ -79,6 +79,8 @@ export default function SearchBar() {
     setFilteredGroups([]);
   };
 
+  const matchesSM = useMediaQuery("(min-width:750px)");
+
   return (
     <Box
       ref={searchBoxRef}
@@ -87,7 +89,8 @@ export default function SearchBar() {
         p: "2px 4px",
         display: "flex",
         alignItems: "center",
-        width: 300,
+        width: matchesSM ? "300px" : "100%",
+        maxWidth: "300px",
         border: "2px solid #4a4a4a",
         borderRadius: searching ? "16px 16px 0 0" : "16px",
         position: "relative",
@@ -119,15 +122,16 @@ export default function SearchBar() {
             borderRadius: "0 0 10px 10px",
             background: "white",
             position: "absolute",
-            width: 300,
+            width: matchesSM ? "300px" : "100%",
+            maxWidth: "300px",
             height: 150,
             overflowY: "scroll",
             border: "2px solid #4b4b4b",
             borderTop: "none",
             top: 40,
-            left: "-2px",
+            left: matchesSM ? "-2px" : "0px",
             padding: "10px",
-            zIndex: 1,
+            zIndex: 2,
           }}
         >
           {filteredGroups.map((group) => (

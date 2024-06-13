@@ -21,12 +21,14 @@ interface GroupCardProps {
   id: number;
   groupTitle: string;
   pendingRequest: boolean;
+  matchesLG: boolean;
 }
 
 export default function JoinGroupCard({
   groupTitle,
   id,
   pendingRequest,
+  matchesLG,
 }: GroupCardProps) {
   const [requestStatus, setRequestStatus] = useState<boolean>(pendingRequest);
 
@@ -48,7 +50,7 @@ export default function JoinGroupCard({
   };
 
   return (
-    <Box sx={{ width: "600px" }}>
+    <Box sx={{ width: matchesLG ? "600px" : "100%" }}>
       <Item
         sx={{
           overflow: "hidden",

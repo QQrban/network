@@ -21,8 +21,7 @@ export default function GroupPage() {
   const [isMember, setIsMember] = useState<boolean>(false);
   // /group/([0-9]+)/(join|accept|reject) - api to send join group request|accept|reject
   const pathname = usePathname().split("/").pop();
-
-  const matchesMD = useMediaQuery("(min-width:950px)");
+  const matchesLG = useMediaQuery("(min-width:1200px)");
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -64,6 +63,7 @@ export default function GroupPage() {
       sx={{
         p: "40px",
         display: "flex",
+        flexDirection: matchesLG ? "row" : "column",
         justifyContent: "center",
         gap: "23px",
         position: "relative",
@@ -74,6 +74,7 @@ export default function GroupPage() {
           {isMember ? (
             <>
               <GroupCard
+                matchesLG={matchesLG}
                 openPostModal={openPostModal}
                 members={members}
                 setOpenPostModal={setOpenPostModal}
@@ -84,6 +85,7 @@ export default function GroupPage() {
                 groupID={mainInfo.ID}
               />
               <GroupAddInfo
+                matchesLG={matchesLG}
                 isMember={isMember}
                 description={mainInfo.description}
                 profileIcon={profileIcon}
@@ -93,11 +95,13 @@ export default function GroupPage() {
           ) : (
             <>
               <JoinGroupCard
+                matchesLG={matchesLG}
                 groupTitle={mainInfo.title}
                 id={mainInfo.ID}
                 pendingRequest={mainInfo.pendingRequest}
               />
               <GroupAddInfo
+                matchesLG={matchesLG}
                 isMember={isMember}
                 description={mainInfo.description}
                 profileIcon={profileIcon}

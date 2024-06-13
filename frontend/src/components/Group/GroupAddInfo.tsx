@@ -20,6 +20,7 @@ interface GroupAddInfoProps {
   profileIcon: string;
   owner: ContactsProps;
   isMember: boolean;
+  matchesLG: boolean;
 }
 
 export default function GroupAddInfo({
@@ -27,15 +28,16 @@ export default function GroupAddInfo({
   profileIcon,
   owner,
   isMember,
+  matchesLG,
 }: GroupAddInfoProps) {
   const [expandAbout, setExpandAbout] = useState<boolean>(false);
 
   return (
     <Box
       sx={{
-        width: "400px",
-        position: "sticky",
-        top: "90px",
+        width: matchesLG ? "400px" : "100%",
+        position: matchesLG ? "sticky" : "relative",
+        top: matchesLG ? "90px" : "0",
         alignSelf: "flex-start",
         display: "flex",
         flexDirection: "column",
@@ -113,8 +115,8 @@ export default function GroupAddInfo({
       {isMember && (
         <Item
           sx={{
-            position: "sticky",
-            top: "90px",
+            position: matchesLG ? "sticky" : "relative",
+            top: matchesLG ? "90px" : "0",
             alignSelf: "flex-start",
             width: "100%",
             p: "14px",

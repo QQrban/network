@@ -12,12 +12,14 @@ interface GroupPostsSectionProps {
   openPostModal: boolean;
   setOpenPostModal: React.Dispatch<boolean>;
   pathName: string | undefined;
+  matchesLG: boolean;
 }
 
 export default function GroupPostsSection({
   openPostModal,
   setOpenPostModal,
   pathName,
+  matchesLG,
 }: GroupPostsSectionProps) {
   const [posts, setPosts] = useState<PostProps[]>([]);
 
@@ -70,7 +72,7 @@ export default function GroupPostsSection({
   return (
     <Box
       sx={{
-        width: "600px",
+        width: matchesLG ? "600px" : "100%",
         display: "flex",
         flexDirection: "column",
         gap: "23px",

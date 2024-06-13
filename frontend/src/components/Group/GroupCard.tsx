@@ -47,6 +47,7 @@ interface GroupCardProps {
   members: ContactsProps[];
   pathName: string | undefined;
   groupID: number;
+  matchesLG: boolean;
 }
 
 export default function GroupCard({
@@ -58,6 +59,7 @@ export default function GroupCard({
   members,
   pathName,
   groupID,
+  matchesLG,
 }: GroupCardProps) {
   const [openInviteModal, setOpenInviteModal] = useState<boolean>(false);
   const [openEventModal, setOpenEventModal] = useState<boolean>(false);
@@ -102,7 +104,7 @@ export default function GroupCard({
   };
 
   return (
-    <Box sx={{ width: "600px" }}>
+    <Box sx={{ width: matchesLG ? "600px" : "100%" }}>
       <Item
         sx={{
           overflow: "hidden",
@@ -234,9 +236,11 @@ export default function GroupCard({
               display: "flex",
               flexDirection: "column",
               gap: "23px",
+              flexGrow: 1,
             }}
           >
             <GroupPostsSection
+              matchesLG={matchesLG}
               openPostModal={openPostModal}
               pathName={pathName}
               setOpenPostModal={setOpenPostModal}

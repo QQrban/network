@@ -6,11 +6,7 @@ import { useEffect, useState } from "react";
 import { EventProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
 
-interface Props {
-  groupID: number;
-}
-
-export default function Events({ groupID }: Props) {
+export default function Events() {
   const [events, setEvents] = useState<EventProps[]>([]);
 
   useEffect(() => {
@@ -32,7 +28,7 @@ export default function Events({ groupID }: Props) {
       }
     };
     fetchGroups();
-  }, [groupID]);
+  }, []);
 
   const statusHandler = (eventID: number, status: "Going" | "Not Going") => {
     setEvents((prevEvents) =>
@@ -59,11 +55,7 @@ export default function Events({ groupID }: Props) {
         <Box
           sx={{ mt: "23px", display: "flex", gap: "23px", flexWrap: "wrap" }}
         >
-          <EventSection
-            statusHandler={statusHandler}
-            groupID={groupID}
-            events={events}
-          />
+          <EventSection statusHandler={statusHandler} events={events} />
         </Box>
       ) : (
         <Typography sx={{ fontSize: "30px" }}>

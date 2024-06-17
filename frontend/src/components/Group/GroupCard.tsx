@@ -260,7 +260,6 @@ export default function GroupCard({
         >
           <EventSection
             statusHandler={statusHandler}
-            groupID={groupID}
             events={events}
           />
         </Box>

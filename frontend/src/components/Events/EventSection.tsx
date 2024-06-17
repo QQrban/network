@@ -15,7 +15,6 @@ import { fetchFromServer } from "@/lib/api";
 interface EventSectionProps {
   events: EventProps[];
   page?: string;
-  groupID: number;
   statusHandler: (event: number, status: "Going" | "Not Going") => void;
 }
 

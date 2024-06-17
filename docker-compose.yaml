@@ -1,4 +1,4 @@
-#version: "3.3"
+version: "3.3"
 
 services:
   backend:
@@ -11,21 +11,24 @@ services:
       nw:
         ipv4_address: 192.168.0.2
     environment:
-      FRONTEND_ADDRESS: "192.168.0.3"
+      FRONTEND_ADDRESS: "http://192.168.0.3:8080"
+    ports:
+      - "8888:8888"
 
   frontend:
     build: ./frontend
     image: frontend:sn
-    container_name: fe-sn_c # shorthand for "FrontEnd-SocialNetwork_Container"
+    container_name: fe-sn_c
     ports:
-      - "${FRONTEND_PORT}:3000"
+      - "8080:3000"
     networks:
       nw:
         ipv4_address: 192.168.0.3
     depends_on:
-      - "backend"
+      - backend
     environment:
-      VITE_BACKEND_ADDRESS: "192.168.0.2"
+      NEXT_PUBLIC_BACKEND_URL: "http://192.168.0.2:8888"
+
 networks:
   nw:
     driver: bridge

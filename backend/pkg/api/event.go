@@ -67,40 +67,6 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	<-done
 }
 
-// rtr.Post("/event/([0-9]+)/going", api.EnsureAuth(api.EventGoing))
-func EventGoing(w http.ResponseWriter, r *http.Request) {
-	session := getSession(r)
-	eventID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
-
-	access, err := Database.Event.CanJoin(eventID, session.UserID)
-	panicIfErr(err)
-	if !access {
-		log.Printf("EventGoing: User %v is not part of event %v's group\n", session.UserID, eventID)
-		writeStatusError(w, http.StatusForbidden)
-		return
-	}
-
-	err = Database.Event.Going(eventID, session.UserID)
-	panicIfErr(err)
-}
-
-// rtr.Post("/event/([0-9]+)/not-going", api.EnsureAuth(api.EventNotGoing))
-func EventNotGoing(w http.ResponseWriter, r *http.Request) {
-	session := getSession(r)
-	eventID, _ := strconv.ParseInt(router.GetSlug(r, 0), 10, 64)
-
-	access, err := Database.Event.CanJoin(eventID, session.UserID)
-	panicIfErr(err)
-	if !access {
-		log.Printf("EventNotGoing: User %v is not part of event %v's group\n", session.UserID, eventID)
-		writeStatusError(w, http.StatusForbidden)
-		return
-	}
-
-	err = Database.Event.NotGoing(eventID, session.UserID)
-	panicIfErr(err)
-}
-
 // rtr.Post("/event/([0-9]+)/unset", api.EnsureAuth(api.EventUnset))
 func EventUnset(w http.ResponseWriter, r *http.Request) {
 	session := getSession(r)

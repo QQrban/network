@@ -198,15 +198,6 @@ func UserRejectFollow(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-
-	/*go func() {
-		me, err := Database.User.GetByID(session.UserID)
-		if err != nil {
-			log.Println(err)
-		}
-
-		Notify.FollowRejected(me, targetID)
-	}()*/
 }
 
 func UserUnfollow(w http.ResponseWriter, r *http.Request) {
@@ -262,14 +253,6 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	panicIfErr(err)
 
 	writeJSON(w, users)
-}
-
-func GetFollowStats(w http.ResponseWriter, r *http.Request) {
-	session := getSession(r)
-	stats, err := Database.User.FollowStats(session.UserID)
-	panicIfErr(err)
-
-	writeJSON(w, stats)
 }
 
 func GetSuggestions(w http.ResponseWriter, r *http.Request) {

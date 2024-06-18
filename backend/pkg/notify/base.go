@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"html"
 	"log"
-	"net/http"
-	"os"
 	database "social-network/pkg/db"
 	"social-network/pkg/models"
 	"time"
@@ -15,7 +13,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var frontend_host = getFrontendHost()
+//var frontend_host = getFrontendHost()
 
 type Notification interface {
 	Targets() ([]int64, int64)
@@ -34,7 +32,6 @@ type Link struct {
 
 func (l Link) String() string {
 	return fmt.Sprintf(
-		//"\n<button type=\"submit\" formmethod=\"%v\" formaction=\"%v\">%v</button>",
 		"%v;%v;%v",
 		html.EscapeString(l.method),
 		html.EscapeString(l.url),
@@ -50,15 +47,15 @@ type Notifier struct {
 
 func NewNotifier(db *database.Database) *Notifier {
 	channel := make(chan Notification, 10)
-	upgrader := websocket.Upgrader{
+	/*upgrader := websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin:     func(r *http.Request) bool { return true },
-	}
+	}*/
 
 	return &Notifier{
-		channel:  channel,
-		upgrader: upgrader,
+		channel: channel,
+		//upgrader: upgrader,
 		database: db,
 	}
 }
@@ -144,10 +141,10 @@ func userGetName(u *models.User) string {
 	return fmt.Sprintf("%v %v", u.FirstName, u.LastName)
 }
 
-func getFrontendHost() string {
+/*func getFrontendHost() string {
 	v := os.Getenv("FRONTEND_ADDRESS")
 	if v == "" {
 		v = "http://localhost:3000"
 	}
 	return v
-}
+}*/

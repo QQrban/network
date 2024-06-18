@@ -5,7 +5,7 @@ VALUES
 ('tom@kood.ee', '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'Tom', 'Voog', 'tom', NULL, 'Backend Developer', '1960-10-24T00:00:00Z', false, 'EE'),
 ('kurb@kood.ee', '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'Kurban', 'Ramazanov', 'kramazan', NULL, 'Frontend Developer', '1990-05-10T00:00:00Z', false, 'EE'),
 ('nipi@kood.ee', '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'Nipi', 'Tiri', 'nipi', NULL, 'Full-stack Developer', '2010-01-01T00:00:00Z', true, 'BG'),
-('dani@kood.ee', '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'Dani', 'B', 'danib', NULL, 'Emotional Support', '2005-03-10T00:00:00Z', false, 'RO'),
+('dani@kood.ee', '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'Dani', 'B', 'dani', NULL, 'Emotional Support', '2005-03-10T00:00:00Z', false, 'RO'),
 ('denzel@kood.ee', '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'Denzel', 'Washington', 'denzel', NULL, 'Actor', '1954-12-28T00:00:00Z', false, 'US'),
 ('bruce@kood.ee', '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'Bruce', 'Willis', 'bruce', NULL, 'Actor', '1955-03-19T00:00:00Z', false, 'US'),
 ('george@kood.ee', '$2a$10$7FvPLhcsmzujjKieaiqCnOYxHbfwfBEeZxEv.P74MxPWCGdb.wxwC', 'George', 'Clooney', 'george', NULL, 'Actor', '1961-05-06T00:00:00Z', false, 'US'),

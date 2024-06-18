@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.8"
 
 services:
   backend:
@@ -11,7 +11,7 @@ services:
       nw:
         ipv4_address: 192.168.0.2
     environment:
-      FRONTEND_ADDRESS: "http://192.168.0.3:8080"
+      FRONTEND_ADDRESS: "http://192.168.0.3:3000"
     ports:
       - "8888:8888"
 
@@ -20,7 +20,7 @@ services:
     image: frontend:sn
     container_name: fe-sn_c
     ports:
-      - "8080:3000"
+      - "3000:3000"
     networks:
       nw:
         ipv4_address: 192.168.0.3

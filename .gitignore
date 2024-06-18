@@ -1,6 +1,3 @@
 persist*
 pkg/persist_old
 frontend/server
-frontend/*socket*
-frontend/docker*
-docker-compose*

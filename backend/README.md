@@ -1,1 +1,2 @@
 This is backend for social-network written in Golang and using SQLite3 for persistency. 
+Bulk of it is modeled based on [earlier work](https://github.com/tammiktanar/Kood-johvi/tree/main/social-network/backend). But lot was also remade to fit our needs.

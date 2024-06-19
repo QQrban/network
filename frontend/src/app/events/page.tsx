@@ -1,10 +1,10 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
 import EventSection from "@/components/Events/EventSection";
-import { useEffect, useState } from "react";
-import { EventProps } from "@/types/types";
 import { fetchFromServer } from "@/lib/api";
+import { EventProps } from "@/types/types";
+import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export default function Events() {
   const [events, setEvents] = useState<EventProps[]>([]);

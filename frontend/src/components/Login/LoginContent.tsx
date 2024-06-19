@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { fetchFromServer } from "@/lib/api";
 import { StyledTextField } from "./styles";
 import { SuccessBtn } from "../shared/styles";
@@ -96,19 +96,6 @@ export default function LoginContent({ setShowLoading }: LoginProps) {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
           variant="outlined"
-        />
-        <FormControlLabel
-          sx={{ mb: "8px", mt: "0px", width: "170px" }}
-          control={<Checkbox defaultChecked />}
-          label="Remember Me"
-          componentsProps={{
-            typography: {
-              sx: {
-                fontSize: "20px",
-                fontFamily: "Schoolbell, cursive",
-              },
-            },
-          }}
         />
         <SuccessBtn type="submit">Log In</SuccessBtn>
       </Box>

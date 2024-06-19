@@ -5,9 +5,7 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
-  TextareaAutosize,
   Typography,
-  styled,
 } from "@mui/material";
 import { countries } from "../constants";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -18,8 +16,6 @@ import { useFormik } from "formik";
 import dayjs from "dayjs";
 import { validationSchema } from "./validation";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "@/redux/features/auth/authSlice";
 import { fetchFromServer } from "@/lib/api";
 import { StyledTextArea, StyledTextField } from "../styles";
 import { SuccessBtn } from "@/components/shared/styles";

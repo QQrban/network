@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Box,
   Tab,
@@ -9,6 +8,7 @@ import {
   styled,
   useMediaQuery,
 } from "@mui/material";
+import { useState } from "react";
 
 import FollowersSection from "@/components/shared/SharedFollowers/FollowersSection";
 import { useSelector } from "react-redux";

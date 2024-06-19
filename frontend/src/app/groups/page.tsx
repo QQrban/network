@@ -1,17 +1,17 @@
 "use client";
 
-import Box from "@mui/material/Box";
-import { Item } from "@/components/shared/Item";
-import GroupItem from "@/components/Groups/GroupItem";
-import { Typography, useMediaQuery } from "@mui/material";
-import SearchBar from "@/components/Groups/SearchBar";
-import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
-import ConfirmBtn from "@/components/shared/ConfirmBtn";
-import successBtn from "../../../public/icons/successBtn.svg";
-import { useEffect, useState } from "react";
-import { fetchFromServer } from "@/lib/api";
 import CreateGroupModal from "@/components/Groups/CreateGroupModal";
+import GroupItem from "@/components/Groups/GroupItem";
+import SearchBar from "@/components/Groups/SearchBar";
+import ConfirmBtn from "@/components/shared/ConfirmBtn";
+import { Item } from "@/components/shared/Item";
+import SuggestionsGroups from "@/components/shared/SuggestionsGroups";
+import { fetchFromServer } from "@/lib/api";
 import { GroupProps } from "@/types/types";
+import { Typography, useMediaQuery } from "@mui/material";
+import Box from "@mui/material/Box";
+import { useEffect, useState } from "react";
+import successBtn from "../../../public/icons/successBtn.svg";
 
 export default function Groups() {
   const [groups, setGroups] = useState<GroupProps[]>([]);

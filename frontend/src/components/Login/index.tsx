@@ -1,12 +1,11 @@
-import { Box, Button, Divider, Typography } from "@mui/material";
-import BigLogo from "../shared/BigLogo";
-import googleLogo from "../../../public/icons/google.svg";
-import Image from "next/image";
 import { useState } from "react";
+
+import { Box, Typography } from "@mui/material";
+
+import BigLogo from "../shared/BigLogo";
 import LoginContent from "./LoginContent";
-import RegisterContent from "./Register/RegisterContent";
 import LoadingScreen from "../shared/LoadingScreen";
-import frame from "../../../public/icons/frame.svg";
+import RegisterContent from "./Register/RegisterContent";
 
 interface LoginProps {
   showLoading: boolean;
@@ -47,28 +46,6 @@ export default function Login({ showLoading, setShowLoading }: LoginProps) {
           ) : (
             <RegisterContent setShowLoading={setShowLoading} />
           )}
-          <Divider sx={{ fontSize: "30px" }}>OR</Divider>
-          <Button
-            sx={{
-              borderRadius: "8px",
-              display: "flex",
-              gap: "10px",
-              border: "3px solid #2a2a2a",
-            }}
-          >
-            <Image src={googleLogo} alt="google" />
-            <Typography
-              component="span"
-              sx={{
-                color: "#2A2A2A",
-                textTransform: "capitalize",
-                fontSize: "20px",
-                fontFamily: "Schoolbell !important",
-              }}
-            >
-              Continue with Google
-            </Typography>
-          </Button>
         </Box>
         <Typography
           sx={{

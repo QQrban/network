@@ -1,15 +1,15 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { Box, useMediaQuery } from "@mui/material";
-import profileIcon from "../../../../public/icons/profile.svg";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { fetchFromServer } from "@/lib/api";
 import { ContactsProps, GroupProps } from "@/types/types";
+import { Box, useMediaQuery } from "@mui/material";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import profileIcon from "../../../../public/icons/profile.svg";
 
-import GroupCard from "@/components/Group/GroupCard";
 import GroupAddInfo from "@/components/Group/GroupAddInfo";
+import GroupCard from "@/components/Group/GroupCard";
 import JoinGroupCard from "@/components/Group/JoinGroupCard";
 
 export default function GroupPage() {
@@ -19,7 +19,6 @@ export default function GroupPage() {
   const [mainInfo, setMainInfo] = useState<GroupProps>();
   const [activeTab, setActiveTab] = useState<string>("posts");
   const [isMember, setIsMember] = useState<boolean>(false);
-  // /group/([0-9]+)/(join|accept|reject) - api to send join group request|accept|reject
   const pathname = usePathname().split("/").pop();
   const matchesLG = useMediaQuery("(min-width:1200px)");
 

@@ -6,7 +6,6 @@ import {
   SpeedDial,
   SpeedDialAction,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import ProfileAvatar from "./ProfileAvatar";
 import React, { useEffect, useState } from "react";

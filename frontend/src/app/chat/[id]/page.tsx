@@ -1,24 +1,21 @@
 "use client";
 
 import React, {
-  useState,
-  useEffect,
-  useRef,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
+  useState,
 } from "react";
+
 import { EmojiClickData } from "emoji-picker-react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter, usePathname } from "next/navigation";
 
-import ChattersList from "@/components/Chat/ChattersList";
-import { Item } from "@/components/shared/Item";
-import { fetchFromServer } from "@/lib/api";
-import { ContactsProps, GroupProps, MessageProps } from "@/types/types";
-import MessageItem from "@/components/Chat/MessageItem";
-import ChatTabs from "@/components/Chat/ChatTabs";
 import ChatContentHeader from "@/components/Chat/ChatContentHeader";
+import ChatTabs from "@/components/Chat/ChatTabs";
 import ChatTextArea from "@/components/Chat/ChatTextArea";
+import ChattersList from "@/components/Chat/ChattersList";
+import MessageItem from "@/components/Chat/MessageItem";
 import {
   CenterTextStyles,
   ChatBoxStyles,
@@ -26,13 +23,17 @@ import {
   ErrorTextStyles,
   ItemStyles,
 } from "@/components/Chat/styles";
+import { Item } from "@/components/shared/Item";
+import { useWebSocketContext } from "@/context/WebSocketContext";
+import { fetchFromServer } from "@/lib/api";
 import {
   addNewMessage,
   removeSenderId,
   resetNewMessage,
 } from "@/redux/features/notifications/notificationsSlice";
-import { useWebSocketContext } from "@/context/WebSocketContext";
-import { Box, Button, useMediaQuery } from "@mui/material";
+import { ContactsProps, GroupProps, MessageProps } from "@/types/types";
+import { Button, useMediaQuery } from "@mui/material";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Chat() {
   const [tabValue, setTabValue] = useState<string>("private");

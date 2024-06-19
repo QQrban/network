@@ -13,7 +13,6 @@ import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { fetchFromServer } from "@/lib/api";
-import { useEffect, useState } from "react";
 import { EventProps } from "@/types/types";
 
 interface CreateEventModalProps {

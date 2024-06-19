@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, ChangeEvent, MutableRefObject } from "react";
+import React, { ChangeEvent, MutableRefObject } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import { TextareaAutosize } from "../shared/styles";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
